@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 80" fill="none">
+  <defs>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#328CC1"/>
+      <stop offset="100%" stop-color="#0B3C5D"/>
+    </linearGradient>
+  </defs>
+  <path d="M28 12 C28 12 18 28 18 40 C18 52 22 58 28 58 C34 58 38 52 38 40 C38 28 28 12 28 12Z" fill="url(#g1)"/>
+  <path d="M28 22 C28 22 24 32 24 40 C24 46 25 50 28 50 C31 50 32 46 32 40 C32 32 28 22 28 22Z" fill="#fff" opacity="0.35"/>
+  <text x="52" y="38" font-family="system-ui,sans-serif" font-size="22" font-weight="700" fill="#0B3C5D">Samarth</text>
+  <text x="52" y="58" font-family="system-ui,sans-serif" font-size="11" font-weight="600" letter-spacing="3" fill="#328CC1">ENTERPRISES</text>
+  <rect x="52" y="44" width="120" height="2" rx="1" fill="#D9B310" opacity="0.8"/>
+</svg>

@@ -1,0 +1,512 @@
+[
+  {
+    "id": "ro-001",
+    "name": "Kent Grand Plus RO Water Purifier",
+    "category": "Ro purifiers",
+    "image": "kent-grand-plus-1.jpg",
+    "description": "India's No.1 Water Purifier. Multi-stage RO + UV + UF + TDS Control purification for 100% safe drinking water. 9L storage, wall-mountable design.",
+    "specifications": ["9L storage tank", "RO + UV + UF purification", "TDS controller built-in", "UV LED indicator", "4-stage purification", "Wall mountable"],
+    "featured": true,
+    "tag": "Best Seller"
+  },
+  {
+    "id": "ro-002",
+    "name": "Kent Ace IoT RO Purifier",
+    "category": "Ro purifiers",
+    "image": "kent-ace-iot-1.jpg",
+    "description": "Smart IoT-enabled RO purifier with real-time water quality monitoring via mobile app. 8L storage with RO + UV + UF multi-stage purification.",
+    "specifications": ["8L storage capacity", "IoT app monitoring", "RO + UV + UF", "Filter change alert", "In-tank UV sterilization", "Auto-flush tech"],
+    "featured": true,
+    "tag": "Smart IoT"
+  },
+  {
+    "id": "ro-003",
+    "name": "Kent Pearl IoT Water Purifier",
+    "category": "Ro purifiers",
+    "image": "kent-pearl-iot-1.jpg",
+    "description": "Premium IoT-enabled purifier with 8L tank and advanced multi-stage filtration. Get live water quality data on your smartphone.",
+    "specifications": ["8L storage", "IoT connectivity", "RO + UV + UF", "TDS indicator", "Smart alerts", "Compact design"],
+    "featured": true,
+    "tag": "Premium"
+  },
+  {
+    "id": "ro-004",
+    "name": "Kent Sapphire IoT Purifier",
+    "category": "Ro purifiers",
+    "image": "kent-sapphire-iot-1.jpg",
+    "description": "Sleek IoT-enabled purifier with stainless steel storage tank and multi-stage RO + UV + UF purification. Ideal for modern urban homes.",
+    "specifications": ["8L SS tank", "Touchless IoT control", "RO + UV + UF + TDS", "Zero water wastage tech", "LED filter indicator", "Wall mountable"],
+    "featured": true,
+    "tag": "IoT Design"
+  },
+  {
+    "id": "ro-005",
+    "name": "Kent Sterling IoT Purifier",
+    "category": "Ro purifiers",
+    "image": "kent-sterling-iot-1.jpg",
+    "description": "Feature-rich IoT RO purifier with mineral RO technology retaining essential minerals. Built for large families needing consistent pure water.",
+    "specifications": ["8L storage", "Mineral RO technology", "IoT app enabled", "UV + UF combo", "Auto-shutoff", "High recovery rate"],
+    "featured": true,
+    "tag": "Premium"
+  },
+  {
+    "id": "ro-006",
+    "name": "Kent Supreme IoT Purifier",
+    "category": "Ro purifiers",
+    "image": "kent-supreme-iot-1.jpg",
+    "description": "Supreme tier RO purifier with zero water wastage technology and IoT monitoring. Delivers the highest purity for Indian water conditions.",
+    "specifications": ["9L storage", "Zero wastage RO", "IoT monitoring", "Copper + Alkaline option", "In-tank UV sterilization", "NSF certified membrane"],
+    "featured": true,
+    "tag": "Flagship"
+  },
+  {
+    "id": "ro-007",
+    "name": "Kent Crystal Plus RO Purifier",
+    "category": "Ro purifiers",
+    "image": "kent-crystal-plus-1.jpg",
+    "description": "Compact countertop RO purifier with UV sterilization. Space-efficient design perfect for kitchens where wall-mounting isn't feasible.",
+    "specifications": ["7L storage", "Countertop design", "RO + UV", "TDS controller", "Sediment pre-filter", "Low power consumption"],
+    "featured": false,
+    "tag": null
+  },
+  {
+    "id": "ro-008",
+    "name": "Kent Grand+ IoT Water Purifier",
+    "category": "Ro purifiers",
+    "image": "Info_Web_Grand_iOT-1_17853df5-dded-4091-b548-bc68ce9c83e7.jpg",
+    "description": "Top-of-the-line Grand+ IoT purifier with the highest storage capacity and premium 5-stage multi-technology purification system.",
+    "specifications": ["11L storage tank", "5-stage purification", "IoT + app control", "Smart UV indicator", "Auto-flush system", "Large family capacity"],
+    "featured": true,
+    "tag": "Top Rated"
+  },
+  {
+    "id": "uv-001",
+    "name": "Kent Maxx UV Water Purifier",
+    "category": "UV purifiers",
+    "image": "kent-maxx-1.jpg",
+    "description": "Trusted UV + UF purifier for areas with low TDS municipal water. Eliminates bacteria and viruses without chemicals. 7L storage capacity.",
+    "specifications": ["7L storage", "UV + UF dual purification", "TDS up to 500 ppm", "No electricity for UF", "Compact wall mount", "German technology"],
+    "featured": true,
+    "tag": "Best Value"
+  },
+  {
+    "id": "uv-002",
+    "name": "Kent Smart UV Water Purifier",
+    "category": "UV purifiers",
+    "image": "kent-smart-uv-1.jpg",
+    "description": "Smart UV purifier with IoT monitoring and real-time lamp status alerts. Ideal for municipal water sources with TDS below 500.",
+    "specifications": ["8L storage", "IoT UV monitoring", "UF membrane", "Filter change alert", "Compact design", "Low operating cost"],
+    "featured": true,
+    "tag": "Smart"
+  },
+  {
+    "id": "uv-003",
+    "name": "Kent Ultra Plus UV Purifier",
+    "category": "UV purifiers",
+    "image": "kent-ultra-plus-1.jpg",
+    "description": "High-performance UV purifier with 11W UV lamp and UF membrane for superior bacteria elimination. Suitable for overhead tank water sources.",
+    "specifications": ["11W UV lamp", "UF + UV dual stage", "8L capacity", "Detachable tank", "Auto UV lamp shutoff", "Easy maintenance"],
+    "featured": false,
+    "tag": null
+  },
+  {
+    "id": "uv-004",
+    "name": "Kent Ultra Storage UV Purifier",
+    "category": "UV purifiers",
+    "image": "kent-ultra-storage-1_ddb68217-7ab2-434e-b429-010e6d52938d.jpg",
+    "description": "Large-capacity UV storage purifier ideal for homes with intermittent water supply. Built-in UV ensures stored water stays bacteria-free.",
+    "specifications": ["15L storage tank", "UV + UF + MF stages", "Gravity + electric mode", "Overflow protection", "BPA-free tank", "Long UV lamp life"],
+    "featured": false,
+    "tag": null
+  },
+  {
+    "id": "uv-005",
+    "name": "Kent Ultra Storage Copper Edition",
+    "category": "UV purifiers",
+    "image": "kent-ultra-storage-copper-1.jpg",
+    "description": "Premium UV purifier with copper-charged tank for added antimicrobial benefits. Combines modern UV technology with ancient copper wellness science.",
+    "specifications": ["15L copper-infused tank", "UV + UF purification", "Copper health benefits", "Auto shutoff", "Easy clean tank", "Premium finish"],
+    "featured": true,
+    "tag": "Copper+"
+  },
+  {
+    "id": "uv-006",
+    "name": "Kent Maxx Alkaline UV Purifier",
+    "category": "UV purifiers",
+    "image": "maxx-alkaline-1.jpg",
+    "description": "UV purifier with built-in alkaline filter adding essential minerals and raising pH for healthier, antioxidant-rich drinking water.",
+    "specifications": ["UV + UF + Alkaline", "pH enhancement", "Mineral enrichment", "7L storage", "ORP improvement", "BIS certified"],
+    "featured": false,
+    "tag": "Alkaline+"
+  },
+  {
+    "id": "al-001",
+    "name": "Alkaline Pen Water Ionizer",
+    "category": "alkaline water solutions",
+    "image": "alkaline pen.jpg",
+    "description": "Portable alkaline water pen that converts regular water into antioxidant-rich alkaline water instantly. Travel-friendly wellness solution for health-conscious individuals.",
+    "specifications": ["Portable compact design", "pH 8.5–9.5 output", "ORP reduction technology", "Rechargeable USB", "Food-grade materials", "Travel-ready"],
+    "featured": true,
+    "tag": "Innovation"
+  },
+  {
+    "id": "al-002",
+    "name": "ORG IonPot Alkaline System",
+    "category": "alkaline water solutions",
+    "image": "ORG ionpot.jpg",
+    "description": "Advanced IonPot ionization system producing alkaline and acidic water streams for drinking, cooking, and surface sanitization. Premium 5-plate technology.",
+    "specifications": ["Dual stream output", "5 platinum-titanium plates", "pH 4.5–11 range", "Self-cleaning electrolysis", "LCD control panel", "ORP -200 to -400 mV"],
+    "featured": true,
+    "tag": "Premium"
+  },
+  {
+    "id": "al-003",
+    "name": "ORG Alkalinizer",
+    "category": "alkaline water solutions",
+    "image": "ORG Alkalinizer.jpg",
+    "description": "Inline alkaline enhancement system compatible with existing RO setups. Adds essential minerals post-filtration for balanced, health-promoting water.",
+    "specifications": ["Inline RO compatible", "Mineral enrichment balls", "pH 7.5–8.5 output", "6-month cartridge life", "Universal fit", "Easy DIY replacement"],
+    "featured": false,
+    "tag": null
+  },
+  {
+    "id": "al-004",
+    "name": "Todir Alkalinator & UTS System",
+    "category": "alkaline water solutions",
+    "image": "todir Alkalinator & UTS Option.jpg",
+    "description": "Combined alkaline water generator and UTS (Under Tank System) solution for comprehensive whole-home alkaline water treatment.",
+    "specifications": ["Alkaline + UTS combo", "Whole-home installation", "Multiple flow rates", "pH monitoring display", "Long service life", "Professional grade"],
+    "featured": false,
+    "tag": null
+  },
+  {
+    "id": "ws-001",
+    "name": "Kent AutoSoft 100L Water Softener",
+    "category": "autosoft",
+    "image": "kent-automatic-water-softener-100l-1.jpg",
+    "description": "High-capacity fully automatic water softener for large homes and commercial premises. Eliminates hard water scale to protect appliances, improve skin and hair health.",
+    "specifications": ["100L resin capacity", "Fully automatic regeneration", "Digital control valve", "Metered regeneration", "Bypass valve included", "High flow rate"],
+    "featured": true,
+    "tag": "Commercial"
+  },
+  {
+    "id": "ws-002",
+    "name": "Kent AutoSoft 40L Water Softener",
+    "category": "autosoft",
+    "image": "kent-automatic-water-softener-40l-1.jpg",
+    "description": "Mid-range automatic water softener ideal for medium-sized homes and small offices. Delivers consistently soft water with minimal salt consumption.",
+    "specifications": ["40L resin bed", "Auto regeneration", "Timer + meter control", "Compact design", "Salt efficiency mode", "5-year resin life"],
+    "featured": true,
+    "tag": "Popular"
+  },
+  {
+    "id": "ws-003",
+    "name": "Kent AutoSoft 8L Water Softener",
+    "category": "autosoft",
+    "image": "kent-automatic-water-softener-8L-1.jpg",
+    "description": "Compact automatic water softener for apartments and small households. Reduces scale buildup in pipes, geysers, and washing machines.",
+    "specifications": ["8L resin tank", "Auto-regeneration", "Compact wall-mount", "Low salt usage", "No electricity needed", "Easy maintenance"],
+    "featured": false,
+    "tag": null
+  },
+  {
+    "id": "ws-004",
+    "name": "Kent Bathroom Water Softener",
+    "category": "autosoft",
+    "image": "kent-bathroom-water-softener-1.jpg",
+    "description": "Point-of-use bathroom water softener delivering spa-like soft water for showers. Dramatically reduces soap scum, hair dryness, and skin irritation.",
+    "specifications": ["Bathroom point-of-use", "Compact wall mount", "Quick regeneration", "No electricity needed", "15,000 litre capacity", "Easy install"],
+    "featured": false,
+    "tag": null
+  },
+  {
+    "id": "cp-001",
+    "name": "Kent Elite 2 Plus Commercial Purifier",
+    "category": "commercial purifiers",
+    "image": "kent-elite-2-plus-1.jpg",
+    "description": "High-output commercial RO purifier delivering 2000 litres per day of pure water. Designed for offices, restaurants, and high-footfall commercial premises.",
+    "specifications": ["2000 LPD output", "SS storage tank", "RO + UV purification", "Auto shut-off float", "Wall/floor mountable", "Low maintenance"],
+    "featured": true,
+    "tag": "Commercial"
+  },
+  {
+    "id": "cp-002",
+    "name": "Kent Elite Plus Commercial Purifier",
+    "category": "commercial purifiers",
+    "image": "kent-elite-plus-new-1.jpg",
+    "description": "Premium commercial RO system with enhanced output for corporate cafeterias and institutional kitchens requiring continuous high-volume water supply.",
+    "specifications": ["Enhanced LPD output", "SS304 tank", "Multi-stage RO + UV", "TDS controller", "Auto purification", "Service indicator"],
+    "featured": false,
+    "tag": null
+  },
+  {
+    "id": "cp-003",
+    "name": "Kent Galaxy Commercial Purifier",
+    "category": "commercial purifiers",
+    "image": "kent-galaxy-1.jpg",
+    "description": "Wall-mounted commercial RO system for offices and small businesses. Compact footprint with high daily output and easy dispensing.",
+    "specifications": ["Wall mounted", "High daily output", "Hot & cold options", "RO + UV", "Touchless dispensing", "Capacity indicator"],
+    "featured": false,
+    "tag": null
+  },
+  {
+    "id": "cp-004",
+    "name": "Kent Perk Countertop Purifier",
+    "category": "commercial purifiers",
+    "image": "kent-perk-1.jpg",
+    "description": "Countertop commercial water purifier with inline direct supply. No tank needed — continuous pure water flow for small offices and reception areas.",
+    "specifications": ["No tank design", "Direct line connection", "RO + UV inline", "Space-saving countertop", "Chrome dispensing tap", "Easy filter change"],
+    "featured": false,
+    "tag": null
+  },
+  {
+    "id": "cp-005",
+    "name": "Kent Perk Star Commercial Purifier",
+    "category": "commercial purifiers",
+    "image": "kent-perk-star-1.jpg",
+    "description": "Premium Perk Star with stainless steel body and enhanced UV sterilization. Delivers consistently safe pure water for busy commercial environments.",
+    "specifications": ["SS body construction", "Enhanced UV stage", "No storage tank", "Direct flow design", "BIS certified", "Commercial grade"],
+    "featured": false,
+    "tag": null
+  },
+  {
+    "id": "ir-001",
+    "name": "ORG RO Plant E-25 (25 LPH)",
+    "category": "institutional ro",
+    "image": "ORG RO Water Purifier E-25.jpg",
+    "description": "Institutional RO plant delivering 25 litres per hour of safe drinking water. Designed for small schools, clinics, and community water points.",
+    "specifications": ["25 LPH output", "SS304 storage tank", "RO + UV combo", "Wall/floor mount", "TDS monitoring", "Low power draw"],
+    "featured": false,
+    "tag": null
+  },
+  {
+    "id": "ir-002",
+    "name": "ORG RO Plant E-50 (50 LPH)",
+    "category": "institutional ro",
+    "image": "ORG RO Water Purifier E-50.jpg",
+    "description": "Mid-capacity institutional RO for schools, offices, and community halls. Delivers 50 litres per hour with automatic operation and minimal maintenance.",
+    "specifications": ["50 LPH capacity", "Auto purification", "SS tank", "UV sterilization", "TDS controller", "Multi-stage pre-filter"],
+    "featured": true,
+    "tag": "Institutional"
+  },
+  {
+    "id": "ir-003",
+    "name": "ORG 100 LPH RO Plant Pro",
+    "category": "institutional ro",
+    "image": "ORG 100 LPH RO With 4021-Pro.jpg",
+    "description": "High-output 100 LPH institutional RO plant for college campuses, hospitals, and corporate canteens. Includes Pro-grade 4021 membrane assembly.",
+    "specifications": ["100 LPH output", "4021-Pro membrane", "Dual pump system", "Auto shut-off", "FRP pre-filter", "Remote monitoring ready"],
+    "featured": true,
+    "tag": "High Capacity"
+  },
+  {
+    "id": "it-001",
+    "name": "Industrial RO Standard Plant",
+    "category": "industrial water treatment",
+    "image": "Industrial RO Standard.jpg",
+    "description": "Industrial-grade reverse osmosis system for manufacturing, food processing, and pharmaceutical water treatment requirements.",
+    "specifications": ["Customizable LPH capacity", "SS316 high-pressure pump", "Multi-media pre-filter", "Antiscalant dosing port", "PLC control optional", "Skid-mounted design"],
+    "featured": true,
+    "tag": "Industrial"
+  },
+  {
+    "id": "it-002",
+    "name": "Industrial RO Pre-Treatment System",
+    "category": "industrial water treatment",
+    "image": "Industrial RO- PRE Treatment.jpg",
+    "description": "Complete pre-treatment assembly for industrial RO plants including sand filtration, carbon filtration, and antiscalant dosing to maximize membrane life.",
+    "specifications": ["Multi-media sand filter", "Activated carbon filter", "Antiscalant dosing", "Softener pre-treatment", "Auto backwash", "Flow metering"],
+    "featured": false,
+    "tag": null
+  },
+  {
+    "id": "it-003",
+    "name": "ORG Automatic DM Plant 10x54",
+    "category": "industrial water treatment",
+    "image": "ORG Automatic DM Plant 10x54.jpg",
+    "description": "Fully automatic demineralization plant producing ultra-pure water for laboratories, battery manufacturing, and boiler feed applications.",
+    "specifications": ["10x54 vessel size", "Mixed bed resin", "Conductivity monitoring", "Auto regeneration cycle", "FRP/MSRL vessels", "Ultra-pure output"],
+    "featured": false,
+    "tag": null
+  },
+  {
+    "id": "it-004",
+    "name": "ORG Automatic UF System",
+    "category": "industrial water treatment",
+    "image": "ORG Automatic UF.jpg",
+    "description": "Automatic ultrafiltration system for industrial and institutional water treatment. Removes suspended solids, bacteria, and colloids without chemicals.",
+    "specifications": ["Hollow fibre UF membrane", "Auto backwash", "Chemical-free operation", "High flux design", "SS frame skid", "Low energy consumption"],
+    "featured": false,
+    "tag": null
+  },
+  {
+    "id": "pp-001",
+    "name": "ORG Auto Booster Pump",
+    "category": "pressure pumps",
+    "image": "ORG AUTO BOOSTER PUMP.jpg",
+    "description": "Automatic booster pump with pressure sensing for optimal RO inlet pressure. Self-priming design with auto start/stop for low-pressure water supply areas.",
+    "specifications": ["Auto pressure sensing", "Self-priming motor", "0.5 HP rating", "Stainless impeller", "Thermal overload protection", "Quiet operation"],
+    "featured": true,
+    "tag": "Popular"
+  },
+  {
+    "id": "pp-002",
+    "name": "ORG Intelligent Pump Controller",
+    "category": "pressure pumps",
+    "image": "ORG INTELLIGENT PUMP.jpg",
+    "description": "Smart pump with electronic controller for variable pressure applications. Dry-run protection and auto restart for commercial RO systems.",
+    "specifications": ["Electronic controller", "Dry run protection", "Variable pressure", "Auto restart", "1 HP motor", "Commercial grade"],
+    "featured": false,
+    "tag": null
+  },
+  {
+    "id": "pp-003",
+    "name": "ORG Traditional Booster Pump",
+    "category": "pressure pumps",
+    "image": "ORG TRADITIONAL PUMP.jpg",
+    "description": "Reliable traditional booster pump for consistent inlet pressure across residential and small commercial RO installations.",
+    "specifications": ["0.5 HP motor", "Manual on/off switch", "Corrosion resistant", "Simple maintenance", "Wide voltage range", "Long service life"],
+    "featured": false,
+    "tag": null
+  },
+  {
+    "id": "pp-004",
+    "name": "Pressure Tank System",
+    "category": "pressure pumps",
+    "image": "PRESSURE TANK.jpg",
+    "description": "Stainless steel pressure accumulator tank for RO and ionizer systems. Maintains consistent delivery pressure and reduces pump cycling.",
+    "specifications": ["SS304 tank body", "Pressure gauge included", "Relief valve", "Multiple capacity options", "Pre-charged air bladder", "Easy installation"],
+    "featured": false,
+    "tag": null
+  },
+  {
+    "id": "if-001",
+    "name": "Inline Carbon Filter 10\"",
+    "category": "inline-filters",
+    "image": "inline-carbon-filter.svg",
+    "description": "Premium activated carbon inline filter removing chlorine, odour, and organic contaminants from water supply.",
+    "specifications": ["10-inch standard housing", "Coconut shell carbon", "1/4\" quick connect", "6-month lifespan", "Universal compatibility", "NSF rated media"],
+    "featured": false,
+    "tag": null
+  },
+  {
+    "id": "if-002",
+    "name": "Inline Sediment Filter 5 Micron",
+    "category": "inline-filters",
+    "image": "inline-sediment-filter.svg",
+    "description": "First-line defence sediment filter capturing rust, sand, and suspended particles before the RO membrane stage.",
+    "specifications": ["5 micron PP spun", "High dirt capacity", "10\" housing fit", "Transparent sump", "Easy swap design", "Long service life"],
+    "featured": false,
+    "tag": null
+  },
+  {
+    "id": "if-003",
+    "name": "Inline Alkaline Post-Filter",
+    "category": "inline-filters",
+    "image": "inline-alkaline-filter.svg",
+    "description": "Post-RO alkaline filter restoring essential minerals and raising pH for healthier, better-tasting, antioxidant-rich water.",
+    "specifications": ["Mineral balls + ceramic", "pH enhancement to 8+", "Inline 2\" x 10\"", "RO compatible", "12-month lifespan", "ORP improvement"],
+    "featured": false,
+    "tag": null
+  },
+  {
+    "id": "uvm-001",
+    "name": "SteriBeam UV Module 11W",
+    "category": "uv-modules",
+    "image": "steribeam-uv-11w.svg",
+    "description": "Compact UV sterilization module eliminating 99.9% bacteria and viruses without chemicals or taste alteration. Standard 11W for residential applications.",
+    "specifications": ["11W UV lamp", "SS304 chamber", "1/4\" inlet/outlet", "Visual lamp indicator", "Annual lamp replacement", "Compact inline fit"],
+    "featured": true,
+    "tag": "Essential"
+  },
+  {
+    "id": "uvm-002",
+    "name": "SteriBeam UV Module 22W",
+    "category": "uv-modules",
+    "image": "steribeam-uv-22w.svg",
+    "description": "Higher capacity 22W UV module for institutional and whole-house applications requiring greater flow rates and higher sterilization confidence.",
+    "specifications": ["22W UV lamp", "High flow design", "Quartz sleeve", "Alarm on lamp failure", "Easy maintenance access", "Food-safe construction"],
+    "featured": false,
+    "tag": null
+  },
+  {
+    "id": "mv-001",
+    "name": "Auto Multiport Control Valve",
+    "category": "multiport-valves",
+    "image": "auto-multiport-valve.svg",
+    "description": "Automatic programmable multiport control valve for softener and filter systems with scheduled regeneration cycles and bypass functionality.",
+    "specifications": ["Programmable timer cycles", "Ceramic disc seal", "LED digital display", "Bypass mode integrated", "Industry standard 1\" BSP", "5-year warranty"],
+    "featured": false,
+    "tag": null
+  },
+  {
+    "id": "mv-002",
+    "name": "Manual Multiport Valve",
+    "category": "multiport-valves",
+    "image": "manual-multiport-valve.svg",
+    "description": "Durable manual multiport valve for filter and softener housings. Smooth rotation, leak-proof sealing, and six operational positions.",
+    "specifications": ["6-way function", "ABS body construction", "Easy grip handle", "Universal tank mounting", "Long cycle life", "Low flow resistance"],
+    "featured": false,
+    "tag": null
+  },
+  {
+    "id": "mv-003",
+    "name": "TDS Controller Blending Valve",
+    "category": "multiport-valves",
+    "image": "tds-controller-valve.svg",
+    "description": "Precision TDS blending valve allowing controlled mixing of RO permeate and bypass water for precise desired TDS output.",
+    "specifications": ["Adjustable TDS blend", "Quick-fit connectors", "Food-grade materials", "No electricity needed", "Wide adjustment range", "RO system add-on"],
+    "featured": false,
+    "tag": null
+  },
+  {
+    "id": "ac-001",
+    "name": "Digital Chemical Dosing Tank",
+    "category": "accessories",
+    "image": "digital-dosing-tank.svg",
+    "description": "Smart chemical dosing tank with digital flow metering for antiscalant and chlorination in treatment plants. Precision dosing for membrane protection.",
+    "specifications": ["Digital flow meter", "Adjustable dosing rate", "Chemical-resistant HDPE", "Wall mountable", "Low-level visual alarm", "Calibration port"],
+    "featured": false,
+    "tag": null
+  },
+  {
+    "id": "ac-002",
+    "name": "Float Switch Assembly",
+    "category": "accessories",
+    "image": "float-switch-assembly.svg",
+    "description": "Automatic water level controller with ceramic ball valve for overhead tank and sump applications. Prevents overflow and dry-run situations.",
+    "specifications": ["Ceramic ball valve", "Auto shut-off", "Anti-tangle float arm", "Tank top mount", "Durable PP float body", "1/2\" BSP connection"],
+    "featured": false,
+    "tag": null
+  },
+  {
+    "id": "ac-003",
+    "name": "Brine Tank 25L",
+    "category": "accessories",
+    "image": "brine-tank-25l.svg",
+    "description": "Salt storage brine tank for water softener regeneration with grid plate, safety float, and brine well assembly included.",
+    "specifications": ["25L salt capacity", "Grid plate included", "Brine well assembly", "Overflow protection float", "UV-resistant HDPE", "Softener compatible"],
+    "featured": false,
+    "tag": null
+  },
+  {
+    "id": "ac-004",
+    "name": "Non-Return Valve (NRV) 1/4\"",
+    "category": "accessories",
+    "image": "check-valve-nrv.svg",
+    "description": "Food-grade non-return valve preventing backflow in RO and pump systems. Spring-loaded stainless steel design for long-lasting leak-proof operation.",
+    "specifications": ["1/4\" and 3/8\" sizes", "Spring-loaded SS", "Food-grade silicone seat", "Leak-proof body", "Easy inline install", "High cycle life"],
+    "featured": false,
+    "tag": null
+  },
+  {
+    "id": "ac-005",
+    "name": "Flow Restrictor & TDS Kit",
+    "category": "accessories",
+    "image": "flow-resistor-tds.svg",
+    "description": "Complete flow restrictor and TDS valve kit for optimizing RO recovery ratio and precisely controlling output water quality parameters.",
+    "specifications": ["Multiple restrictor sizes", "TDS bypass valve", "RO membrane compatible", "Recovery ratio optimization", "Quick-connect fittings", "Installation guide"],
+    "featured": false,
+    "tag": null
+  }
+]

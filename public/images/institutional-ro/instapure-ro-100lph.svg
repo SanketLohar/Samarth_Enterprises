@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f0f7fb"/>
+      <stop offset="100%" stop-color="#e2eef6"/>
+    </linearGradient>
+    <linearGradient id="acc" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0B3C5D"/>
+      <stop offset="100%" stop-color="#0B3C5D"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <rect x="40" y="280" width="320" height="8" rx="4" fill="#0B3C5D" opacity="0.08"/>
+  <rect x="120" y="100" width="160" height="200" rx="16" fill="url(#acc)" opacity="0.92"/>
+  <rect x="135" y="115" width="130" height="70" rx="8" fill="#fff" opacity="0.2"/>
+  <circle cx="200" cy="220" r="28" fill="#fff" opacity="0.15"/>
+  <circle cx="200" cy="220" r="14" fill="#D9B310" opacity="0.9"/>
+  <rect x="155" y="260" width="90" height="12" rx="6" fill="#fff" opacity="0.25"/>
+  <text x="200" y="340" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="600" fill="#1D2731">InstaPure RO 100 LPH</text>
+  <text x="200" y="362" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" fill="#328CC1" letter-spacing="1">INSTITUTIONAL RO</text>
+</svg>
