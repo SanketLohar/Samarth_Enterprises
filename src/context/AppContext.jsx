@@ -25,48 +25,34 @@ export function AppProvider({ children }) {
       setCurrentUser(user || null)
 
       if (user) {
-        setIsAuthenticated(true)
+        setIsAuthenticated(true);
+        
         try {
-          // Technician docs are created with addDoc (auto-generated IDs).
-          // We must query by the email field, not by document ID.
-          let isTech = false
+          // Direct Query targeting the user email safely
+          const techQuery = query(
+            collection(db, 'technicians'), 
+            where('email', '==', user.email.toLowerCase().trim())
+          );
+          const querySnapshot = await getDocs(techQuery);
 
-          // Strategy 1: Query by email field (most reliable)
-          const emailQuery = query(
-            collection(db, 'technicians'),
-            where('email', '==', user.email)
-          )
-          const emailSnap = await getDocs(emailQuery)
-          if (!emailSnap.empty) {
-            isTech = true
+          // CRITICAL: Double validation check
+          if (!querySnapshot.empty && querySnapshot.docs.length > 0) {
+            console.log(`[SECURITY] Match found in technicians collection. Routing ${user.email} as TECHNICIAN.`);
+            setIsTechnician(true);
           } else {
-            // Strategy 2: Fallback — query by uid field stored inside document
-            const uidQuery = query(
-              collection(db, 'technicians'),
-              where('uid', '==', user.uid)
-            )
-            const uidSnap = await getDocs(uidQuery)
-            if (!uidSnap.empty) {
-              isTech = true
-            } else {
-              // Strategy 3: Last resort — check if document ID equals uid
-              const directSnap = await getDoc(doc(db, 'technicians', user.uid))
-              isTech = directSnap.exists()
-            }
+            console.log(`[SECURITY] No match found in technicians collection. Routing ${user.email} as MASTER ADMIN.`);
+            setIsTechnician(false);
           }
-
-          console.log(`[Auth] Role resolved for ${user.email}: ${isTech ? 'Technician' : 'Admin'}`)
-          setIsTechnician(isTech)
-        } catch (err) {
-          console.error('Role lookup failed:', err)
-          setIsTechnician(false)
+        } catch (error) {
+          console.error("[SECURITY] Role resolution system failed:", error);
+          setIsTechnician(false); // Safety fallback to Admin
         } finally {
-          setAuthReady(true)
+          setAuthReady(true);
         }
       } else {
-        setIsAuthenticated(false)
-        setIsTechnician(false)
-        setAuthReady(true)
+        setIsAuthenticated(false);
+        setIsTechnician(false);
+        setAuthReady(true);
       }
     })
     return () => unsubscribe()
