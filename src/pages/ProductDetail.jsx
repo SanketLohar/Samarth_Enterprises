@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useParams, Link, Navigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useParams, Link, Navigate, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Check, MessageSquare } from 'lucide-react'
 import { useApp } from '../context/AppContext'
@@ -8,13 +8,12 @@ import { categoryMeta } from '../data/categories'
 import ProductImage from '../components/ui/ProductImage'
 import Badge from '../components/ui/Badge'
 import Button from '../components/ui/Button'
-import EnquiryModal from '../components/products/EnquiryModal'
 
 export default function ProductDetail() {
   const { id } = useParams()
   const { visibleProducts } = useApp()
+  const navigate = useNavigate()
   const product = getProductById(visibleProducts, id)
-  const [enquiryOpen, setEnquiryOpen] = useState(false)
 
   if (!product) return <Navigate to="/products" replace />
 
@@ -22,6 +21,12 @@ export default function ProductDetail() {
   const related = visibleProducts
     .filter((p) => p.category === product.category && p.id !== product.id)
     .slice(0, 3)
+
+  useEffect(() => {
+    if (product) {
+      document.title = `${product.name} | Samarth Enterprises`
+    }
+  }, [product])
 
   return (
     <div className="bg-white min-h-screen">
@@ -80,7 +85,7 @@ export default function ProductDetail() {
               <p className="text-sm text-brand-muted mb-4">
                 Get personalized pricing, installation guidance, and AMC options from our water treatment experts.
               </p>
-              <Button size="lg" className="w-full sm:w-auto" onClick={() => setEnquiryOpen(true)}>
+              <Button size="lg" className="w-full sm:w-auto" onClick={() => navigate('/contact', { state: { chosenProduct: product.name } })}>
                 <MessageSquare className="w-4 h-4" />
                 Enquire Now
               </Button>
@@ -111,8 +116,6 @@ export default function ProductDetail() {
           </div>
         )}
       </div>
-
-      <EnquiryModal product={product} open={enquiryOpen} onClose={() => setEnquiryOpen(false)} />
     </div>
   )
 }

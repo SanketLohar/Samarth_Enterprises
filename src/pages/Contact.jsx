@@ -1,21 +1,56 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { useLocation } from 'react-router-dom'
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle } from 'lucide-react'
 import { companyInfo } from '../data/categories'
-import { useApp } from '../context/AppContext'
+import { collection, addDoc } from 'firebase/firestore'
+import { db } from '../firebase/config'
 import Button from '../components/ui/Button'
 
 export default function Contact() {
-  const { addEnquiry } = useApp()
+  const location = useLocation()
   const [submitted, setSubmitted] = useState(false)
-  const [form, setForm] = useState({ name: '', phone: '', email: '', message: '' })
+  
+  // Smart prepopulate from Router State
+  const initialProduct = location.state?.chosenProduct || ''
+  
+  const [form, setForm] = useState({ 
+    name: '', 
+    phone: '', 
+    email: '', 
+    product: initialProduct,
+    address: '',
+    message: '' 
+  })
 
-  const handleSubmit = (e) => {
+  // Auto-update if navigating while already on page
+  useEffect(() => {
+    if (location.state?.chosenProduct) {
+      setForm(prev => ({ ...prev, product: location.state.chosenProduct }))
+    }
+  }, [location.state])
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    addEnquiry({ ...form, productName: 'General Contact Enquiry' })
-    setSubmitted(true)
-    setForm({ name: '', phone: '', email: '', message: '' })
-    setTimeout(() => setSubmitted(false), 4000)
+    
+    try {
+      await addDoc(collection(db, "enquiries"), {
+        name: form.name,
+        email: form.email || "",
+        phone: form.phone,
+        productName: form.product || "General Inquiry",
+        address: form.address,
+        message: form.message,
+        status: "New", // Default to "New" so it updates metrics instantly
+        createdAt: new Date().toISOString()
+      });
+      
+      setSubmitted(true)
+      setForm({ name: '', phone: '', email: '', product: '', address: '', message: '' })
+      setTimeout(() => setSubmitted(false), 4000)
+    } catch (error) {
+      console.error("Failed to submit inquiry:", error)
+    }
   }
 
   return (
@@ -91,12 +126,35 @@ export default function Contact() {
                     />
                   </div>
                 </div>
+                <div className="grid sm:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-xs font-semibold text-brand-muted mb-1.5">Email</label>
+                    <input
+                      type="email"
+                      value={form.email}
+                      onChange={(e) => setForm({ ...form, email: e.target.value })}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-cyan/30"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-brand-muted mb-1.5">Product / Service</label>
+                    <input
+                      type="text"
+                      value={form.product}
+                      onChange={(e) => setForm({ ...form, product: e.target.value })}
+                      placeholder="e.g. Industrial RO Plant"
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-cyan/30"
+                    />
+                  </div>
+                </div>
                 <div>
-                  <label className="block text-xs font-semibold text-brand-muted mb-1.5">Email</label>
+                  <label className="block text-xs font-semibold text-brand-muted mb-1.5">Full Address *</label>
                   <input
-                    type="email"
-                    value={form.email}
-                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    required
+                    type="text"
+                    value={form.address}
+                    onChange={(e) => setForm({ ...form, address: e.target.value })}
+                    placeholder="Enter your installation or service address"
                     className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-cyan/30"
                   />
                 </div>
