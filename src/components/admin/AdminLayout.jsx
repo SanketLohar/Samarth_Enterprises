@@ -30,7 +30,7 @@ export default function AdminLayout() {
   }
 
   // GATE 2: Not authenticated — send to login
-  if (!isAuthenticated) return <Navigate to="/admin/login" replace />
+  if (!isAuthenticated) return <Navigate to="/login" replace />
 
   // GATE 3: Authenticated but is a technician — bounce to helper portal
   if (isTechnician) return <Navigate to="/helper/dashboard" replace />

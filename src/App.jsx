@@ -13,7 +13,7 @@ import About from './pages/About'
 import Contact from './pages/Contact'
 
 // Admin Pages
-import AdminLogin from './pages/admin/AdminLogin'
+import Login from './pages/Login'
 import AdminLayout from './components/admin/AdminLayout'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminProducts from './pages/admin/AdminProducts'
@@ -22,7 +22,7 @@ import AdminEnquiries from './pages/admin/AdminEnquiries'
 import AdminStaff from './pages/admin/AdminStaff'
 
 // Helper Portal
-import HelperLogin from './pages/helper/HelperLogin'
+import HelperLayout from './components/helper/HelperLayout'
 import HelperDashboard from './pages/helper/HelperDashboard'
 
 export default function App() {
@@ -42,8 +42,10 @@ export default function App() {
             <Route path="contact" element={<Contact />} />
           </Route>
 
+          {/* Unified Login */}
+          <Route path="login" element={<Login />} />
+
           {/* Admin */}
-          <Route path="admin/login" element={<AdminLogin />} />
           <Route path="admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
             <Route path="products" element={<AdminProducts />} />
@@ -53,8 +55,9 @@ export default function App() {
           </Route>
 
           {/* Helper Portal */}
-          <Route path="helper/login" element={<HelperLogin />} />
-          <Route path="helper/dashboard" element={<HelperDashboard />} />
+          <Route path="helper" element={<HelperLayout />}>
+            <Route path="dashboard" element={<HelperDashboard />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </AppProvider>

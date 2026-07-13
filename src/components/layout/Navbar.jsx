@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, NavLink, useLocation } from 'react-router-dom'
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { Search, Menu, X, Phone, ChevronDown, ArrowRight, Droplets, User } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useApp } from '../../context/AppContext'
@@ -17,8 +17,9 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [productsOpen, setProductsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const { categories, visibleProducts } = useApp()
+  const { categories, visibleProducts, isAuthenticated, isTechnician } = useApp()
   const location = useLocation()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 40)
@@ -30,6 +31,16 @@ export default function Navbar() {
   useEffect(() => {
     setMobileOpen(false)
   }, [location.pathname])
+
+  const handleProfileClick = () => {
+    if (!isAuthenticated) {
+      navigate('/login');
+    } else if (isTechnician) {
+      navigate('/helper/dashboard');
+    } else {
+      navigate('/admin');
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50">
@@ -97,13 +108,13 @@ export default function Navbar() {
                   </NavLink>
                 )
               )}
-              <Link
-                to="/admin"
+              <button
+                onClick={handleProfileClick}
                 className="ml-2 p-2 rounded-full text-brand-dark bg-gray-50 border border-gray-200 hover:text-brand-cyan hover:bg-brand-light transition"
-                title="Admin Portal"
+                title="Secure Portal"
               >
                 <User className="w-4 h-4" />
-              </Link>
+              </button>
             </div>
 
             {/* CTA buttons */}

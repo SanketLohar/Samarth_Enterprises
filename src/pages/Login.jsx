@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Lock } from 'lucide-react'
-import { useApp } from '../../context/AppContext'
-import Button from '../../components/ui/Button'
+import { useApp } from '../context/AppContext'
+import Button from '../components/ui/Button'
 
 export default function AdminLogin() {
   const { authReady, isAuthenticated, isTechnician, login } = useApp()
