@@ -2,11 +2,13 @@ import { useState } from 'react'
 import { useApp } from '../../context/AppContext'
 import Badge from '../ui/Badge'
 import { ShieldCheck, X } from 'lucide-react'
+import { doc, updateDoc } from 'firebase/firestore'
+import { db } from '../../firebase/config'
 
-const ALL_STATUSES = ['New', 'Contacted', 'Resolved', 'Deal Done']
+const ALL_STATUSES = ['New', 'Contacted', 'Resolved', 'Deal Done', 'In Progress']
 
 export default function EnquiriesTable() {
-  const { enquiries, products, updateEnquiryStatus, updateProductStock } = useApp()
+  const { enquiries, updateEnquiryStatus, updateProductStock, technicians } = useApp()
 
   // Deal Done confirmation modal state
   const [dealModal, setDealModal] = useState(null) // { enquiry }
@@ -41,6 +43,21 @@ export default function EnquiriesTable() {
     setQty('')
   }
 
+  const handleAssignTechnician = async (enquiryId, techId) => {
+    if (!techId) return
+    const tech = technicians.find((t) => t.id === techId)
+    if (!tech) return
+    try {
+      await updateDoc(doc(db, 'enquiries', enquiryId), {
+        assignedToId: tech.uid || tech.id, // Support old and new schema
+        assignedToName: tech.name,
+        status: 'In Progress'
+      })
+    } catch (err) {
+      console.error('Error assigning technician:', err)
+    }
+  }
+
   const formatDate = (ts) => {
     if (!ts) return '—'
     const d = ts?.toDate?.() || new Date(ts)
@@ -67,6 +84,7 @@ export default function EnquiriesTable() {
                   <th className="px-4 py-3 font-semibold text-gray-500">Product</th>
                   <th className="px-4 py-3 font-semibold text-gray-500">Address</th>
                   <th className="px-4 py-3 font-semibold text-gray-500">Message</th>
+                  <th className="px-4 py-3 font-semibold text-gray-500">Assign Technician</th>
                   <th className="px-4 py-3 font-semibold text-gray-500">Status</th>
                 </tr>
               </thead>
@@ -84,10 +102,23 @@ export default function EnquiriesTable() {
                     <td className="px-4 py-3 text-gray-500 text-xs max-w-[200px] whitespace-normal">{e.message || '—'}</td>
                     <td className="px-4 py-3">
                       <select
+                        value={e.assignedToId || ''}
+                        onChange={(ev) => handleAssignTechnician(e.id, ev.target.value)}
+                        className="text-xs font-medium px-2 py-1.5 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-cyan/30 text-gray-700 max-w-[120px]"
+                      >
+                        <option value="">Unassigned</option>
+                        {technicians.map((t) => (
+                          <option key={t.id} value={t.uid || t.id}>{t.name}</option>
+                        ))}
+                      </select>
+                    </td>
+                    <td className="px-4 py-3">
+                      <select
                         value={e.status}
                         onChange={(ev) => handleStatusChange(e, ev.target.value)}
                         className={`text-xs font-semibold px-2 py-1 rounded-lg border focus:outline-none focus:ring-2 focus:ring-brand-cyan/30 ${
                           e.status === 'Deal Done' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' :
+                          e.status === 'In Progress' ? 'bg-blue-50 border-blue-200 text-blue-700' :
                           e.status === 'New' ? 'bg-amber-50 border-amber-200 text-amber-700' :
                           'bg-white border-gray-200 text-gray-700'
                         }`}
