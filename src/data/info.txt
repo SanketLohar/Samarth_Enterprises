@@ -169,16 +169,7 @@
     "featured": false,
     "tag": null
   },
-  {
-    "id": "al-004",
-    "name": "Todir Alkalinator & UTS System",
-    "category": "alkaline water solutions",
-    "image": "todir Alkalinator & UTS Option.jpg",
-    "description": "Combined alkaline water generator and UTS (Under Tank System) solution for comprehensive whole-home alkaline water treatment.",
-    "specifications": ["Alkaline + UTS combo", "Whole-home installation", "Multiple flow rates", "pH monitoring display", "Long service life", "Professional grade"],
-    "featured": false,
-    "tag": null
-  },
+
   {
     "id": "ws-001",
     "name": "Kent AutoSoft 100L Water Softener",

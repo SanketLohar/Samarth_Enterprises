@@ -300,12 +300,23 @@ export function AppProvider({ children }) {
 
   const logout = useCallback(async () => {
     try { 
-      localStorage.removeItem('techSession');
+      // 1. Terminate Firebase Auth tracking token
       await signOut(auth);
+      
+      // 2. Wipe all local security variables completely
       setCurrentUser(null);
       setIsAuthenticated(false);
       setIsTechnician(false);
-    } catch (e) { console.error(e) }
+      
+      // 3. Purge browser session keys to completely reset client memory
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      // 4. Force a clean, history-replacing redirect straight to the public login root
+      window.location.replace('/login');
+    } catch (error) {
+      console.error("Logout execution failed:", error);
+    }
   }, [])
 
   const visibleProducts = useMemo(() => products.filter(p => !p.hidden), [products])

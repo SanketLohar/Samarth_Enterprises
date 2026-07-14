@@ -31,6 +31,14 @@ export default function AdminLayout() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
+  const handleLogout = async () => {
+    try {
+      await logout()
+    } catch (error) {
+      console.error("Logout click execution failed:", error)
+    }
+  }
+
   const unreadNotifs = notifications.filter(n => n.status === 'unread')
 
   // GATE 1: Auth + role resolution still in flight — show spinner
@@ -165,7 +173,7 @@ export default function AdminLayout() {
         <Link to="/" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/60 hover:text-white hover:bg-white/5 w-full transition">
           <ExternalLink className="w-4 h-4" /> View Website
         </Link>
-        <button onClick={logout} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/60 hover:text-red-400 hover:bg-white/5 w-full transition">
+        <button onClick={handleLogout} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/60 hover:text-red-400 hover:bg-white/5 w-full transition">
           <LogOut className="w-4 h-4" /> Sign Out
         </button>
       </div>
