@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Navigate, Outlet, Link, useLocation } from 'react-router-dom'
-import { LayoutDashboard, Package, Inbox, LogOut, ExternalLink, Wrench, Users, Menu } from 'lucide-react'
+import { LayoutDashboard, Package, Inbox, LogOut, ExternalLink, Wrench, Users, Menu, Bell, CheckCircle2, ClipboardCheck } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 
 const navItems = [
@@ -9,13 +9,29 @@ const navItems = [
   { to: '/admin/services', label: 'Services', icon: Wrench },
   { to: '/admin/enquiries', label: 'Enquiries', icon: Inbox },
   { to: '/admin/staff', label: 'Manage Staff', icon: Users },
+  { to: '/admin/history', label: 'Job History', icon: ClipboardCheck },
 ]
 
 export default function AdminLayout() {
   // All auth state is fully resolved in AppContext — no local Firestore calls needed
-  const { authReady, isAuthenticated, isTechnician, logout, enquiries } = useApp()
+  const { authReady, isAuthenticated, isTechnician, logout, enquiries, notifications, markNotificationsRead } = useApp()
   const location = useLocation()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [showNotifs, setShowNotifs] = useState(false)
+  const notifRef = useRef(null)
+
+  // Handle click outside to close notifications
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (notifRef.current && !notifRef.current.contains(event.target)) {
+        setShowNotifs(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const unreadNotifs = notifications.filter(n => n.status === 'unread')
 
   // GATE 1: Auth + role resolution still in flight — show spinner
   if (!authReady) {
@@ -38,9 +54,78 @@ export default function AdminLayout() {
   // GATE 4: Master Administrator confirmed — render admin panel
   const newEnquiries = enquiries.filter((e) => e.status === 'New').length
 
+  const NotificationBell = ({ isMobile }) => (
+    <div className="relative" ref={notifRef}>
+      <button 
+        onClick={() => setShowNotifs(!showNotifs)}
+        className={`p-2 rounded-lg transition-colors ${isMobile ? 'text-white hover:bg-white/10' : 'text-gray-500 hover:text-brand-dark hover:bg-gray-100 bg-white border border-gray-200 shadow-sm'}`}
+      >
+        <Bell className="w-5 h-5" />
+        {unreadNotifs.length > 0 && (
+          <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
+        )}
+      </button>
+
+      {showNotifs && (
+        <div className={`absolute z-[100] bg-white rounded-xl shadow-2xl border border-gray-100 w-80 overflow-hidden flex flex-col ${isMobile ? 'right-0 top-12' : 'right-0 top-12'}`}>
+          <div className="bg-brand-deep text-white px-4 py-3 flex items-center justify-between">
+            <h3 className="font-bold text-sm">Notifications</h3>
+            {unreadNotifs.length > 0 && (
+              <button onClick={() => { markNotificationsRead(); setShowNotifs(false) }} className="text-[10px] uppercase font-bold text-brand-cyan hover:text-white transition">
+                Mark all read
+              </button>
+            )}
+          </div>
+          <div className="max-h-96 overflow-y-auto">
+            {notifications.length === 0 ? (
+              <div className="p-6 text-center text-gray-400">
+                <CheckCircle2 className="w-8 h-8 mx-auto mb-2 opacity-20" />
+                <p className="text-sm">You're all caught up!</p>
+              </div>
+            ) : (
+              notifications.slice(0, 15).map(n => (
+                <div key={n.id} className={`p-4 border-b border-gray-50 text-sm ${n.status === 'unread' ? 'bg-blue-50/30' : 'opacity-70'}`}>
+                  {n.type === 'new_inquiry' ? (
+                    <div className="mb-1.5 flex items-center justify-between">
+                      <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-100 text-blue-700">New Inquiry</span>
+                      {n.clientPhone && (
+                        <a href={`tel:${n.clientPhone}`} className="text-xs font-bold text-brand-cyan hover:underline">
+                          {n.clientPhone}
+                        </a>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="mb-1.5">
+                      <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-100 text-emerald-700">Job Completed</span>
+                    </div>
+                  )}
+                  <p className="font-semibold text-brand-dark leading-snug">{n.message}</p>
+                  
+                  {n.remarks && <p className="text-gray-500 text-xs italic mt-1 bg-gray-50 p-2 rounded">"{n.remarks}"</p>}
+                  
+                  {n.paymentMode && (
+                    <div className="mt-1.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                      <span>Payment:</span>
+                      <span className="text-slate-700 bg-white px-1.5 py-0.5 rounded border border-slate-200">{n.paymentMode}</span>
+                      {n.amountCollected > 0 && <span className="text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100">₹{n.amountCollected}</span>}
+                    </div>
+                  )}
+                  
+                  <p className="text-[10px] text-gray-400 mt-2 font-medium">
+                    {new Date(n.timestamp?.toDate?.() || n.timestamp).toLocaleString()}
+                  </p>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+
   const SidebarContent = () => (
     <>
-      <div className="p-6 border-b border-white/10">
+      <div className="p-6 border-b border-white/10 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <img src="/images/company_logo.png" alt="Samarth" className="h-9 w-auto" />
           <div>
@@ -90,7 +175,7 @@ export default function AdminLayout() {
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex w-64 bg-brand-dark text-white flex-col shrink-0 shadow-xl">
+      <aside className="hidden lg:flex w-64 h-screen sticky top-0 bg-brand-dark text-white flex-col shrink-0 shadow-xl">
         <SidebarContent />
       </aside>
 
@@ -105,16 +190,24 @@ export default function AdminLayout() {
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Mobile Header */}
-        <div className="lg:hidden flex items-center gap-4 bg-brand-dark text-white px-4 py-3 sticky top-0 z-30 shadow-md">
-          <button onClick={() => setSidebarOpen(true)} className="text-white">
-            <Menu className="w-6 h-6" />
-          </button>
-          <img src="/images/company_logo.png" alt="Samarth" className="h-7 w-auto" />
-          <span className="font-bold text-sm">Admin Panel</span>
+        {/* Desktop Top Bar */}
+        <div className="hidden lg:flex items-center justify-end bg-white border-b border-gray-200 px-6 py-3 sticky top-0 z-30 shadow-sm">
+          <NotificationBell />
         </div>
 
-        <main className="flex-1 overflow-auto">
+        {/* Mobile Header */}
+        <div className="lg:hidden flex items-center justify-between bg-brand-dark text-white px-4 py-3 sticky top-0 z-30 shadow-md relative">
+          <div className="flex items-center gap-4">
+            <button onClick={() => setSidebarOpen(true)} className="text-white">
+              <Menu className="w-6 h-6" />
+            </button>
+            <img src="/images/company_logo.png" alt="Samarth" className="h-7 w-auto" />
+            <span className="font-bold text-sm">Admin Panel</span>
+          </div>
+          <NotificationBell isMobile />
+        </div>
+
+        <main className="flex-1 overflow-auto bg-gray-50">
           <Outlet />
         </main>
       </div>

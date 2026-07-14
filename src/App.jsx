@@ -20,6 +20,7 @@ import AdminProducts from './pages/admin/AdminProducts'
 import AdminServices from './pages/admin/AdminServices'
 import AdminEnquiries from './pages/admin/AdminEnquiries'
 import AdminStaff from './pages/admin/AdminStaff'
+import JobHistory from './pages/admin/JobHistory'
 
 // Helper Portal
 import HelperLayout from './components/helper/HelperLayout'
@@ -52,6 +53,7 @@ export default function App() {
             <Route path="services" element={<AdminServices />} />
             <Route path="enquiries" element={<AdminEnquiries />} />
             <Route path="staff" element={<AdminStaff />} />
+            <Route path="history" element={<JobHistory />} />
           </Route>
 
           {/* Helper Portal */}

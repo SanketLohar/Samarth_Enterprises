@@ -65,21 +65,15 @@ export const categoryMeta = {
     description: 'Automatic and manual control valves for softener and filter treatment systems.',
     icon: 'Settings2',
   },
-  accessories: {
-    label: 'Accessories & Components',
-    shortLabel: 'Accessories',
-    description: 'Dosing tanks, float switches, brine tanks, NRVs and spare parts.',
-    icon: 'Package',
-  },
+
 }
 
 export const companyInfo = {
   name: 'Samarth Enterprises',
   tagline: 'Pure Water. Trusted Solutions.',
-  phone: '+91 98765 43210',
-  email: 'info@samarthwater.com',
-  address: '42 AquaTech Industrial Park, Ring Road, Nikol, Ahmedabad, Gujarat 382350',
+  phone: '+91 9049008844, +91 9730508885',
+  email: 'support@panikadoctor.com',
+  address: '436/1/B/8, Sainath Nagar, Old Dhamni Road, Sangli - 416416',
   hours: 'Mon – Sat: 9:00 AM – 7:00 PM',
-  established: '2008',
   certifications: ['ISO 9001:2015', 'NSF Certified Components', 'BIS Compliant Systems'],
 }

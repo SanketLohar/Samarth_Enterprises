@@ -3,12 +3,10 @@ import { CheckCircle2 } from 'lucide-react'
 import SectionHeader from '../ui/SectionHeader'
 
 const features = [
-  'Domestic RO Water Purifiers',
-  'Commercial RO Plants (50 LPH to 1000 LPH)',
-  'Industrial Water Treatment (ETP / STP)',
-  'Automatic & Manual Water Softeners',
-  'Alkaline Water Ionizers & Pitchers',
-  'Annual Maintenance Contracts (AMC)'
+  'R.O. Systems',
+  'W.T.P.',
+  'E.T.P.',
+  'S.T.P.'
 ]
 
 export default function CorporateAbout() {
@@ -29,15 +27,12 @@ export default function CorporateAbout() {
               <img
                 src="/images/company_logo.png"
                 alt="Samarth Enterprises"
-                className="w-full max-w-[280px] h-auto drop-shadow-sm mb-6"
+                className="w-full max-w-[280px] h-auto drop-shadow-sm"
                 onError={(e) => {
                   e.target.onerror = null
                   e.target.src = '/images/company_logo.png'
                 }}
               />
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-light text-brand-cyan text-sm font-bold uppercase tracking-widest mt-4">
-                Est. 2008
-              </div>
             </div>
           </motion.div>
 
@@ -50,8 +45,8 @@ export default function CorporateAbout() {
           >
             <SectionHeader
               eyebrow="Corporate Overview"
-              title="Pioneering Pure Water Solutions Since 2008"
-              subtitle="Samarth Enterprises is Gujarat's premier distributor and service provider for advanced water purification, softening, and industrial treatment systems. We deliver uncompromising quality across domestic and commercial sectors."
+              title="Pioneering Pure Water Solutions"
+              subtitle="Samarth Enterprises is a premier Water Treatment Consultant and service provider specializing in end-to-end water management architectures across Domestic, Commercial, and Industrial sectors. Headquartered in Sangli, we deliver high-performance solutions tailored for absolute purity, safety, and compliance."
               align="left"
             />
             
@@ -65,8 +60,11 @@ export default function CorporateAbout() {
             </div>
 
             <div className="mt-10 p-6 bg-brand-deep rounded-2xl text-white shadow-xl">
-              <p className="text-lg font-medium">
-                "Our mission is to provide end-to-end water management solutions—from residential RO systems to massive industrial effluent treatment plants—ensuring health, efficiency, and sustainability."
+              <p className="text-lg font-medium italic">
+                "Our commitment goes beyond standard filtration. We design, engineer, and maintain robust treatment frameworks to secure water quality, optimize industrial processing lifecycle demands, and ensure absolute consumer health."
+              </p>
+              <p className="mt-4 text-sm text-brand-cyan font-bold tracking-wide">
+                — Mr. Satish Panhalkar, Water Treatment Consultant
               </p>
             </div>
           </motion.div>

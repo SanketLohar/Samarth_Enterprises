@@ -12,10 +12,10 @@ const values = [
 ]
 
 const capabilities = [
-  'Domestic & Commercial RO Systems',
-  'Industrial Effluent Treatment Plants (ETP)',
-  'Sewage Treatment Plants (STP)',
-  'Advanced Water Softening Architectures',
+  'R.O. Systems',
+  'W.T.P.',
+  'E.T.P.',
+  'S.T.P.'
 ]
 
 export default function About() {
@@ -28,7 +28,7 @@ export default function About() {
             <span className="text-brand-cyan text-xs font-bold tracking-[0.25em] uppercase">Corporate Overview</span>
             <h1 className="text-4xl lg:text-6xl font-extrabold mt-3 tracking-tight">Pioneering Purity for a Healthier World</h1>
             <p className="mt-6 text-lg text-white/70 max-w-3xl leading-relaxed">
-              Since {companyInfo.established}, {companyInfo.name} has architected advanced water management infrastructure across Gujarat, scaling from premium domestic purification to massive industrial effluent treatment networks.
+              {companyInfo.name} has architected advanced water management infrastructure, scaling from premium domestic purification to massive industrial effluent treatment networks.
             </p>
           </motion.div>
         </div>
@@ -45,11 +45,16 @@ export default function About() {
           >
             <h2 className="text-3xl font-extrabold text-brand-dark mb-8">Integrated Water Treatment Expertise</h2>
             <p>
-              Our engineering philosophy goes beyond simple filtration. We deliver end-to-end water security by designing, distributing, and maintaining robust treatment systems for both consumer health and industrial compliance.
+              Samarth Enterprises is a premier Water Treatment Consultant and service provider specializing in end-to-end water management architectures across Domestic, Commercial, and Industrial sectors. Headquartered in Sangli, we deliver high-performance solutions tailored for absolute purity, safety, and compliance.
             </p>
-            <p>
-              From installing multi-stage Residential RO units that tackle India's toughest groundwater, to commissioning high-capacity Commercial Water Softeners and zero-liquid discharge Industrial ETP/STP systems, our expertise spans the entire spectrum of water chemistry.
-            </p>
+            <div className="mt-8 p-6 bg-brand-light rounded-2xl border border-brand-cyan/20 relative">
+              <p className="text-lg text-brand-dark italic font-medium relative z-10">
+                "Our commitment goes beyond standard filtration. We design, engineer, and maintain robust treatment frameworks to secure water quality, optimize industrial processing lifecycle demands, and ensure absolute consumer health."
+              </p>
+              <p className="mt-4 text-sm font-bold text-brand-deep tracking-wide relative z-10">
+                — Mr. Satish Panhalkar, Water Treatment Consultant
+              </p>
+            </div>
             <div className="pt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
               {capabilities.map((item, idx) => (
                 <div key={idx} className="flex items-start gap-3">
@@ -80,16 +85,6 @@ export default function About() {
               <div className="absolute inset-0 border border-black/5 rounded-[2rem] pointer-events-none" />
             </div>
             
-            {/* Overlay Metric Card */}
-            <div className="absolute -bottom-8 -left-8 bg-brand-deep p-6 rounded-2xl shadow-xl flex items-center gap-4 text-white border border-white/10 hidden sm:flex">
-              <div className="bg-brand-cyan/20 p-3 rounded-xl">
-                <Factory className="w-8 h-8 text-brand-cyan" />
-              </div>
-              <div>
-                <p className="text-3xl font-black text-brand-cyan">15+</p>
-                <p className="text-sm font-semibold tracking-wide text-white/80">Years Engineering</p>
-              </div>
-            </div>
           </motion.div>
         </div>
       </section>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowRight, Droplets, ShieldCheck, Award } from 'lucide-react'
+import { ArrowRight, Droplets, ShieldCheck, Award, Briefcase } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import Button from '../ui/Button'
 
@@ -39,7 +39,7 @@ const slides = [
 const trustItems = [
   { icon: ShieldCheck, label: 'ISO 9001:2015 Certified' },
   { icon: Award, label: 'Authorized Distributor' },
-  { icon: Droplets, label: '15+ Years Experience' },
+  { icon: Briefcase, label: 'Expert Consultant' },
 ]
 
 export default function Hero() {

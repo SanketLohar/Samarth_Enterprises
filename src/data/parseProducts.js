@@ -8,18 +8,19 @@ import { categoryMeta } from './categories'
 export function normalizeProduct(p) {
   // Only use the explicitly provided filename string, no SVG fallbacks
   const imageFile = p.image || 'company_logo.png'
+  const isAbsolutePath = imageFile.startsWith('/')
 
-  // Primary path: /images/<category>/<filename>
+  // Primary path: Use absolute path directly if provided, else build category path
   const imagePath = imageFile === 'company_logo.png' 
     ? '/images/company_logo.png'
-    : `/images/${p.category}/${imageFile}`
+    : isAbsolutePath ? imageFile : `/images/${p.category}/${imageFile}`
 
   return {
     ...p,
     image: imageFile,
     imagePath,
     // Fallback paths tried in order by ProductImage component
-    imageFallbacks: buildFallbacks(p.category, imageFile),
+    imageFallbacks: buildFallbacks(p.category, imageFile, isAbsolutePath),
     hidden: p.hidden ?? false,
     tag: p.tag || null,
     featured: p.featured ?? false,
@@ -30,15 +31,17 @@ export function normalizeProduct(p) {
 /**
  * Returns an ordered array of fallback src strings for ProductImage.
  */
-function buildFallbacks(category, imageFile) {
-  const base = `/images/${category}/${imageFile}`
+function buildFallbacks(category, imageFile, isAbsolutePath) {
+  const base = isAbsolutePath ? imageFile : `/images/${category}/${imageFile}`
   // Try swapping extension if the primary fails
   const altExt = imageFile.endsWith('.jpg')
     ? imageFile.replace(/\.jpg$/i, '.png')
     : imageFile.replace(/\.(png|svg)$/i, '.jpg')
+  const altExtBase = isAbsolutePath ? altExt : `/images/${category}/${altExt}`
+  
   return [
     base,
-    `/images/${category}/${altExt}`,
+    altExtBase,
     '/images/company_logo.png',
   ]
 }

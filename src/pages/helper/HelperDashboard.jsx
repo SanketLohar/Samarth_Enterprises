@@ -7,22 +7,28 @@ import { collection, query, where, onSnapshot, doc, updateDoc } from 'firebase/f
 import { db } from '../../firebase/config'
 
 const PAYMENT_OPTIONS = [
-  "Warranty / Free Service",
-  "Cash Collected",
-  "Online Payment Verified",
-  "Payment Pending"
+  "UPI / QR Code",
+  "Cash",
+  "NetBanking",
+  "Pending Admin Billing"
 ]
 
 export default function HelperDashboard() {
-  const { currentUser, isAuthenticated, logout, technicians } = useApp()
+  const { currentUser, isAuthenticated, logout, technicians, addNotification } = useApp()
   const navigate = useNavigate()
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState(true)
   const [notes, setNotes] = useState({}) // Store notes per task ID
   const [payments, setPayments] = useState({}) // Store payment status per task ID
+  const [amounts, setAmounts] = useState({}) // Store amount collected per task ID
+  const [activeTab, setActiveTab] = useState('active') // 'active' or 'history'
+  const [errorToast, setErrorToast] = useState(null)
 
   // Find the technician profile for the dynamic header
   const currentUserProfile = technicians.find(t => t.uid === currentUser?.uid || t.id === currentUser?.uid)
+
+  const activeTasks = tasks.filter(t => ["New", "In Progress", "On Hold", "Issue Reported"].includes(t.status))
+  const historyTasks = tasks.filter(t => ["Resolved", "Deal Done"].includes(t.status))
 
   useEffect(() => {
     if (isAuthenticated === false) {
@@ -32,12 +38,10 @@ export default function HelperDashboard() {
 
     if (!currentUser) return
 
-    // Query active enquiries explicitly assigned to this technician
-    // Including "On Hold" so they remain visible when flagged
+    // Query ALL enquiries assigned to this technician to support history view
     const q = query(
       collection(db, "enquiries"),
-      where("assignedToId", "==", currentUser.uid),
-      where("status", "in", ["New", "In Progress", "On Hold", "Issue Reported"])
+      where("assignedToId", "==", currentUser.uid)
     )
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -49,6 +53,7 @@ export default function HelperDashboard() {
       fetched.forEach(task => {
         setNotes(prev => ({ ...prev, [task.id]: prev[task.id] ?? (task.technicianNotes || '') }))
         setPayments(prev => ({ ...prev, [task.id]: prev[task.id] ?? (task.paymentCollectionStatus || '') }))
+        setAmounts(prev => ({ ...prev, [task.id]: prev[task.id] ?? (task.amountCollected || '') }))
       })
     })
 
@@ -59,18 +64,58 @@ export default function HelperDashboard() {
     try {
       const closeoutNotesText = notes[task.id] || ""
       const paymentStatus = payments[task.id] || ""
+      const collectedAmount = amounts[task.id] || ""
       
+      if (actionType === 'Resolved') {
+        if (!PAYMENT_OPTIONS.includes(paymentStatus)) {
+          setErrorToast('Please select a valid Payment Mode.')
+          setTimeout(() => setErrorToast(null), 4000)
+          return
+        }
+        if (collectedAmount === '' || Number(collectedAmount) < 0) {
+          setErrorToast('Amount Collected must be 0 or greater.')
+          setTimeout(() => setErrorToast(null), 4000)
+          return
+        }
+        if (!closeoutNotesText.trim() || closeoutNotesText.trim().length < 10) {
+          setErrorToast('Technical Remarks must be at least 10 characters describing the work.')
+          setTimeout(() => setErrorToast(null), 4000)
+          return
+        }
+      }
+
       const updateData = {
         technicianNotes: closeoutNotesText,
         paymentCollectionStatus: paymentStatus,
+        amountCollected: collectedAmount,
         updatedAt: new Date().toISOString()
       }
 
       if (actionType === 'Resolved') {
         updateData.status = 'Resolved'
         updateData.resolvedAt = new Date().toISOString()
+        addNotification({
+          technicianId: currentUser.uid,
+          technicianName: currentUserProfile?.name || 'Technician',
+          message: `${currentUserProfile?.name || 'Technician'} completed job for client ${task.name}`,
+          clientName: task.name,
+          serviceName: task.productName || 'General Service',
+          paymentMode: paymentStatus,
+          amountCollected: Number(collectedAmount),
+          remarks: closeoutNotesText,
+        })
       } else if (actionType === 'Hold') {
         updateData.status = 'On Hold'
+        addNotification({
+          technicianId: currentUser.uid,
+          technicianName: currentUserProfile?.name || 'Technician',
+          message: `${currentUserProfile?.name || 'Technician'} put job on HOLD for client ${task.name}`,
+          clientName: task.name,
+          serviceName: task.productName || 'General Service',
+          paymentMode: paymentStatus,
+          amountCollected: Number(collectedAmount) || 0,
+          remarks: closeoutNotesText || 'No remarks provided',
+        })
       }
       // If actionType === 'Save', we only update the notes and payment status, keeping current status
 
@@ -111,6 +156,13 @@ export default function HelperDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-10">
+      {errorToast && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-sm bg-red-50 text-red-600 border border-red-200 px-4 py-3 rounded-xl shadow-xl flex items-start gap-3">
+          <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
+          <p className="text-sm font-semibold">{errorToast}</p>
+        </div>
+      )}
+
       {/* Personalized Header */}
       <header className="bg-brand-deep text-white px-4 py-6 sticky top-0 z-30 shadow-lg">
         <div className="flex items-start justify-between">
@@ -134,22 +186,43 @@ export default function HelperDashboard() {
       </header>
 
       <div className="max-w-lg mx-auto px-4 py-6 space-y-4">
-        {/* Dynamic List Header */}
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="font-bold text-gray-800 text-lg">Active Jobs</h2>
-          <span className="text-xs font-bold bg-brand-cyan/10 text-brand-cyan px-3 py-1 rounded-full">
-            {tasks.length} Assigned
-          </span>
+        {/* Tab Navigation */}
+        <div className="flex p-1 bg-gray-200/50 rounded-xl mb-6">
+          <button
+            onClick={() => setActiveTab('active')}
+            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${
+              activeTab === 'active' ? 'bg-white text-brand-dark shadow-sm' : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Active Jobs
+          </button>
+          <button
+            onClick={() => setActiveTab('history')}
+            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${
+              activeTab === 'history' ? 'bg-white text-brand-dark shadow-sm' : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Job History
+          </button>
         </div>
 
-        {tasks.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-2xl border border-gray-100 shadow-sm">
-            <CheckCircle2 className="w-16 h-16 text-gray-200 mx-auto mb-4" />
-            <p className="text-lg font-bold text-gray-400">No tasks assigned yet</p>
-            <p className="text-sm text-gray-400 mt-1">Check back later or contact your admin.</p>
-          </div>
-        ) : (
-          tasks.map((task) => (
+        {activeTab === 'active' && (
+          <>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-bold text-gray-800 text-lg">Current Assignments</h2>
+              <span className="text-xs font-bold bg-brand-cyan/10 text-brand-cyan px-3 py-1 rounded-full">
+                {activeTasks.length} Assigned
+              </span>
+            </div>
+
+            {activeTasks.length === 0 ? (
+              <div className="text-center py-20 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                <CheckCircle2 className="w-16 h-16 text-gray-200 mx-auto mb-4" />
+                <p className="text-lg font-bold text-gray-400">No tasks assigned yet</p>
+                <p className="text-sm text-gray-400 mt-1">Check back later or contact your admin.</p>
+              </div>
+            ) : (
+              activeTasks.map((task) => (
             <motion.div
               key={task.id}
               initial={{ opacity: 0, y: 16 }}
@@ -208,21 +281,34 @@ export default function HelperDashboard() {
 
                 {/* Field Operational Inputs */}
                 <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 mb-5 space-y-4">
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Collection Summary</label>
-                    <select
-                      value={payments[task.id] || ''}
-                      onChange={(e) => setPayments({ ...payments, [task.id]: e.target.value })}
-                      className="w-full px-3 py-2 text-sm text-slate-700 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-cyan/30 bg-white"
-                    >
-                      <option value="">-- Select Payment Status --</option>
-                      {PAYMENT_OPTIONS.map(opt => (
-                        <option key={opt} value={opt}>{opt}</option>
-                      ))}
-                    </select>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Payment Mode <span className="text-red-500 ml-1">*</span></label>
+                      <select
+                        value={payments[task.id] || ''}
+                        onChange={(e) => setPayments({ ...payments, [task.id]: e.target.value })}
+                        className="w-full px-3 py-2 text-sm text-slate-700 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-cyan/30 bg-white"
+                      >
+                        <option value="">-- Select --</option>
+                        {PAYMENT_OPTIONS.map(opt => (
+                          <option key={opt} value={opt}>{opt}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Amt Collected <span className="text-red-500 ml-1">*</span></label>
+                      <input
+                        type="number"
+                        min="0"
+                        placeholder="₹ 0"
+                        value={amounts[task.id] || ''}
+                        onChange={(e) => setAmounts({ ...amounts, [task.id]: e.target.value })}
+                        className="w-full px-3 py-2 text-sm text-slate-700 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-cyan/30 bg-white"
+                      />
+                    </div>
                   </div>
                   <div>
-                    <label className="block text-[11px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Technician Closeout Notes</label>
+                    <label className="block text-[11px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Technical Remarks <span className="text-red-500 ml-1">*</span></label>
                     <textarea
                       rows="2"
                       placeholder="Enter work summary..."
@@ -259,6 +345,78 @@ export default function HelperDashboard() {
               </div>
             </motion.div>
           ))
+        )}
+        </>
+        )}
+
+        {activeTab === 'history' && (
+          <>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-bold text-gray-800 text-lg">Completed Jobs</h2>
+              <span className="text-xs font-bold bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full">
+                {historyTasks.length} Done
+              </span>
+            </div>
+
+            {historyTasks.length === 0 ? (
+              <div className="text-center py-20 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                <CheckCircle2 className="w-16 h-16 text-gray-200 mx-auto mb-4" />
+                <p className="text-lg font-bold text-gray-400">No completed jobs yet</p>
+              </div>
+            ) : (
+              historyTasks.map((task) => (
+                <motion.div
+                  key={task.id}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden mb-4 opacity-75 hover:opacity-100 transition-opacity"
+                >
+                  <div className="p-5">
+                    <div className="flex items-start justify-between pb-3 border-b border-gray-100 mb-3">
+                      <div>
+                        <h3 className="font-bold text-base text-brand-dark">{task.name}</h3>
+                        <p className="text-xs text-gray-500 mt-0.5">Resolved: {new Date(task.resolvedAt || task.updatedAt).toLocaleDateString()}</p>
+                      </div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md border bg-emerald-50 text-emerald-600 border-emerald-200">
+                        {task.status}
+                      </span>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-3">
+                        <Package className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" />
+                        <p className="text-sm text-gray-700">{task.productName || 'General Service'}</p>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <Phone className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" />
+                        <p className="text-sm text-gray-600">{task.phone}</p>
+                      </div>
+                    </div>
+
+                    {(task.technicianNotes || task.paymentCollectionStatus) && (
+                      <div className="mt-4 bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-2">
+                        {(task.paymentCollectionStatus || task.amountCollected) && (
+                          <div className="flex justify-between items-center text-xs">
+                            <span className="font-bold text-slate-500 uppercase tracking-wider">Payment:</span>
+                            <div className="flex items-center gap-1.5 text-slate-700">
+                              <span className="font-semibold">{task.paymentCollectionStatus}</span>
+                              {task.amountCollected && <span className="bg-white px-2 border rounded font-bold text-emerald-600">₹{task.amountCollected}</span>}
+                            </div>
+                          </div>
+                        )}
+                        {task.technicianNotes && (
+                          <div className="text-xs">
+                            <span className="block font-bold text-slate-500 uppercase tracking-wider mb-1">Technical Remarks:</span>
+                            <span className="text-slate-700 italic">"{task.technicianNotes}"</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              ))
+            )}
+          </>
         )}
       </div>
     </div>

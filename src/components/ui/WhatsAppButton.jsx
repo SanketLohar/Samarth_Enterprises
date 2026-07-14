@@ -1,7 +1,8 @@
 import { MessageCircle } from 'lucide-react'
+import { companyInfo } from '../../data/categories'
 
 export default function WhatsAppButton() {
-  const phoneNumber = '919876543210'
+  const phoneNumber = companyInfo.phone.split(',')[0].replace(/\s/g, '').replace('+', '')
   const message = 'Hello Samarth Enterprises, I am interested in your water purification and environmental solutions. Please provide more details.'
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`
 

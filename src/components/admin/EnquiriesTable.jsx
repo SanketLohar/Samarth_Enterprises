@@ -49,7 +49,7 @@ export default function EnquiriesTable() {
     if (!tech) return
     try {
       await updateDoc(doc(db, 'enquiries', enquiryId), {
-        assignedToId: tech.uid || tech.id, // Support old and new schema
+        assignedToId: tech.id, // Strictly use Firestore document ID
         assignedToName: tech.name,
         status: 'In Progress'
       })
@@ -108,7 +108,7 @@ export default function EnquiriesTable() {
                       >
                         <option value="">Unassigned</option>
                         {technicians.map((t) => (
-                          <option key={t.id} value={t.uid || t.id}>{t.name}</option>
+                          <option key={t.id} value={t.id}>{t.name}</option>
                         ))}
                       </select>
                     </td>

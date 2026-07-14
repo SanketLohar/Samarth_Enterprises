@@ -22,6 +22,8 @@ export default function Contact() {
     address: '',
     message: '' 
   })
+  const [errors, setErrors] = useState({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Auto-update if navigating while already on page
   useEffect(() => {
@@ -30,9 +32,38 @@ export default function Contact() {
     }
   }, [location.state])
 
+  const validateForm = () => {
+    const newErrors = {}
+    if (!form.name || form.name.length < 2 || !/^[a-zA-Z\s]+$/.test(form.name)) {
+      newErrors.name = 'Name must be at least 2 characters (letters/spaces only).'
+    }
+    if (!form.phone || !/^[6-9]\d{9}$/.test(form.phone)) {
+      newErrors.phone = 'Phone must be a valid 10-digit Indian number.'
+    }
+    if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      newErrors.email = 'Please enter a valid email address.'
+    }
+    if (!form.address || form.address.length < 15) {
+      newErrors.address = 'Address must be at least 15 characters for accurate routing.'
+    }
+    if (!form.message || form.message.length < 10) {
+      newErrors.message = 'Requirements must be at least 10 characters.'
+    }
+    setErrors(newErrors)
+    
+    if (Object.keys(newErrors).length > 0) {
+      const firstErrorField = document.getElementById(`field-${Object.keys(newErrors)[0]}`)
+      if (firstErrorField) firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      return false
+    }
+    return true
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (!validateForm()) return
     
+    setIsSubmitting(true)
     try {
       await addDoc(collection(db, "enquiries"), {
         name: form.name,
@@ -47,9 +78,12 @@ export default function Contact() {
       
       setSubmitted(true)
       setForm({ name: '', phone: '', email: '', product: '', address: '', message: '' })
+      setErrors({})
       setTimeout(() => setSubmitted(false), 4000)
     } catch (error) {
       console.error("Failed to submit inquiry:", error)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -107,34 +141,40 @@ export default function Contact() {
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-xs font-semibold text-brand-muted mb-1.5">Full Name *</label>
+                    <label className="block text-xs font-semibold text-brand-muted mb-1.5">Full Name <span className="text-red-500 ml-1">*</span></label>
                     <input
+                      id="field-name"
                       required
                       value={form.name}
-                      onChange={(e) => setForm({ ...form, name: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-cyan/30"
+                      onChange={(e) => { setForm({ ...form, name: e.target.value }); if(errors.name) setErrors({...errors, name: null}) }}
+                      className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:ring-2 ${errors.name ? 'border-red-500 focus:ring-red-500/30' : 'border-gray-200 focus:ring-brand-cyan/30'}`}
                     />
+                    {errors.name && <p className="text-red-500 text-xs mt-1.5">{errors.name}</p>}
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-brand-muted mb-1.5">Phone *</label>
+                    <label className="block text-xs font-semibold text-brand-muted mb-1.5">Phone <span className="text-red-500 ml-1">*</span></label>
                     <input
+                      id="field-phone"
                       required
                       type="tel"
                       value={form.phone}
-                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-cyan/30"
+                      onChange={(e) => { setForm({ ...form, phone: e.target.value }); if(errors.phone) setErrors({...errors, phone: null}) }}
+                      className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:ring-2 ${errors.phone ? 'border-red-500 focus:ring-red-500/30' : 'border-gray-200 focus:ring-brand-cyan/30'}`}
                     />
+                    {errors.phone && <p className="text-red-500 text-xs mt-1.5">{errors.phone}</p>}
                   </div>
                 </div>
                 <div className="grid sm:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-xs font-semibold text-brand-muted mb-1.5">Email</label>
                     <input
+                      id="field-email"
                       type="email"
                       value={form.email}
-                      onChange={(e) => setForm({ ...form, email: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-cyan/30"
+                      onChange={(e) => { setForm({ ...form, email: e.target.value }); if(errors.email) setErrors({...errors, email: null}) }}
+                      className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:ring-2 ${errors.email ? 'border-red-500 focus:ring-red-500/30' : 'border-gray-200 focus:ring-brand-cyan/30'}`}
                     />
+                    {errors.email && <p className="text-red-500 text-xs mt-1.5">{errors.email}</p>}
                   </div>
                   <div>
                     <label className="block text-xs font-semibold text-brand-muted mb-1.5">Product / Service</label>
@@ -148,28 +188,32 @@ export default function Contact() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-brand-muted mb-1.5">Full Address *</label>
+                  <label className="block text-xs font-semibold text-brand-muted mb-1.5">Full Address <span className="text-red-500 ml-1">*</span></label>
                   <input
+                    id="field-address"
                     required
                     type="text"
                     value={form.address}
-                    onChange={(e) => setForm({ ...form, address: e.target.value })}
+                    onChange={(e) => { setForm({ ...form, address: e.target.value }); if(errors.address) setErrors({...errors, address: null}) }}
                     placeholder="Enter your installation or service address"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-cyan/30"
+                    className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:ring-2 ${errors.address ? 'border-red-500 focus:ring-red-500/30' : 'border-gray-200 focus:ring-brand-cyan/30'}`}
                   />
+                  {errors.address && <p className="text-red-500 text-xs mt-1.5">{errors.address}</p>}
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-brand-muted mb-1.5">Your Requirements *</label>
+                  <label className="block text-xs font-semibold text-brand-muted mb-1.5">Your Requirements <span className="text-red-500 ml-1">*</span></label>
                   <textarea
+                    id="field-message"
                     required
                     rows={5}
                     value={form.message}
-                    onChange={(e) => setForm({ ...form, message: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-cyan/30 resize-none"
+                    onChange={(e) => { setForm({ ...form, message: e.target.value }); if(errors.message) setErrors({...errors, message: null}) }}
+                    className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:ring-2 resize-none ${errors.message ? 'border-red-500 focus:ring-red-500/30' : 'border-gray-200 focus:ring-brand-cyan/30'}`}
                     placeholder="Tell us about your water quality concerns, product interest, or installation needs..."
                   />
+                  {errors.message && <p className="text-red-500 text-xs mt-1.5">{errors.message}</p>}
                 </div>
-                <Button type="submit" size="lg">
+                <Button type="submit" size="lg" disabled={isSubmitting || Object.keys(errors).length > 0}>
                   <Send className="w-4 h-4" />
                   Submit Enquiry
                 </Button>

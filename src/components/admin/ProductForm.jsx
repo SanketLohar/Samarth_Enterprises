@@ -1,10 +1,13 @@
 import { useState } from 'react'
+import { UploadCloud, AlertCircle } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { categoryMeta } from '../../data/categories'
 import { slugify } from '../../data/parseProducts'
 
 export default function ProductForm({ product, onSave, onCancel }) {
   const { categories } = useApp()
+  const [imageError, setImageError] = useState('')
+  const [cleanFileName, setCleanFileName] = useState('')
   const [form, setForm] = useState({
     id: product?.id || `custom-${Date.now()}`,
     name: product?.name || '',
@@ -18,6 +21,31 @@ export default function ProductForm({ product, onSave, onCancel }) {
     warranty: product?.warranty || '',
     stock: product?.stock ?? '',
   })
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+
+    setImageError('')
+    setCleanFileName('')
+
+    if (file.size > 2 * 1024 * 1024) {
+      setImageError('Image size must be under 2MB.')
+      e.target.value = ''
+      return
+    }
+
+    const validTypes = ['image/jpeg', 'image/png', 'image/jpg']
+    if (!validTypes.includes(file.type)) {
+      setImageError('Only .jpg, .jpeg, or .png formats are allowed.')
+      e.target.value = ''
+      return
+    }
+
+    const cleaned = file.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9.-]/g, '')
+    setCleanFileName(cleaned)
+    setForm({ ...form, image: cleaned })
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -54,9 +82,38 @@ export default function ProductForm({ product, onSave, onCancel }) {
       </div>
 
       <div>
-        <label className="block text-xs font-semibold text-gray-500 mb-1">Image filename</label>
-        <input value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} placeholder="product-name.jpg" className={inputCls} />
-        <p className="text-[11px] text-gray-400 mt-1">Path: /images/{form.category}/{form.image || 'filename.jpg'}</p>
+        <label className="block text-xs font-semibold text-gray-500 mb-1">Product Image (Max 2MB, .jpg/.png) *</label>
+        <div className="relative border-2 border-dashed border-gray-200 rounded-xl p-6 text-center hover:bg-gray-50 transition focus-within:ring-2 focus-within:ring-brand-cyan/30">
+          <input 
+            type="file" 
+            accept="image/jpeg, image/png, image/jpg" 
+            onChange={handleFileChange}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          />
+          <div className="flex flex-col items-center justify-center gap-2 pointer-events-none">
+            <UploadCloud className="w-8 h-8 text-brand-cyan" />
+            <p className="text-sm font-semibold text-gray-700">
+              {form.image ? `Selected: ${form.image}` : 'Drag & Drop or Click to Upload'}
+            </p>
+          </div>
+        </div>
+        {imageError && (
+          <p className="flex items-center gap-1 text-red-500 text-xs mt-2 font-medium">
+            <AlertCircle className="w-3.5 h-3.5" /> {imageError}
+          </p>
+        )}
+        {cleanFileName && (
+          <div className="mt-3 text-xs bg-amber-50 text-amber-800 border border-amber-200 rounded-xl p-3.5">
+            <p className="font-semibold">⚠️ Action Required for Dev Environment Asset Alignment:</p>
+            <p className="mt-1">The system has prepared a path reference. Please ensure you manually paste this exact image file into your local project folder layout at:</p>
+            <code className="block mt-1 font-mono bg-amber-100 p-1.5 rounded text-gray-900 border border-amber-300 break-all select-all">
+              C:\Users\hp\Desktop\Samarth Enterprises\public\images\{form.category}\{cleanFileName}
+            </code>
+          </div>
+        )}
+        {!cleanFileName && form.image && (
+          <p className="text-[11px] text-gray-400 mt-1 text-right">Current Path: /images/{form.category}/{form.image}</p>
+        )}
       </div>
 
       <div>

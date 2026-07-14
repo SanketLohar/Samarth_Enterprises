@@ -13,6 +13,7 @@ export function AppProvider({ children }) {
   const [enquiries, setEnquiries] = useState([])
   const [services, setServices] = useState([])
   const [technicians, setTechnicians] = useState([])
+  const [notifications, setNotifications] = useState([])
   const [isAuthenticated, setIsAuthenticated] = useState(null)
   const [currentUser, setCurrentUser] = useState(null)
 
@@ -21,38 +22,34 @@ export function AppProvider({ children }) {
   const [authReady, setAuthReady] = useState(false)
 
   useEffect(() => {
+    const techSession = localStorage.getItem('techSession')
+    if (techSession) {
+      try {
+        const user = JSON.parse(techSession)
+        setCurrentUser(user)
+        setIsAuthenticated(true)
+        setIsTechnician(true)
+        setAuthReady(true)
+        return // Skip Firebase auth check if valid local tech session exists
+      } catch (e) {
+        localStorage.removeItem('techSession')
+      }
+    }
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setCurrentUser(user || null)
-
       if (user) {
-        setIsAuthenticated(true);
-        
-        try {
-          // Direct Query targeting the user email safely
-          const techQuery = query(
-            collection(db, 'technicians'), 
-            where('email', '==', user.email.toLowerCase().trim())
-          );
-          const querySnapshot = await getDocs(techQuery);
-
-          // CRITICAL: Double validation check
-          if (!querySnapshot.empty && querySnapshot.docs.length > 0) {
-            console.log(`[SECURITY] Match found in technicians collection. Routing ${user.email} as TECHNICIAN.`);
-            setIsTechnician(true);
-          } else {
-            console.log(`[SECURITY] No match found in technicians collection. Routing ${user.email} as MASTER ADMIN.`);
-            setIsTechnician(false);
-          }
-        } catch (error) {
-          console.error("[SECURITY] Role resolution system failed:", error);
-          setIsTechnician(false); // Safety fallback to Admin
-        } finally {
-          setAuthReady(true);
-        }
+        setCurrentUser(user)
+        setIsAuthenticated(true)
+        setIsTechnician(false) // Firebase auth is strictly for admins now
+        setAuthReady(true)
       } else {
-        setIsAuthenticated(false);
-        setIsTechnician(false);
-        setAuthReady(true);
+        // Double check local storage just in case
+        if (!localStorage.getItem('techSession')) {
+          setCurrentUser(null)
+          setIsAuthenticated(false)
+          setIsTechnician(false)
+          setAuthReady(true)
+        }
       }
     })
     return () => unsubscribe()
@@ -109,11 +106,26 @@ export function AppProvider({ children }) {
       (err) => console.error('Technicians stream error:', err)
     )
 
-    // Teardown: unsubscribe all three when user logs out or component unmounts
+    const unsubNotifications = onSnapshot(
+      query(collection(db, 'notifications')), // Default ordering handled client side if needed
+      (snapshot) => {
+        const fetched = snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
+        fetched.sort((a, b) => {
+          const da = a.timestamp?.toDate?.() || new Date(a.timestamp || 0)
+          const db2 = b.timestamp?.toDate?.() || new Date(b.timestamp || 0)
+          return db2 - da
+        })
+        setNotifications(fetched)
+      },
+      (err) => console.error('Notifications stream error:', err)
+    )
+
+    // Teardown: unsubscribe all when user logs out or component unmounts
     return () => {
       unsubEnquiries()
       unsubServices()
       unsubTechnicians()
+      unsubNotifications()
     }
   }, [currentUser])
 
@@ -153,6 +165,16 @@ export function AppProvider({ children }) {
   const addEnquiry = useCallback(async (enquiry) => {
     try {
       await addDoc(collection(db, 'enquiries'), { ...enquiry, status: 'New', createdAt: serverTimestamp() })
+      
+      // Secondary hook: push to global admin notifications stream
+      await addDoc(collection(db, 'notifications'), {
+        type: 'new_inquiry',
+        title: 'New Customer Enquiry',
+        message: `A new inquiry has been submitted by ${enquiry.name} for ${enquiry.productName || enquiry.serviceType || 'Product Consultation'}.`,
+        clientPhone: enquiry.phone,
+        status: 'unread',
+        timestamp: serverTimestamp()
+      })
     } catch (e) { console.error(e) }
   }, [])
 
@@ -210,19 +232,80 @@ export function AppProvider({ children }) {
     catch (e) { console.error(e) }
   }, [])
 
-  const login = useCallback(async (email, password) => {
+  const addNotification = useCallback(async (payload) => {
     try {
-      const cred = await signInWithEmailAndPassword(auth, email, password)
-      return cred.user // Return the full user object so the caller can use .uid
-    } catch (e) {
-      console.error(e)
-      return null
-    }
+      await addDoc(collection(db, 'notifications'), {
+        ...payload,
+        status: 'unread',
+        timestamp: serverTimestamp()
+      })
+    } catch (e) { console.error('Failed to add notification:', e) }
   }, [])
 
+  const markNotificationsRead = useCallback(async () => {
+    try {
+      const unread = notifications.filter(n => n.status === 'unread')
+      for (const n of unread) {
+        await updateDoc(doc(db, 'notifications', n.id), { status: 'read' })
+      }
+    } catch (e) { console.error(e) }
+  }, [notifications])
+
+  const login = useCallback(async (email, password) => {
+    try {
+      // Step A: Check Firestore for Technician Custom Login first
+      const techQuery = query(
+        collection(db, 'technicians'),
+        where('email', '==', email.toLowerCase().trim())
+      );
+      const querySnapshot = await getDocs(techQuery);
+      
+      if (!querySnapshot.empty) {
+        const techDoc = querySnapshot.docs[0];
+        const techData = techDoc.data();
+        
+        // Step B: Verify Password & Status
+        if (techData.password === password) {
+          if (techData.active === false || techData.status === 'Inactive') {
+            throw new Error('Your technician account is inactive. Please contact your administrator.');
+          }
+          
+          const userObj = { uid: techDoc.id, email: techData.email, role: 'technician' };
+          
+          // Save session
+          localStorage.setItem('techSession', JSON.stringify(userObj));
+          
+          setCurrentUser(userObj);
+          setIsTechnician(true);
+          setIsAuthenticated(true);
+          return userObj;
+        } else {
+          throw new Error('Invalid technician password.');
+        }
+      }
+
+      // Step C: Fallback to Firebase Auth for Admins
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      
+      setCurrentUser(cred.user);
+      setIsTechnician(false);
+      setIsAuthenticated(true);
+      return cred.user;
+
+    } catch (e) {
+      console.error('Login error:', e);
+      throw e; // Throw so Login.jsx can catch and show error
+    }
+  }, []);
+
   const logout = useCallback(async () => {
-    try { await signOut(auth) }
-    catch (e) { console.error(e) }
+    try { 
+      localStorage.removeItem('techSession');
+      await signOut(auth);
+      setCurrentUser(null);
+      setIsAuthenticated(false);
+      setIsTechnician(false);
+    } catch (e) { console.error(e) }
   }, [])
 
   const visibleProducts = useMemo(() => products.filter(p => !p.hidden), [products])
@@ -236,6 +319,7 @@ export function AppProvider({ children }) {
     addService, updateService, deleteService, toggleServiceVisibility,
     assignServiceTechnician, updateServiceStatus,
     addTechnician, deleteTechnician,
+    notifications, addNotification, markNotificationsRead,
     login, logout,
   }
 

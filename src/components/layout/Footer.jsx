@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { MapPin, Phone, Mail, Clock, Shield, Award } from 'lucide-react'
+import { MapPin, Phone, Mail, Clock, Shield, Award, Briefcase, Users } from 'lucide-react'
 import { companyInfo } from '../../data/categories'
 
 const quickLinks = [
@@ -24,9 +24,9 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto section-padding !py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
           {[
             { icon: Shield, label: 'ISO Certified', sub: 'Quality Assured' },
-            { icon: Award, label: '15+ Years', sub: 'Industry Experience' },
+            { icon: Briefcase, label: 'Expert Consultant', sub: 'Professional Guidance' },
             { icon: Phone, label: 'Free Consultation', sub: 'Expert Guidance' },
-            { icon: MapPin, label: 'Pan-Gujarat', sub: 'Service Network' },
+            { icon: MapPin, label: 'Maharashtra Network', sub: 'Regional Support' },
           ].map(({ icon: Icon, label, sub }) => (
             <div key={label} className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-brand-cyan/15 flex items-center justify-center shrink-0">
@@ -52,7 +52,7 @@ export default function Footer() {
             />
           </div>
           <p className="text-white/60 text-sm leading-relaxed">
-            Leading distributor and dealer of advanced water purification, softening, and industrial treatment systems across Gujarat since {companyInfo.established}.
+            Leading distributor and dealer of advanced water purification, softening, and industrial treatment systems.
           </p>
         </div>
 

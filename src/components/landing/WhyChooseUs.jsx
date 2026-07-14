@@ -4,9 +4,9 @@ import SectionHeader from '../ui/SectionHeader'
 
 const metrics = [
   { icon: Award, title: 'ISO Certified', desc: 'Quality Assurance' },
-  { icon: Briefcase, title: '15+ Years', desc: 'Industry Experience' },
+  { icon: Briefcase, title: 'Expert Consultant', desc: 'Professional Guidance' },
   { icon: UserCheck, title: 'Free Consultation', desc: 'Expert Guidance' },
-  { icon: Map, title: 'Pan-Gujarat', desc: 'Service Network' },
+  { icon: Map, title: 'Maharashtra Network', desc: 'Regional Support' },
 ]
 
 export default function WhyChooseUs() {
@@ -16,7 +16,7 @@ export default function WhyChooseUs() {
         <SectionHeader
           eyebrow="Our Edge"
           title="Why Choose Samarth Enterprises"
-          subtitle="Delivering uncompromising quality, unmatched expertise, and end-to-end water solutions across Gujarat."
+          subtitle="Delivering uncompromising quality, unmatched expertise, and end-to-end water solutions."
           align="center"
           light={true}
         />

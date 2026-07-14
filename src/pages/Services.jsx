@@ -15,7 +15,7 @@ const steps = [
 const features = [
   { icon: ShieldCheck, title: 'Certified Technicians', desc: 'Highly trained professionals for all major systems.' },
   { icon: Settings, title: 'Genuine Spare Parts', desc: 'Authentic membranes, filters, and electrical components.' },
-  { icon: CheckCircle2, title: 'Quick Resolution', desc: 'Rapid response times across our Pan-Gujarat network.' },
+  { icon: CheckCircle2, title: 'Quick Resolution', desc: 'Rapid response times.' },
 ]
 
 const hardcodedServices = [
