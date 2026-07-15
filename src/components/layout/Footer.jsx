@@ -101,10 +101,6 @@ export default function Footer() {
                 {companyInfo.email}
               </a>
             </li>
-            <li className="flex gap-3">
-              <Clock className="w-4 h-4 text-brand-cyan shrink-0" />
-              <span>{companyInfo.hours}</span>
-            </li>
           </ul>
         </div>
       </div>
@@ -114,19 +110,6 @@ export default function Footer() {
           <p className="text-white/40 text-xs">
             © {new Date().getFullYear()} {companyInfo.name}. All rights reserved.
           </p>
-          <div className="flex items-center gap-4">
-            <span className="text-white/40 text-xs">Secure Payments</span>
-            <div className="flex gap-2">
-              {['UPI', 'NEFT', 'COD'].map((m) => (
-                <span
-                  key={m}
-                  className="px-2 py-1 rounded bg-white/5 text-white/50 text-[10px] font-semibold tracking-wide"
-                >
-                  {m}
-                </span>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
     </footer>
