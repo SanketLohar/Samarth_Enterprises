@@ -42,7 +42,7 @@ export default function EnquiryModal({ product, open, onClose }) {
         ...form,
         productId: product?.id || null,
         productName: product?.name || 'General Enquiry',
-      })
+      }, 'product_inquiries')
       setSubmitted(true)
       setTimeout(() => {
         setSubmitted(false)

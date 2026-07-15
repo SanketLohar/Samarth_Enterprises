@@ -45,7 +45,7 @@ export default function About() {
           >
             <h2 className="text-3xl font-extrabold text-brand-dark mb-8">Integrated Water Treatment Expertise</h2>
             <p>
-              Samarth Enterprises is a premier Water Treatment Consultant and service provider specializing in end-to-end water management architectures across Domestic, Commercial, and Industrial sectors. Headquartered in Sangli, we deliver high-performance solutions tailored for absolute purity, safety, and compliance.
+              Samarth Enterprises is a premier Water Treatment Consultant and service provider specializing in end-to-end water management architectures across Domestic, Commercial, and Industrial sectors. Headquartered in Sangli.We are also a proud member of BNI. We deliver high-performance solutions tailored for absolute purity, safety, and compliance.
             </p>
             <div className="mt-8 p-6 bg-brand-light rounded-2xl border border-brand-cyan/20 relative">
               <p className="text-lg text-brand-dark italic font-medium relative z-10">
@@ -84,7 +84,7 @@ export default function About() {
               />
               <div className="absolute inset-0 border border-black/5 rounded-[2rem] pointer-events-none" />
             </div>
-            
+
           </motion.div>
         </div>
       </section>

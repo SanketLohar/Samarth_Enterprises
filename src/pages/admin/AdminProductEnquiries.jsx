@@ -1,21 +1,21 @@
 import EnquiriesTable from '../../components/admin/EnquiriesTable'
 import { useApp } from '../../context/AppContext'
 
-export default function AdminEnquiries() {
-  const { enquiries } = useApp()
+export default function AdminProductEnquiries() {
+  const { productEnquiries } = useApp()
   const counts = {
-    total: enquiries.length,
-    new: enquiries.filter((e) => e.status === 'New').length,
-    inProgress: enquiries.filter((e) => e.status === 'In Progress').length,
-    resolved: enquiries.filter((e) => e.status === 'Resolved').length,
+    total: productEnquiries.length,
+    new: productEnquiries.filter((e) => e.status === 'New').length,
+    inProgress: productEnquiries.filter((e) => e.status === 'In Progress').length,
+    resolved: productEnquiries.filter((e) => e.status === 'Resolved').length,
   }
 
   return (
     <div className="p-6 lg:p-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-extrabold text-brand-dark">Enquiry Management</h1>
+        <h1 className="text-2xl font-extrabold text-brand-dark">Product Enquiries</h1>
         <p className="text-sm text-brand-muted mt-1">
-          All inbound product enquiries from the "Enquire Now" forms. Update status to track your sales pipeline.
+          All inbound product enquiries from the "Request a Quote" modal. Update status to track your sales pipeline.
         </p>
       </div>
 
@@ -36,14 +36,11 @@ export default function AdminEnquiries() {
 
       {counts.total === 0 ? (
         <div className="text-center py-20 bg-white rounded-2xl border border-gray-100">
-          <div className="text-4xl mb-3">📬</div>
-          <p className="text-brand-muted font-medium">No enquiries yet.</p>
-          <p className="text-sm text-gray-400 mt-1">
-            Enquiries submitted via the "Enquire Now" buttons will appear here.
-          </p>
+          <div className="text-4xl mb-3">📦</div>
+          <p className="text-brand-muted font-medium">No product enquiries yet.</p>
         </div>
       ) : (
-        <EnquiriesTable />
+        <EnquiriesTable data={productEnquiries} collectionName="product_inquiries" title="Product Enquiries" />
       )}
     </div>
   )

@@ -18,7 +18,8 @@ import AdminLayout from './components/admin/AdminLayout'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminProducts from './pages/admin/AdminProducts'
 import AdminServices from './pages/admin/AdminServices'
-import AdminEnquiries from './pages/admin/AdminEnquiries'
+import AdminProductEnquiries from './pages/admin/AdminProductEnquiries'
+import AdminServiceEnquiries from './pages/admin/AdminServiceEnquiries'
 import AdminStaff from './pages/admin/AdminStaff'
 import JobHistory from './pages/admin/JobHistory'
 
@@ -51,7 +52,8 @@ export default function App() {
             <Route index element={<AdminDashboard />} />
             <Route path="products" element={<AdminProducts />} />
             <Route path="services" element={<AdminServices />} />
-            <Route path="enquiries" element={<AdminEnquiries />} />
+            <Route path="product-enquiries" element={<AdminProductEnquiries />} />
+            <Route path="service-enquiries" element={<AdminServiceEnquiries />} />
             <Route path="staff" element={<AdminStaff />} />
             <Route path="history" element={<JobHistory />} />
           </Route>

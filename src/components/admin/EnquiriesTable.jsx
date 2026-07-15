@@ -7,20 +7,22 @@ import { db } from '../../firebase/config'
 
 const ALL_STATUSES = ['New', 'Contacted', 'Resolved', 'Deal Done', 'In Progress']
 
-export default function EnquiriesTable() {
-  const { enquiries, updateEnquiryStatus, updateProductStock, technicians } = useApp()
+export default function EnquiriesTable({ data = [], collectionName = 'enquiries', title = 'Enquiries Inbox' }) {
+  const { updateProductStock, technicians } = useApp()
 
   // Deal Done confirmation modal state
   const [dealModal, setDealModal] = useState(null) // { enquiry }
   const [qty, setQty] = useState('')
   const [pendingStatus, setPendingStatus] = useState({}) // { [id]: prevStatus }
 
-  const handleStatusChange = (enq, newStatus) => {
+  const handleStatusChange = async (enq, newStatus) => {
     if (newStatus === 'Deal Done') {
       setDealModal({ enquiry: enq })
       return
     }
-    updateEnquiryStatus(enq.id, newStatus)
+    try {
+      await updateDoc(doc(db, collectionName, enq.id), { status: newStatus })
+    } catch (e) { console.error(e) }
   }
 
   const handleDealConfirm = async () => {
@@ -28,7 +30,9 @@ export default function EnquiriesTable() {
     if (!parsedQty || parsedQty < 1) return
 
     const { enquiry } = dealModal
-    await updateEnquiryStatus(enquiry.id, 'Deal Done')
+    try {
+      await updateDoc(doc(db, collectionName, enquiry.id), { status: 'Deal Done' })
+    } catch (e) { console.error(e) }
 
     if (enquiry.productId) {
       await updateProductStock(enquiry.productId, parsedQty)
@@ -48,7 +52,7 @@ export default function EnquiriesTable() {
     const tech = technicians.find((t) => t.id === techId)
     if (!tech) return
     try {
-      await updateDoc(doc(db, 'enquiries', enquiryId), {
+      await updateDoc(doc(db, collectionName, enquiryId), {
         assignedToId: tech.id, // Strictly use Firestore document ID
         assignedToName: tech.name,
         status: 'In Progress'
@@ -66,11 +70,11 @@ export default function EnquiriesTable() {
 
   return (
     <div>
-      <h2 className="text-lg font-bold text-brand-dark mb-6">Enquiries Inbox</h2>
+      <h2 className="text-lg font-bold text-brand-dark mb-6">{title}</h2>
 
-      {enquiries.length === 0 ? (
+      {data.length === 0 ? (
         <div className="bg-white rounded-xl border border-gray-100 p-12 text-center text-gray-400">
-          No enquiries yet.
+          No records found.
         </div>
       ) : (
         <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
@@ -89,7 +93,7 @@ export default function EnquiriesTable() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {enquiries.map((e) => (
+                {data.map((e) => (
                   <tr key={e.id}>
                     <td className="px-4 py-3 text-gray-400 text-xs whitespace-nowrap">{formatDate(e.createdAt)}</td>
                     <td className="px-4 py-3">

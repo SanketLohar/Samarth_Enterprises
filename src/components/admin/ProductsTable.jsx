@@ -10,6 +10,16 @@ export default function ProductsTable() {
   const { products, updateProduct, toggleProductVisibility } = useApp()
   const [editing, setEditing] = useState(null)
   const [showForm, setShowForm] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+
+  const filteredProducts = products.filter(product => {
+    const query = searchQuery.toLowerCase();
+    return (
+      (product.name && product.name.toLowerCase().includes(query)) ||
+      (product.category && product.category.toLowerCase().includes(query)) ||
+      (product.tag && product.tag.toLowerCase().includes(query))
+    );
+  });
 
   const handleUpdateProduct = (updated) => {
     const normalized = normalizeProduct(updated)
@@ -20,14 +30,25 @@ export default function ProductsTable() {
 
   return (
     <div>
-      <div className="flex flex-wrap justify-between items-center gap-3 mb-6">
-        <h2 className="text-lg font-bold text-brand-dark">Products Management</h2>
-        <button
-          onClick={() => { setShowForm(true); setEditing(null) }}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-brand-deep text-white rounded-lg text-sm font-semibold hover:bg-brand-cyan transition"
-        >
-          <Plus className="w-4 h-4" /> Add Product
-        </button>
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4 justify-between w-full mb-6">
+        <h2 className="text-xl font-bold text-gray-900">Products Management</h2>
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search product name, category..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-64 px-4 py-2 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-cyan/30"
+            />
+          </div>
+          <button
+            onClick={() => { setShowForm(true); setEditing(null) }}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-brand-deep text-white rounded-lg text-sm font-semibold hover:bg-brand-cyan transition"
+          >
+            <Plus className="w-4 h-4" /> Add Product
+          </button>
+        </div>
       </div>
 
       {(showForm || editing) && (
@@ -52,7 +73,7 @@ export default function ProductsTable() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {products.map((p) => {
+              {filteredProducts.map((p) => {
                 const lowStock = typeof p.stock === 'number' && p.stock < 5
                 return (
                   <tr key={p.id} className={p.hidden ? 'opacity-50' : ''}>

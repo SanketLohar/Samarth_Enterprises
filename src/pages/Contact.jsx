@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { useLocation } from 'react-router-dom'
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle } from 'lucide-react'
 import { companyInfo } from '../data/categories'
-import { collection, addDoc } from 'firebase/firestore'
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from '../firebase/config'
 import Button from '../components/ui/Button'
 
@@ -74,6 +74,16 @@ export default function Contact() {
         message: form.message,
         status: "New", // Default to "New" so it updates metrics instantly
         createdAt: new Date().toISOString()
+      });
+
+      // Secondary hook: Generate an administrative alert for the service inquiry
+      await addDoc(collection(db, "notifications"), {
+        type: "new_inquiry",
+        title: "New Service Enquiry",
+        message: `A new service/quotation request has been submitted by ${form.name}.`,
+        clientPhone: form.phone,
+        status: "unread",
+        timestamp: serverTimestamp()
       });
       
       setSubmitted(true)

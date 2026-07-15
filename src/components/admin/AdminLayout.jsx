@@ -7,14 +7,15 @@ const navItems = [
   { to: '/admin', label: 'Overview', icon: LayoutDashboard, end: true },
   { to: '/admin/products', label: 'Products', icon: Package },
   { to: '/admin/services', label: 'Services', icon: Wrench },
-  { to: '/admin/enquiries', label: 'Enquiries', icon: Inbox },
+  { to: '/admin/product-enquiries', label: 'Product Enquiries', icon: Package },
+  { to: '/admin/service-enquiries', label: 'Service Enquiries', icon: Wrench },
   { to: '/admin/staff', label: 'Manage Staff', icon: Users },
   { to: '/admin/history', label: 'Job History', icon: ClipboardCheck },
 ]
 
 export default function AdminLayout() {
   // All auth state is fully resolved in AppContext — no local Firestore calls needed
-  const { authReady, isAuthenticated, isTechnician, logout, enquiries, notifications, markNotificationsRead } = useApp()
+  const { authReady, isAuthenticated, isTechnician, logout, enquiries, productEnquiries, notifications, markNotificationsRead } = useApp()
   const location = useLocation()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [showNotifs, setShowNotifs] = useState(false)
@@ -60,7 +61,8 @@ export default function AdminLayout() {
   if (isTechnician) return <Navigate to="/helper/dashboard" replace />
 
   // GATE 4: Master Administrator confirmed — render admin panel
-  const newEnquiries = enquiries.filter((e) => e.status === 'New').length
+  const newServiceEnquiries = enquiries.filter((e) => e.status === 'New').length
+  const newProductEnquiries = productEnquiries?.filter((e) => e.status === 'New').length || 0
 
   const NotificationBell = ({ isMobile }) => (
     <div className="relative" ref={notifRef}>
@@ -159,9 +161,14 @@ export default function AdminLayout() {
                 <Icon className="w-4 h-4" />
                 {label}
               </span>
-              {label === 'Enquiries' && newEnquiries > 0 && (
+              {label === 'Service Enquiries' && newServiceEnquiries > 0 && (
                 <span className="bg-brand-cyan text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-                  {newEnquiries}
+                  {newServiceEnquiries}
+                </span>
+              )}
+              {label === 'Product Enquiries' && newProductEnquiries > 0 && (
+                <span className="bg-brand-cyan text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                  {newProductEnquiries}
                 </span>
               )}
             </Link>

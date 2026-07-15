@@ -53,7 +53,7 @@ export default function AdminLogin() {
             <img src="/images/company_logo.png" alt="Samarth Enterprises" className="h-12 mx-auto mb-4 object-contain" />
           </Link>
           <h1 className="text-xl font-bold text-brand-dark">Secure Portal Login</h1>
-          <p className="text-sm text-gray-400 mt-1">Samarth Enterprises — Authorized Personnel Only</p>
+          <p className="text-sm text-gray-400 mt-1">Samarth Enterprises — Authorized Persons Only</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

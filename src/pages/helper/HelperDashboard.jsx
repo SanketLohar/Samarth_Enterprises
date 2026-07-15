@@ -38,26 +38,47 @@ export default function HelperDashboard() {
 
     if (!currentUser) return
 
-    // Query ALL enquiries assigned to this technician to support history view
-    const q = query(
+    let tasksData = { enquiries: [], productInquiries: [] }
+    
+    const mergeTasks = () => {
+       const merged = [...tasksData.enquiries, ...tasksData.productInquiries]
+       merged.sort((a, b) => {
+         const da = a.createdAt?.toDate?.() || new Date(a.createdAt || 0)
+         const db2 = b.createdAt?.toDate?.() || new Date(b.createdAt || 0)
+         return db2 - da
+       })
+       setTasks(merged)
+       setLoading(false)
+       
+       merged.forEach(task => {
+         setNotes(prev => ({ ...prev, [task.id]: prev[task.id] ?? (task.technicianNotes || '') }))
+         setPayments(prev => ({ ...prev, [task.id]: prev[task.id] ?? (task.paymentCollectionStatus || '') }))
+         setAmounts(prev => ({ ...prev, [task.id]: prev[task.id] ?? (task.amountCollected || '') }))
+       })
+    }
+
+    const qEnquiries = query(
       collection(db, "enquiries"),
       where("assignedToId", "==", currentUser.uid)
     )
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const fetched = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-      setTasks(fetched)
-      setLoading(false)
-      
-      // Initialize state for new tasks if not already set
-      fetched.forEach(task => {
-        setNotes(prev => ({ ...prev, [task.id]: prev[task.id] ?? (task.technicianNotes || '') }))
-        setPayments(prev => ({ ...prev, [task.id]: prev[task.id] ?? (task.paymentCollectionStatus || '') }))
-        setAmounts(prev => ({ ...prev, [task.id]: prev[task.id] ?? (task.amountCollected || '') }))
-      })
+    const unsubEnquiries = onSnapshot(qEnquiries, (snapshot) => {
+      tasksData.enquiries = snapshot.docs.map(doc => ({ id: doc.id, _collection: 'enquiries', ...doc.data() }))
+      mergeTasks()
     })
 
-    return () => unsubscribe()
+    const qProducts = query(
+      collection(db, "product_inquiries"),
+      where("assignedToId", "==", currentUser.uid)
+    )
+    const unsubProducts = onSnapshot(qProducts, (snapshot) => {
+      tasksData.productInquiries = snapshot.docs.map(doc => ({ id: doc.id, _collection: 'product_inquiries', ...doc.data() }))
+      mergeTasks()
+    })
+
+    return () => {
+      unsubEnquiries()
+      unsubProducts()
+    }
   }, [isAuthenticated, navigate, currentUser])
 
   const handleUpdateTask = async (task, actionType) => {
@@ -119,7 +140,7 @@ export default function HelperDashboard() {
       }
       // If actionType === 'Save', we only update the notes and payment status, keeping current status
 
-      await updateDoc(doc(db, "enquiries", task.id), updateData)
+      await updateDoc(doc(db, task._collection || "enquiries", task.id), updateData)
       
       // Optional: show a small success toast here in a real app
     } catch (err) {
@@ -155,7 +176,8 @@ export default function HelperDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-10">
+    <div className="min-h-screen w-full overflow-x-hidden bg-gray-50">
+      <div className="w-full max-w-md mx-auto px-4 box-border pb-10">
       {errorToast && (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-sm bg-red-50 text-red-600 border border-red-200 px-4 py-3 rounded-xl shadow-xl flex items-start gap-3">
           <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
@@ -164,7 +186,7 @@ export default function HelperDashboard() {
       )}
 
       {/* Personalized Header */}
-      <header className="bg-brand-deep text-white px-4 py-6 sticky top-0 z-30 shadow-lg">
+      <header className="bg-brand-deep text-white px-4 py-6 sticky top-0 z-30 shadow-lg w-full box-border rounded-b-2xl">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-4">
             <div className="bg-brand-cyan/20 p-3 rounded-xl border border-brand-cyan/30">
@@ -185,9 +207,9 @@ export default function HelperDashboard() {
         </div>
       </header>
 
-      <div className="max-w-lg mx-auto px-4 py-6 space-y-4">
+      <div className="w-full py-6 space-y-4 box-border">
         {/* Tab Navigation */}
-        <div className="flex p-1 bg-gray-200/50 rounded-xl mb-6">
+        <div className="flex p-1 bg-gray-200/50 rounded-xl mb-6 w-full box-border">
           <button
             onClick={() => setActiveTab('active')}
             className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${
@@ -281,8 +303,8 @@ export default function HelperDashboard() {
 
                 {/* Field Operational Inputs */}
                 <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 mb-5 space-y-4">
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
+                  <div className="grid grid-cols-2 gap-3 w-full box-border">
+                    <div className="w-full">
                       <label className="block text-[11px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Payment Mode <span className="text-red-500 ml-1">*</span></label>
                       <select
                         value={payments[task.id] || ''}
@@ -295,7 +317,7 @@ export default function HelperDashboard() {
                         ))}
                       </select>
                     </div>
-                    <div>
+                    <div className="w-full">
                       <label className="block text-[11px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Amt Collected <span className="text-red-500 ml-1">*</span></label>
                       <input
                         type="number"
@@ -419,6 +441,7 @@ export default function HelperDashboard() {
           </>
         )}
       </div>
+    </div>
     </div>
   )
 }

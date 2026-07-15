@@ -11,6 +11,7 @@ export function AppProvider({ children }) {
   const [showSplash, setShowSplash] = useState(true)
   const [products, setProducts] = useState([])
   const [enquiries, setEnquiries] = useState([])
+  const [productEnquiries, setProductEnquiries] = useState([])
   const [services, setServices] = useState([])
   const [technicians, setTechnicians] = useState([])
   const [notifications, setNotifications] = useState([])
@@ -71,6 +72,7 @@ export function AppProvider({ children }) {
     if (!currentUser) {
       // Clear stale data on logout so private data doesn't persist in memory
       setEnquiries([])
+      setProductEnquiries([])
       setServices([])
       setTechnicians([])
       return
@@ -90,6 +92,20 @@ export function AppProvider({ children }) {
       (err) => console.error('Enquiries stream error:', err)
     )
 
+    const unsubProductEnquiries = onSnapshot(
+      collection(db, 'product_inquiries'),
+      (snapshot) => {
+        const fetched = snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
+        fetched.sort((a, b) => {
+          const da = a.createdAt?.toDate?.() || new Date(a.createdAt || 0)
+          const db2 = b.createdAt?.toDate?.() || new Date(b.createdAt || 0)
+          return db2 - da
+        })
+        setProductEnquiries(fetched)
+      },
+      (err) => console.error('Product Enquiries stream error:', err)
+    )
+
     const unsubServices = onSnapshot(
       collection(db, 'services'),
       (snapshot) => {
@@ -106,6 +122,23 @@ export function AppProvider({ children }) {
       (err) => console.error('Technicians stream error:', err)
     )
 
+    // Teardown: unsubscribe all when user logs out or component unmounts
+    return () => {
+      unsubEnquiries()
+      unsubProductEnquiries()
+      unsubServices()
+      unsubTechnicians()
+    }
+  }, [currentUser])
+
+  // ── Role-Guarded Notification Listener ───────────────────────────────────
+  useEffect(() => {
+    // Only initialize the real-time notification stream if an admin is logged in
+    if (!currentUser || isTechnician) {
+      setNotifications([]); // Clear any lingering notifications state for non-admins
+      return;
+    }
+
     const unsubNotifications = onSnapshot(
       query(collection(db, 'notifications')), // Default ordering handled client side if needed
       (snapshot) => {
@@ -120,14 +153,8 @@ export function AppProvider({ children }) {
       (err) => console.error('Notifications stream error:', err)
     )
 
-    // Teardown: unsubscribe all when user logs out or component unmounts
-    return () => {
-      unsubEnquiries()
-      unsubServices()
-      unsubTechnicians()
-      unsubNotifications()
-    }
-  }, [currentUser])
+    return () => unsubNotifications()
+  }, [currentUser, isTechnician])
 
   const categories = useMemo(() => getCategories(products.filter(p => !p.hidden)), [products])
 
@@ -162,9 +189,9 @@ export function AppProvider({ children }) {
     } catch (e) { console.error("Failed to update stock:", e) }
   }, [])
 
-  const addEnquiry = useCallback(async (enquiry) => {
+  const addEnquiry = useCallback(async (enquiry, collectionName = 'enquiries') => {
     try {
-      await addDoc(collection(db, 'enquiries'), { ...enquiry, status: 'New', createdAt: serverTimestamp() })
+      await addDoc(collection(db, collectionName), { ...enquiry, status: 'New', createdAt: serverTimestamp() })
       
       // Secondary hook: push to global admin notifications stream
       await addDoc(collection(db, 'notifications'), {
@@ -323,7 +350,7 @@ export function AppProvider({ children }) {
 
   const value = {
     appReady, showSplash, products, visibleProducts, categories,
-    enquiries, services, technicians, currentUser, isAuthenticated,
+    enquiries, productEnquiries, services, technicians, currentUser, isAuthenticated,
     isTechnician, authReady,
     addEnquiry, updateEnquiryStatus,
     updateProduct, updateProductStock, toggleProductVisibility,

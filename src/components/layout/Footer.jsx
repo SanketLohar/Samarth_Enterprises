@@ -52,7 +52,7 @@ export default function Footer() {
             />
           </div>
           <p className="text-white/60 text-sm leading-relaxed">
-            Leading distributor and dealer of advanced water purification, softening, and industrial treatment systems.
+            Leading distributor and dealer of advanced water purification, softening, and industrial treatment systems.Proud BNI Member.
           </p>
         </div>
 

@@ -2,15 +2,17 @@ import { Package, Inbox, Eye, AlertTriangle } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 
 export default function AnalyticsCards() {
-  const { products, enquiries, visibleProducts } = useApp()
+  const { products, enquiries, productEnquiries, visibleProducts } = useApp()
 
   const pendingEnquiries = enquiries.filter((e) => e.status === 'New' || e.status === 'Contacted').length
+  const pendingProductEnquiries = (productEnquiries || []).filter((e) => e.status === 'New' || e.status === 'Contacted').length
+  const totalPendingCount = pendingEnquiries + pendingProductEnquiries
   const lowStockCount = products.filter((p) => typeof p.stock === 'number' && p.stock < 5).length
 
   const cards = [
     { label: 'Total Products', value: products.length, icon: Package, color: 'text-brand-cyan', bg: 'bg-brand-cyan/10' },
     { label: 'Visible Products', value: visibleProducts.length, icon: Eye, color: 'text-emerald-500', bg: 'bg-emerald-50' },
-    { label: 'Pending Enquiries', value: pendingEnquiries, icon: Inbox, color: 'text-amber-500', bg: 'bg-amber-50' },
+    { label: 'Pending Enquiries', value: totalPendingCount, icon: Inbox, color: 'text-amber-500', bg: 'bg-amber-50' },
     { label: 'Low Stock Warnings', value: lowStockCount, icon: AlertTriangle, color: 'text-red-500', bg: 'bg-red-50' },
   ]
 
