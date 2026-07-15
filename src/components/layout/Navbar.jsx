@@ -123,13 +123,6 @@ export default function Navbar() {
 
             {/* CTA buttons */}
             <div className="hidden lg:flex items-center gap-4">
-              <Link
-                to="/products"
-                className="p-2 text-brand-muted hover:text-brand-cyan transition"
-                aria-label="Search products"
-              >
-                <Search className="w-5 h-5" />
-              </Link>
               <Link to="/contact">
                 <Button variant="gold" size="sm">
                   Request a Quote

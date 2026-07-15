@@ -7,7 +7,7 @@ import { db } from '../../firebase/config'
 
 const ALL_STATUSES = ['New', 'Contacted', 'Resolved', 'Deal Done', 'In Progress']
 
-export default function EnquiriesTable({ data = [], collectionName = 'enquiries', title = 'Enquiries Inbox' }) {
+export default function EnquiriesTable({ data = [], collectionName = 'enquiries', title = 'Enquiries Inbox', currentView = 'all' }) {
   const { updateProductStock, technicians } = useApp()
 
   // Deal Done confirmation modal state
@@ -97,7 +97,9 @@ export default function EnquiriesTable({ data = [], collectionName = 'enquiries'
                   <tr key={e.id}>
                     <td className="px-4 py-3 text-gray-400 text-xs whitespace-nowrap">{formatDate(e.createdAt)}</td>
                     <td className="px-4 py-3">
-                      <p className="font-medium text-brand-dark">{e.name}</p>
+                      <p className="font-medium text-brand-dark flex items-center">
+                        {e.name}
+                      </p>
                       {e.email && <p className="text-xs text-gray-400 mt-0.5">{e.email}</p>}
                     </td>
                     <td className="px-4 py-3 text-gray-600">{e.phone || '—'}</td>

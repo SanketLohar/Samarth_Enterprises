@@ -1,9 +1,11 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { ShieldCheck, CheckCircle2, PhoneCall, ArrowRight, Settings, Users, PenTool, ClipboardCheck } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import Button from '../components/ui/Button'
 import SectionHeader from '../components/ui/SectionHeader'
+import BookServiceModal from '../components/services/BookServiceModal'
 
 const steps = [
   { step: '01', title: 'Service Request', desc: 'Book a service online or call us directly.', icon: PhoneCall },
@@ -28,6 +30,8 @@ const hardcodedServices = [
 ]
 
 export default function Services() {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
   return (
     <div className="bg-gray-50 min-h-screen">
       {/* Page header */}
@@ -46,6 +50,11 @@ export default function Services() {
             <p className="text-white/70 mt-4 max-w-2xl mx-auto text-lg">
               Authorized installation, comprehensive maintenance, and expert repairs for domestic, commercial, and industrial water treatment systems.
             </p>
+            <div className="mt-8 flex justify-center">
+              <Button size="lg" onClick={() => setIsModalOpen(true)} className="!bg-white !text-brand-deep hover:!bg-gray-100 shadow-xl border-none font-bold">
+                Book a Service Now
+              </Button>
+            </div>
           </motion.div>
         </div>
       </div>
@@ -92,12 +101,10 @@ export default function Services() {
                     {service.description.replace(/nexapure/gi, 'Samarth Enterprises')}
                   </p>
                   
-                  <Link to="/contact">
-                    <Button variant="outline" className="w-full justify-center group-hover:bg-brand-cyan group-hover:text-brand-deep group-hover:border-brand-cyan transition-colors">
-                      Book Service
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
-                  </Link>
+                  <Button onClick={() => setIsModalOpen(true)} variant="outline" className="w-full justify-center group-hover:bg-brand-cyan group-hover:text-brand-deep group-hover:border-brand-cyan transition-colors">
+                    Book Service
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
                 </div>
               </motion.div>
             ))}
@@ -179,16 +186,15 @@ export default function Services() {
             <p className="text-white/90 text-lg mb-10 max-w-2xl mx-auto">
               Our technical support team is ready to dispatch experts to your location for emergency repairs or scheduled maintenance.
             </p>
-            <Link to="/contact">
-              <Button size="xl" className="!bg-white !text-brand-deep hover:!bg-gray-100 border-none shadow-xl shadow-brand-deep/20">
-                Contact Support Now
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-            </Link>
+            <Button onClick={() => setIsModalOpen(true)} size="xl" className="!bg-white !text-brand-deep hover:!bg-gray-100 border-none shadow-xl shadow-brand-deep/20">
+              Book a Service Now
+            </Button>
           </div>
         </motion.div>
 
       </div>
+
+      <BookServiceModal open={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   )
 }

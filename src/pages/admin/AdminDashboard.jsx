@@ -10,9 +10,29 @@ export default function AdminDashboard() {
   const pendingProductEnquiries = (productEnquiries || []).filter((e) => e.status === 'New')
   const totalPending = pendingServiceEnquiries.length + pendingProductEnquiries.length
 
+  const getEnquiryTag = (item) => {
+    // 1. Explicitly check if it belongs to the product collection stream
+    if (item.productName || item._collection === 'product_inquiries') {
+      return { label: 'PRODUCT', className: 'bg-blue-50 text-blue-600 border border-blue-200' };
+    }
+    
+    // 2. Strict explicit verification for service modal source
+    if (item.enquirySource === 'service' || item.serviceType) {
+      return { label: 'SERVICE', className: 'bg-emerald-50 text-emerald-600 border border-emerald-200' };
+    }
+    
+    // 3. Strict explicit verification for contact form source
+    if (item.enquirySource === 'contact') {
+      return { label: 'CONTACT', className: 'bg-indigo-50 text-indigo-600 border border-indigo-200' };
+    }
+    
+    // 4. Fallback safe check for legacy historical documents
+    return { label: 'SERVICE', className: 'bg-emerald-50 text-emerald-600 border border-emerald-200' };
+  };
+
   const combinedEnquiries = [
-    ...enquiries.map(e => ({ ...e, _type: 'Service' })),
-    ...(productEnquiries || []).map(e => ({ ...e, _type: 'Product' }))
+    ...enquiries,
+    ...(productEnquiries || [])
   ].sort((a, b) => {
     const da = a.createdAt?.toDate?.() || new Date(a.createdAt || 0)
     const db2 = b.createdAt?.toDate?.() || new Date(b.createdAt || 0)
@@ -88,12 +108,10 @@ export default function AdminDashboard() {
                     {e.name?.[0]?.toUpperCase() || '?'}
                   </div>
                   <div className="min-w-0">
-                    <p className="font-semibold text-brand-dark text-sm truncate">
+                    <p className="font-semibold text-brand-dark text-sm truncate flex items-center">
                       {e.name}
-                      <span className={`ml-2 text-[9px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded ${
-                        e._type === 'Product' ? 'bg-indigo-50 text-indigo-600' : 'bg-orange-50 text-orange-600'
-                      }`}>
-                        [{e._type}]
+                      <span className={`ml-2 text-[9px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded ${getEnquiryTag(e).className}`}>
+                        [{getEnquiryTag(e).label}]
                       </span>
                     </p>
                     <p className="text-xs text-brand-muted mt-0.5 line-clamp-2">{e.message || 'No message provided.'}</p>

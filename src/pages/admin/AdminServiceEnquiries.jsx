@@ -40,7 +40,7 @@ export default function AdminServiceEnquiries() {
           <p className="text-brand-muted font-medium">No service enquiries yet.</p>
         </div>
       ) : (
-        <EnquiriesTable data={enquiries} collectionName="enquiries" title="Service Enquiries" />
+        <EnquiriesTable data={enquiries} collectionName="enquiries" title="Service Enquiries" currentView="services" />
       )}
     </div>
   )
