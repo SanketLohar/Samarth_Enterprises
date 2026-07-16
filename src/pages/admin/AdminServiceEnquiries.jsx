@@ -8,6 +8,7 @@ export default function AdminServiceEnquiries() {
     new: enquiries.filter((e) => e.status === 'New').length,
     inProgress: enquiries.filter((e) => e.status === 'In Progress').length,
     resolved: enquiries.filter((e) => e.status === 'Resolved').length,
+    pending: enquiries.filter((e) => e.status === 'Pending Billing' || e.status === 'Partially Paid').length,
   }
 
   return (
@@ -20,11 +21,12 @@ export default function AdminServiceEnquiries() {
       </div>
 
       {/* Status summary */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-8">
         {[
           { label: 'All Enquiries', value: counts.total, bg: 'bg-gray-50', text: 'text-gray-800' },
           { label: 'New', value: counts.new, bg: 'bg-amber-50', text: 'text-amber-700' },
           { label: 'In Progress', value: counts.inProgress, bg: 'bg-blue-50', text: 'text-blue-700' },
+          { label: 'Pending Billing', value: counts.pending, bg: 'bg-amber-50 border-amber-200', text: 'text-amber-600' },
           { label: 'Resolved', value: counts.resolved, bg: 'bg-green-50', text: 'text-green-700' },
         ].map(({ label, value, bg, text }) => (
           <div key={label} className={`${bg} rounded-xl border border-gray-100 p-4`}>

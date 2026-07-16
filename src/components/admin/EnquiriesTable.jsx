@@ -5,7 +5,7 @@ import { ShieldCheck, X } from 'lucide-react'
 import { doc, updateDoc } from 'firebase/firestore'
 import { db } from '../../firebase/config'
 
-const ALL_STATUSES = ['New', 'Contacted', 'Resolved', 'Deal Done', 'In Progress']
+const ALL_STATUSES = ['New', 'Contacted', 'Resolved', 'Deal Done', 'In Progress', 'Pending Billing', 'Partially Paid', 'Warranty Service']
 
 export default function EnquiriesTable({ data = [], collectionName = 'enquiries', title = 'Enquiries Inbox', currentView = 'all' }) {
   const { updateProductStock, technicians } = useApp()
@@ -109,8 +109,9 @@ export default function EnquiriesTable({ data = [], collectionName = 'enquiries'
                     <td className="px-4 py-3">
                       <select
                         value={e.assignedToId || ''}
+                        disabled={e.status === 'Resolved' || e.status === 'Pending Billing' || e.status === 'Partially Paid' || e.status === 'Warranty Service'}
                         onChange={(ev) => handleAssignTechnician(e.id, ev.target.value)}
-                        className="text-xs font-medium px-2 py-1.5 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-cyan/30 text-gray-700 max-w-[120px]"
+                        className="text-xs font-medium px-2 py-1.5 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-cyan/30 text-gray-700 max-w-[120px] disabled:opacity-60 disabled:cursor-not-allowed"
                       >
                         <option value="">Unassigned</option>
                         {technicians.map((t) => (
@@ -121,9 +122,13 @@ export default function EnquiriesTable({ data = [], collectionName = 'enquiries'
                     <td className="px-4 py-3">
                       <select
                         value={e.status}
+                        disabled={e.status === 'Resolved' || e.status === 'Pending Billing' || e.status === 'Partially Paid' || e.status === 'Warranty Service'}
                         onChange={(ev) => handleStatusChange(e, ev.target.value)}
-                        className={`text-xs font-semibold px-2 py-1 rounded-lg border focus:outline-none focus:ring-2 focus:ring-brand-cyan/30 ${
+                        className={`text-xs font-semibold px-2 py-1 rounded-lg border focus:outline-none focus:ring-2 focus:ring-brand-cyan/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-gray-50 ${
                           e.status === 'Deal Done' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' :
+                          e.status === 'Warranty Service' ? 'bg-cyan-50 text-cyan-700 border-cyan-200' :
+                          e.status === 'Pending Billing' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                          e.status === 'Partially Paid' ? 'bg-purple-50 text-purple-700 border-purple-200' :
                           e.status === 'In Progress' ? 'bg-blue-50 border-blue-200 text-blue-700' :
                           e.status === 'New' ? 'bg-amber-50 border-amber-200 text-amber-700' :
                           'bg-white border-gray-200 text-gray-700'

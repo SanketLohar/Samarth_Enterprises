@@ -4,7 +4,12 @@ import { ChevronDown, ChevronUp, CheckCircle2 } from 'lucide-react'
 
 export default function JobHistory() {
   const { enquiries } = useApp()
-  const history = enquiries.filter(e => e.status === 'Resolved' || e.status === 'Deal Done')
+  const rawHistoryData = enquiries.filter(e => e.status === 'Resolved' || e.status === 'Pending Billing' || e.status === 'Partially Paid' || e.status === 'Deal Done' || e.status === 'Warranty Service')
+  const history = [...rawHistoryData].sort((a, b) => {
+    const timeA = a.resolvedAt?.seconds ? a.resolvedAt.seconds * 1000 : (a.resolvedAt?.toMillis?.() || new Date(a.resolvedAt || 0).getTime());
+    const timeB = b.resolvedAt?.seconds ? b.resolvedAt.seconds * 1000 : (b.resolvedAt?.toMillis?.() || new Date(b.resolvedAt || 0).getTime());
+    return timeB - timeA;
+  });
   const [expanded, setExpanded] = useState({}) // { [id]: boolean }
 
   const toggleExpand = (id) => setExpanded(prev => ({ ...prev, [id]: !prev[id] }))
@@ -64,8 +69,13 @@ export default function JobHistory() {
                     <td className="px-4 py-4 align-top">
                       {job.paymentCollectionStatus ? (
                         <div className="inline-flex flex-col gap-1.5">
-                          <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded bg-blue-50 text-blue-700 border border-blue-100">
-                            {job.paymentCollectionStatus}
+                          <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded border ${
+                            job.status === 'Warranty Service' ? 'bg-cyan-50 text-cyan-700 border-cyan-200' :
+                            job.status === 'Pending Billing' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                            job.status === 'Partially Paid' ? 'bg-purple-50 text-purple-700 border-purple-200' :
+                            'bg-emerald-50 text-emerald-700 border-emerald-100'
+                          }`}>
+                            {job.status}
                           </span>
                           {job.amountCollected && (
                             <span className="text-emerald-600 font-extrabold">₹ {Number(job.amountCollected).toLocaleString('en-IN')}</span>

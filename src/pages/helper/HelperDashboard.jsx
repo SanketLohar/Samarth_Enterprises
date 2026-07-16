@@ -10,7 +10,8 @@ const PAYMENT_OPTIONS = [
   "UPI / QR Code",
   "Cash",
   "NetBanking",
-  "Pending Admin Billing"
+  "Pending Admin Billing",
+  "Warranty Claim"
 ]
 
 export default function HelperDashboard() {
@@ -27,8 +28,13 @@ export default function HelperDashboard() {
   // Find the technician profile for the dynamic header
   const currentUserProfile = technicians.find(t => t.uid === currentUser?.uid || t.id === currentUser?.uid)
 
-  const activeTasks = tasks.filter(t => ["New", "In Progress", "On Hold", "Issue Reported"].includes(t.status))
-  const historyTasks = tasks.filter(t => ["Resolved", "Deal Done"].includes(t.status))
+  const activeTasks = tasks.filter(t => t.status === 'New' || t.status === 'In Progress' || t.status === 'On Hold' || t.status === 'Issue Reported')
+  const historyTasks = tasks.filter(t => t.status === 'Resolved' || t.status === 'Pending Billing' || t.status === 'Deal Done' || t.status === 'Partially Paid' || t.status === 'Warranty Service')
+    .sort((a, b) => {
+      const timeA = a.resolvedAt?.seconds ? a.resolvedAt.seconds * 1000 : (a.resolvedAt?.toMillis?.() || new Date(a.resolvedAt || 0).getTime());
+      const timeB = b.resolvedAt?.seconds ? b.resolvedAt.seconds * 1000 : (b.resolvedAt?.toMillis?.() || new Date(b.resolvedAt || 0).getTime());
+      return timeB - timeA;
+    });
 
   useEffect(() => {
     if (isAuthenticated === false) {
@@ -113,16 +119,53 @@ export default function HelperDashboard() {
       }
 
       if (actionType === 'Resolved') {
-        updateData.status = 'Resolved'
+        const targetStatus = paymentStatus === "Pending Admin Billing" ? "Pending Billing" : "Resolved";
+        updateData.status = targetStatus;
         updateData.resolvedAt = new Date().toISOString()
         addNotification({
           technicianId: currentUser.uid,
           technicianName: currentUserProfile?.name || 'Technician',
-          message: `${currentUserProfile?.name || 'Technician'} completed job for client ${task.name}`,
+          type: targetStatus === "Pending Billing" ? "pending_billing" : "job_completed",
+          title: targetStatus === "Pending Billing" ? "Billing Required" : "Job Completed",
+          message: targetStatus === "Pending Billing" 
+            ? `${currentUserProfile?.name || 'Technician'} finished service for ${task.name}. Awaiting admin invoicing.`
+            : `${currentUserProfile?.name || 'Technician'} marked job for ${task.name} as: Resolved`,
           clientName: task.name,
           serviceName: task.productName || 'General Service',
           paymentMode: paymentStatus,
           amountCollected: Number(collectedAmount),
+          remarks: closeoutNotesText,
+        })
+      } else if (actionType === 'Partially Paid') {
+        updateData.status = 'Partially Paid'
+        updateData.resolvedAt = new Date().toISOString()
+        addNotification({
+          technicianId: currentUser.uid,
+          technicianName: currentUserProfile?.name || 'Technician',
+          type: 'partial_payment',
+          title: 'Partial Payment Collected',
+          message: `${currentUserProfile?.name || 'Technician'} collected a partial payment of ₹${collectedAmount} via ${paymentStatus}.`,
+          clientName: task.name,
+          serviceName: task.productName || 'General Service',
+          paymentMode: paymentStatus,
+          amountCollected: Number(collectedAmount),
+          remarks: closeoutNotesText,
+        })
+      } else if (actionType === 'Warranty Service') {
+        updateData.status = 'Warranty Service'
+        updateData.paymentCollectionStatus = 'Warranty Claim'
+        updateData.amountCollected = 0
+        updateData.resolvedAt = new Date().toISOString()
+        addNotification({
+          technicianId: currentUser.uid,
+          technicianName: currentUserProfile?.name || 'Technician',
+          type: 'warranty_job',
+          title: 'Warranty Service Closed',
+          message: `${currentUserProfile?.name || 'Technician'} finalized a free warranty repair for client ${task.name}.`,
+          clientName: task.name,
+          serviceName: task.productName || 'General Service',
+          paymentMode: 'Warranty Claim',
+          amountCollected: 0,
           remarks: closeoutNotesText,
         })
       } else if (actionType === 'Hold') {
@@ -308,7 +351,13 @@ export default function HelperDashboard() {
                       <label className="block text-[11px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Payment Mode <span className="text-red-500 ml-1">*</span></label>
                       <select
                         value={payments[task.id] || ''}
-                        onChange={(e) => setPayments({ ...payments, [task.id]: e.target.value })}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setPayments({ ...payments, [task.id]: val });
+                          if (val === 'Pending Admin Billing' || val === 'Warranty Claim') {
+                            setAmounts({ ...amounts, [task.id]: '0' });
+                          }
+                        }}
                         className="w-full px-3 py-2 text-sm text-slate-700 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-cyan/30 bg-white"
                       >
                         <option value="">-- Select --</option>
@@ -324,8 +373,9 @@ export default function HelperDashboard() {
                         min="0"
                         placeholder="₹ 0"
                         value={amounts[task.id] || ''}
+                        disabled={payments[task.id] === 'Pending Admin Billing' || payments[task.id] === 'Warranty Claim'}
                         onChange={(e) => setAmounts({ ...amounts, [task.id]: e.target.value })}
-                        className="w-full px-3 py-2 text-sm text-slate-700 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-cyan/30 bg-white"
+                        className="w-full px-3 py-2 text-sm text-slate-700 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-cyan/30 disabled:bg-gray-100 disabled:text-gray-400 bg-white"
                       />
                     </div>
                   </div>
@@ -343,26 +393,43 @@ export default function HelperDashboard() {
 
                 {/* Multi-State Action Footer */}
                 <div className="flex flex-col gap-2">
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      onClick={() => handleUpdateTask(task, 'Save')}
-                      className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors"
-                    >
-                      <Save className="w-4 h-4" /> Save Log Notes
-                    </button>
-                    <button
-                      onClick={() => handleUpdateTask(task, 'Hold')}
-                      className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl font-bold text-xs bg-amber-50 text-amber-600 hover:bg-amber-100 border border-amber-200 transition-colors"
-                    >
-                      <AlertTriangle className="w-4 h-4" /> Report Issue / Hold
-                    </button>
-                  </div>
                   <button
-                    onClick={() => handleUpdateTask(task, 'Resolved')}
-                    className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm bg-brand-deep text-white hover:bg-brand-cyan transition-all duration-200 shadow-lg shadow-brand-deep/20 mt-1"
+                    onClick={() => handleUpdateTask(task, 'Hold')}
+                    className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors mb-1"
                   >
-                    <CheckCircle2 className="w-4.5 h-4.5" /> Mark Job Resolved
+                    <AlertTriangle className="w-4 h-4" /> Report Issue / Hold
                   </button>
+                  
+                  {payments[task.id] === 'Warranty Claim' ? (
+                    <button
+                      onClick={() => handleUpdateTask(task, 'Warranty Service')}
+                      className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm bg-cyan-600 text-white hover:bg-cyan-700 transition-all duration-200 shadow-lg shadow-cyan-600/20"
+                    >
+                      🛠️ Submit Warranty Closeout
+                    </button>
+                  ) : payments[task.id] === 'Pending Admin Billing' ? (
+                    <button
+                      onClick={() => handleUpdateTask(task, 'Resolved')}
+                      className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm bg-brand-deep text-white hover:bg-brand-cyan transition-all duration-200 shadow-lg shadow-brand-deep/20"
+                    >
+                      ⏳ Submit for Admin Billing
+                    </button>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={() => handleUpdateTask(task, 'Partially Paid')}
+                        className="flex items-center justify-center gap-1.5 py-3.5 rounded-xl font-bold text-[11px] border-2 border-amber-400 text-purple-700 bg-amber-50 hover:bg-amber-100 transition-colors"
+                      >
+                        🌗 Submit as Partial Payment
+                      </button>
+                      <button
+                        onClick={() => handleUpdateTask(task, 'Resolved')}
+                        className="flex items-center justify-center gap-1.5 py-3.5 rounded-xl font-bold text-[11px] bg-brand-deep text-white hover:bg-brand-cyan transition-colors shadow-lg shadow-brand-deep/20"
+                      >
+                        <CheckCircle2 className="w-4 h-4" /> Mark Job Resolved
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </motion.div>
@@ -397,7 +464,16 @@ export default function HelperDashboard() {
                     <div className="flex items-start justify-between pb-3 border-b border-gray-100 mb-3">
                       <div>
                         <h3 className="font-bold text-base text-brand-dark">{task.name}</h3>
-                        <p className="text-xs text-gray-500 mt-0.5">Resolved: {new Date(task.resolvedAt || task.updatedAt).toLocaleDateString()}</p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          Completed: {task.resolvedAt || task.updatedAt ? new Date(task.resolvedAt?.seconds ? task.resolvedAt.seconds * 1000 : (task.resolvedAt?.toMillis?.() || task.resolvedAt || task.updatedAt)).toLocaleString('en-IN', {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: true
+                          }) : 'Recent'}
+                        </p>
                       </div>
                       <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md border bg-emerald-50 text-emerald-600 border-emerald-200">
                         {task.status}

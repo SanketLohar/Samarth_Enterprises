@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
 import { Navigate, Outlet, Link, useLocation } from 'react-router-dom'
-import { LayoutDashboard, Package, Inbox, LogOut, ExternalLink, Wrench, Users, Menu, Bell, CheckCircle2, ClipboardCheck } from 'lucide-react'
+import { LayoutDashboard, Package, LogOut, ExternalLink, Wrench, Users, Menu, Bell, ClipboardCheck } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
+import NotificationDropdown from './NotificationDropdown'
 
 const navItems = [
   { to: '/admin', label: 'Overview', icon: LayoutDashboard, end: true },
@@ -13,24 +14,56 @@ const navItems = [
   { to: '/admin/history', label: 'Job History', icon: ClipboardCheck },
 ]
 
-export default function AdminLayout() {
-  // All auth state is fully resolved in AppContext — no local Firestore calls needed
-  const { authReady, isAuthenticated, isTechnician, logout, enquiries, productEnquiries, notifications, markNotificationsRead } = useApp()
-  const location = useLocation()
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+// ─── MOVED OUTSIDE: NOTIFICATION BELL COMPONENT TO FIX MOUNTING RESETS ───
+function NotificationBell({ isMobile, notifications, hasUnread }) {
   const [showNotifs, setShowNotifs] = useState(false)
   const notifRef = useRef(null)
 
-  // Handle click outside to close notifications
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (notifRef.current && !notifRef.current.contains(event.target)) {
-        setShowNotifs(false)
+      if (notifRef.current && notifRef.current.contains(event.target)) {
+        return
       }
+      setShowNotifs(false)
     }
-    document.addEventListener('mousedown', handleClickOutside)
+    
+    if (showNotifs) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
     return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
+  }, [showNotifs])
+
+  return (
+    <div className="relative" ref={notifRef}>
+      <button 
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setShowNotifs(prev => !prev);
+        }}
+        className={`p-2 rounded-lg transition-colors ${
+          isMobile 
+            ? 'text-white hover:bg-white/10' 
+            : 'text-gray-500 hover:text-brand-dark hover:bg-gray-100 bg-white border border-gray-200 shadow-sm'
+        }`}
+      >
+        <Bell className="w-5 h-5" />
+        {hasUnread && (
+          <span className="absolute top-0 right-0 h-2.5 w-2.5 bg-red-500 rounded-full ring-2 ring-white" />
+        )}
+      </button>
+
+      {showNotifs && (
+        <NotificationDropdown notifications={notifications} onClose={() => setShowNotifs(false)} />
+      )}
+    </div>
+  )
+}
+
+export default function AdminLayout() {
+  const { authReady, isAuthenticated, isTechnician, logout, enquiries, productEnquiries, notifications } = useApp()
+  const location = useLocation()
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const handleLogout = async () => {
     try {
@@ -40,9 +73,8 @@ export default function AdminLayout() {
     }
   }
 
-  const unreadNotifs = notifications.filter(n => n.status === 'unread')
+  const hasUnread = notifications ? notifications.some(n => n.status === 'unread') : false;
 
-  // GATE 1: Auth + role resolution still in flight — show spinner
   if (!authReady) {
     return (
       <div className="min-h-screen bg-brand-deep flex items-center justify-center">
@@ -54,84 +86,11 @@ export default function AdminLayout() {
     )
   }
 
-  // GATE 2: Not authenticated — send to login
   if (!isAuthenticated) return <Navigate to="/login" replace />
-
-  // GATE 3: Authenticated but is a technician — bounce to helper portal
   if (isTechnician) return <Navigate to="/helper/dashboard" replace />
 
-  // GATE 4: Master Administrator confirmed — render admin panel
   const newServiceEnquiries = enquiries.filter((e) => e.status === 'New').length
   const newProductEnquiries = productEnquiries?.filter((e) => e.status === 'New').length || 0
-
-  const NotificationBell = ({ isMobile }) => (
-    <div className="relative" ref={notifRef}>
-      <button 
-        onClick={() => setShowNotifs(!showNotifs)}
-        className={`p-2 rounded-lg transition-colors ${isMobile ? 'text-white hover:bg-white/10' : 'text-gray-500 hover:text-brand-dark hover:bg-gray-100 bg-white border border-gray-200 shadow-sm'}`}
-      >
-        <Bell className="w-5 h-5" />
-        {unreadNotifs.length > 0 && (
-          <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
-        )}
-      </button>
-
-      {showNotifs && (
-        <div className={`absolute z-[100] bg-white rounded-xl shadow-2xl border border-gray-100 w-80 overflow-hidden flex flex-col ${isMobile ? 'right-0 top-12' : 'right-0 top-12'}`}>
-          <div className="bg-brand-deep text-white px-4 py-3 flex items-center justify-between">
-            <h3 className="font-bold text-sm">Notifications</h3>
-            {unreadNotifs.length > 0 && (
-              <button onClick={() => { markNotificationsRead(); setShowNotifs(false) }} className="text-[10px] uppercase font-bold text-brand-cyan hover:text-white transition">
-                Mark all read
-              </button>
-            )}
-          </div>
-          <div className="max-h-96 overflow-y-auto">
-            {notifications.length === 0 ? (
-              <div className="p-6 text-center text-gray-400">
-                <CheckCircle2 className="w-8 h-8 mx-auto mb-2 opacity-20" />
-                <p className="text-sm">You're all caught up!</p>
-              </div>
-            ) : (
-              notifications.slice(0, 15).map(n => (
-                <div key={n.id} className={`p-4 border-b border-gray-50 text-sm ${n.status === 'unread' ? 'bg-blue-50/30' : 'opacity-70'}`}>
-                  {n.type === 'new_inquiry' ? (
-                    <div className="mb-1.5 flex items-center justify-between">
-                      <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-100 text-blue-700">New Inquiry</span>
-                      {n.clientPhone && (
-                        <a href={`tel:${n.clientPhone}`} className="text-xs font-bold text-brand-cyan hover:underline">
-                          {n.clientPhone}
-                        </a>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="mb-1.5">
-                      <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-100 text-emerald-700">Job Completed</span>
-                    </div>
-                  )}
-                  <p className="font-semibold text-brand-dark leading-snug">{n.message}</p>
-                  
-                  {n.remarks && <p className="text-gray-500 text-xs italic mt-1 bg-gray-50 p-2 rounded">"{n.remarks}"</p>}
-                  
-                  {n.paymentMode && (
-                    <div className="mt-1.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                      <span>Payment:</span>
-                      <span className="text-slate-700 bg-white px-1.5 py-0.5 rounded border border-slate-200">{n.paymentMode}</span>
-                      {n.amountCollected > 0 && <span className="text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100">₹{n.amountCollected}</span>}
-                    </div>
-                  )}
-                  
-                  <p className="text-[10px] text-gray-400 mt-2 font-medium">
-                    {new Date(n.timestamp?.toDate?.() || n.timestamp).toLocaleString()}
-                  </p>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  )
 
   const SidebarContent = () => (
     <>
@@ -207,7 +166,7 @@ export default function AdminLayout() {
       <div className="flex-1 flex flex-col min-w-0">
         {/* Desktop Top Bar */}
         <div className="hidden lg:flex items-center justify-end bg-white border-b border-gray-200 px-6 py-3 sticky top-0 z-30 shadow-sm">
-          <NotificationBell />
+          <NotificationBell notifications={notifications} hasUnread={hasUnread} isMobile={false} />
         </div>
 
         {/* Mobile Header */}
@@ -219,7 +178,7 @@ export default function AdminLayout() {
             <img src="/images/company_logo.png" alt="Samarth" className="h-7 w-auto" />
             <span className="font-bold text-sm">Admin Panel</span>
           </div>
-          <NotificationBell isMobile />
+          <NotificationBell notifications={notifications} hasUnread={hasUnread} isMobile={true} />
         </div>
 
         <main className="flex-1 overflow-auto bg-gray-50">

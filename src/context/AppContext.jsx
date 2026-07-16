@@ -278,6 +278,12 @@ export function AppProvider({ children }) {
     } catch (e) { console.error(e) }
   }, [notifications])
 
+  const markNotificationRead = useCallback(async (id) => {
+    try {
+      await updateDoc(doc(db, 'notifications', id), { status: 'read' })
+    } catch (e) { console.error(e) }
+  }, [])
+
   const login = useCallback(async (email, password) => {
     try {
       // Step A: Check Firestore for Technician Custom Login first
@@ -357,7 +363,7 @@ export function AppProvider({ children }) {
     addService, updateService, deleteService, toggleServiceVisibility,
     assignServiceTechnician, updateServiceStatus,
     addTechnician, deleteTechnician,
-    notifications, addNotification, markNotificationsRead,
+    notifications, addNotification, markNotificationsRead, markNotificationRead,
     login, logout,
   }
 

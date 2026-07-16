@@ -73,14 +73,15 @@ export default function Contact() {
         address: form.address,
         message: form.message,
         status: "New", // Default to "New" so it updates metrics instantly
+        enquirySource: 'contact',
         createdAt: new Date().toISOString()
       });
 
       // Secondary hook: Generate an administrative alert for the service inquiry
       await addDoc(collection(db, "notifications"), {
         type: "new_inquiry",
-        title: "New Service Enquiry",
-        message: `A new service/quotation request has been submitted by ${form.name}.`,
+        title: "New Contact Message",
+        message: `${form.name} contacted you for: ${form.message || form.product}`,
         clientPhone: form.phone,
         status: "unread",
         timestamp: serverTimestamp()

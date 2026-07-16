@@ -11,23 +11,23 @@ export default function AdminDashboard() {
   const totalPending = pendingServiceEnquiries.length + pendingProductEnquiries.length
 
   const getEnquiryTag = (item) => {
-    // 1. Explicitly check if it belongs to the product collection stream
-    if (item.productName || item._collection === 'product_inquiries') {
-      return { label: 'PRODUCT', className: 'bg-blue-50 text-blue-600 border border-blue-200' };
-    }
-    
-    // 2. Strict explicit verification for service modal source
-    if (item.enquirySource === 'service' || item.serviceType) {
-      return { label: 'SERVICE', className: 'bg-emerald-50 text-emerald-600 border border-emerald-200' };
-    }
-    
-    // 3. Strict explicit verification for contact form source
+    // 1. Strict explicit check for contact form origin source
     if (item.enquirySource === 'contact') {
       return { label: 'CONTACT', className: 'bg-indigo-50 text-indigo-600 border border-indigo-200' };
     }
     
-    // 4. Fallback safe check for legacy historical documents
-    return { label: 'SERVICE', className: 'bg-emerald-50 text-emerald-600 border border-emerald-200' };
+    // 2. Strict explicit check for service booking modal source
+    if (item.enquirySource === 'service' || item.serviceType) {
+      return { label: 'SERVICE', className: 'bg-emerald-50 text-emerald-600 border border-emerald-200' };
+    }
+    
+    // 3. Check for product inquiries collection source 
+    if (item.productName || item._collection === 'product_inquiries') {
+      return { label: 'PRODUCT', className: 'bg-blue-50 text-blue-600 border border-blue-200' };
+    }
+    
+    // Fallback safe option
+    return { label: 'CONTACT', className: 'bg-indigo-50 text-indigo-600 border border-indigo-200' };
   };
 
   const combinedEnquiries = [

@@ -22,6 +22,7 @@ export default function BookServiceModal({ open, onClose }) {
     phone: '', 
     serviceType: '', 
     preferredDate: '', 
+    address: '',
     message: '' 
   })
   const [errors, setErrors] = useState({})
@@ -40,6 +41,9 @@ export default function BookServiceModal({ open, onClose }) {
     }
     if (!form.preferredDate) {
       newErrors.preferredDate = 'Please select a preferred date.'
+    }
+    if (!form.address || form.address.length < 10) {
+      newErrors.address = 'Please provide a complete address (minimum 10 characters).'
     }
     if (!form.message || form.message.length < 10) {
       newErrors.message = 'Please provide details (minimum 10 characters).'
@@ -65,13 +69,14 @@ export default function BookServiceModal({ open, onClose }) {
         phone: form.phone,
         serviceType: form.serviceType,
         preferredDate: form.preferredDate,
+        address: form.address,
         message: form.message,
       }, 'enquiries') // Route to the enquiries collection
       
       setSubmitted(true)
       setTimeout(() => {
         setSubmitted(false)
-        setForm({ name: '', phone: '', serviceType: '', preferredDate: '', message: '' })
+        setForm({ name: '', phone: '', serviceType: '', preferredDate: '', address: '', message: '' })
         setErrors({})
         onClose()
       }, 2200)
@@ -170,6 +175,19 @@ export default function BookServiceModal({ open, onClose }) {
                   className={`w-full px-4 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 ${errors.preferredDate ? 'border-red-500 focus:ring-red-500/30' : 'border-gray-200 focus:ring-brand-cyan/30'}`}
                 />
                 {errors.preferredDate && <p className="text-red-500 text-xs mt-1">{errors.preferredDate}</p>}
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-brand-muted mb-1.5">Address <span className="text-red-500 ml-1">*</span></label>
+                <textarea
+                  id="modal-address"
+                  required
+                  rows={2}
+                  value={form.address}
+                  onChange={(e) => { setForm({ ...form, address: e.target.value }); if(errors.address) setErrors({...errors, address: null}) }}
+                  className={`w-full px-4 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 resize-none ${errors.address ? 'border-red-500 focus:ring-red-500/30' : 'border-gray-200 focus:ring-brand-cyan/30'}`}
+                  placeholder="Enter your full address..."
+                />
+                {errors.address && <p className="text-red-500 text-xs mt-1">{errors.address}</p>}
               </div>
               <div>
                 <label className="block text-xs font-semibold text-brand-muted mb-1.5">Specific Problem Details <span className="text-red-500 ml-1">*</span></label>
