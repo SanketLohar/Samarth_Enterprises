@@ -4,8 +4,8 @@ import { useApp } from '../../context/AppContext'
 export default function AnalyticsCards() {
   const { products, enquiries, productEnquiries, visibleProducts } = useApp()
 
-  const pendingEnquiries = enquiries.filter((e) => e.status === 'New' || e.status === 'Contacted').length
-  const pendingProductEnquiries = (productEnquiries || []).filter((e) => e.status === 'New' || e.status === 'Contacted').length
+  const pendingEnquiries = enquiries.filter((e) => e.status === 'New').length
+  const pendingProductEnquiries = (productEnquiries || []).filter((e) => e.status === 'New').length
   const totalPendingCount = pendingEnquiries + pendingProductEnquiries
   const lowStockCount = products.filter((p) => typeof p.stock === 'number' && p.stock < 5).length
   
