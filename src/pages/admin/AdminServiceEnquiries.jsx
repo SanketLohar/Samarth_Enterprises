@@ -3,12 +3,19 @@ import { useApp } from '../../context/AppContext'
 
 export default function AdminServiceEnquiries() {
   const { enquiries } = useApp()
+  // Master collection length
+  const totalServiceEnquiries = enquiries.length;
+  
   const counts = {
-    total: enquiries.length,
-    new: enquiries.filter((e) => e.status === 'New').length,
-    inProgress: enquiries.filter((e) => e.status === 'In Progress').length,
-    resolved: enquiries.filter((e) => e.status === 'Resolved').length,
-    pending: enquiries.filter((e) => e.status === 'Pending Billing' || e.status === 'Partially Paid').length,
+    total: totalServiceEnquiries,
+    // 1. New Card: Counts only 'New'
+    new: enquiries.filter(e => e.status === 'New').length,
+    // 2. In Progress Card: Counts only 'In Progress' (Contacted is now part of this workflow)
+    inProgress: enquiries.filter(e => e.status === 'In Progress').length,
+    // 3. Pending Billing Card: Financial Consolidation (Combines standard billing + partial balances)
+    pending: enquiries.filter(e => ['Pending Billing', 'Partially Paid'].includes(e.status)).length,
+    // 4. Resolved Card: Final Resolution Consolidation (Combines fully paid resolutions + free warranty closeouts)
+    resolved: enquiries.filter(e => ['Resolved', 'Warranty Service'].includes(e.status)).length,
   }
 
   return (

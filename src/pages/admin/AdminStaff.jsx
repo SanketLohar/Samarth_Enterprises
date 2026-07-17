@@ -45,18 +45,33 @@ export default function AdminStaff() {
     return Object.keys(newErrors).length === 0
   }
 
+  const handleCloseTechModal = () => {
+    setShowTechModal(false)
+    setTechForm({ name: '', phone: '', specialization: '', email: '', password: '', address: '', active: true })
+    setErrors({})
+  }
+
+  const handleCloseConsultModal = () => {
+    setShowConsultModal(false)
+    setConsultForm({ name: '', phone: '', email: '', password: '', active: true })
+    setErrors({})
+  }
+
   const handleTechSubmit = async (e) => {
     e.preventDefault()
-    if (!validateTechForm()) return
+    console.log("Submitting new technician data payload...", techForm);
+    if (!validateTechForm()) {
+      console.log("Technician validation failed:", errors);
+      return;
+    }
     
     setIsSubmitting(true)
     try {
-      await addTechnician({ ...techForm, email: techForm.email.toLowerCase() })
-      setTechForm({ name: '', phone: '', specialization: '', email: '', password: '', address: '', active: true })
-      setErrors({})
-      setShowTechModal(false)
+      await addTechnician({ ...techForm, email: techForm.email.toLowerCase().trim() })
+      console.log("Technician successfully added via context!");
+      handleCloseTechModal()
     } catch (err) {
-      console.error(err)
+      console.error("CRITICAL TECHNICIAN CREATION FAILURE:", err)
     } finally {
       setIsSubmitting(false)
     }
@@ -64,13 +79,17 @@ export default function AdminStaff() {
 
   const handleConsultSubmit = async (e) => {
     e.preventDefault()
-    if (!validateConsultForm()) return
+    console.log("Submitting new consultant data payload...", consultForm);
+    if (!validateConsultForm()) {
+      console.log("Consultant validation failed:", errors);
+      return;
+    }
     
     setIsSubmitting(true)
     try {
       await addDoc(collection(db, "consultants"), {
         name: consultForm.name,
-        email: consultForm.email.toLowerCase(),
+        email: consultForm.email.toLowerCase().trim(),
         phone: consultForm.phone,
         password: consultForm.password,
         role: 'consultant',
@@ -78,11 +97,10 @@ export default function AdminStaff() {
         status: consultForm.active ? 'Active' : 'Inactive',
         createdAt: serverTimestamp()
       });
-      setConsultForm({ name: '', phone: '', email: '', password: '', active: true })
-      setErrors({})
-      setShowConsultModal(false)
+      console.log("Consultant successfully added to Firestore!");
+      handleCloseConsultModal()
     } catch (err) {
-      console.error(err)
+      console.error("CRITICAL CONSULTANT CREATION FAILURE:", err)
     } finally {
       setIsSubmitting(false)
     }
@@ -298,7 +316,7 @@ export default function AdminStaff() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm p-4"
-            onClick={() => setShowTechModal(false)}
+            onClick={handleCloseTechModal}
           >
             <motion.div
               initial={{ y: 60, opacity: 0 }}
@@ -309,7 +327,7 @@ export default function AdminStaff() {
             >
               <div className="flex items-center justify-between mb-6">
                 <h3 className="font-bold text-brand-dark text-lg">Add New Technician</h3>
-                <button onClick={() => setShowTechModal(false)} className="text-gray-400 hover:text-gray-600">
+                <button onClick={handleCloseTechModal} className="text-gray-400 hover:text-gray-600">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -379,10 +397,10 @@ export default function AdminStaff() {
                 </div>
                 
                 <div className="flex gap-3 pt-2">
-                  <button type="submit" disabled={isSubmitting || Object.keys(errors).length > 0} className="flex-1 bg-brand-deep text-white font-semibold rounded-xl py-2.5 text-sm hover:bg-brand-cyan transition">
+                  <button type="submit" disabled={isSubmitting || Object.values(errors).some(Boolean)} className="flex-1 bg-brand-deep text-white font-semibold rounded-xl py-2.5 text-sm hover:bg-brand-cyan transition">
                     Add Technician
                   </button>
-                  <button type="button" onClick={() => setShowTechModal(false)} className="flex-1 border border-gray-200 text-gray-600 font-semibold rounded-xl py-2.5 text-sm hover:bg-gray-50 transition">
+                  <button type="button" onClick={handleCloseTechModal} className="flex-1 border border-gray-200 text-gray-600 font-semibold rounded-xl py-2.5 text-sm hover:bg-gray-50 transition">
                     Cancel
                   </button>
                 </div>
@@ -400,7 +418,7 @@ export default function AdminStaff() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm p-4"
-            onClick={() => setShowConsultModal(false)}
+            onClick={handleCloseConsultModal}
           >
             <motion.div
               initial={{ y: 60, opacity: 0 }}
@@ -411,7 +429,7 @@ export default function AdminStaff() {
             >
               <div className="flex items-center justify-between mb-6">
                 <h3 className="font-bold text-brand-dark text-lg">Add New Consultant</h3>
-                <button onClick={() => setShowConsultModal(false)} className="text-gray-400 hover:text-gray-600">
+                <button onClick={handleCloseConsultModal} className="text-gray-400 hover:text-gray-600">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -461,10 +479,10 @@ export default function AdminStaff() {
                 </div>
                 
                 <div className="flex gap-3 pt-2">
-                  <button type="submit" disabled={isSubmitting || Object.keys(errors).length > 0} className="flex-1 bg-brand-deep text-white font-semibold rounded-xl py-2.5 text-sm hover:bg-brand-cyan transition">
+                  <button type="submit" disabled={isSubmitting || Object.values(errors).some(Boolean)} className="flex-1 bg-brand-deep text-white font-semibold rounded-xl py-2.5 text-sm hover:bg-brand-cyan transition">
                     Add Consultant
                   </button>
-                  <button type="button" onClick={() => setShowConsultModal(false)} className="flex-1 border border-gray-200 text-gray-600 font-semibold rounded-xl py-2.5 text-sm hover:bg-gray-50 transition">
+                  <button type="button" onClick={handleCloseConsultModal} className="flex-1 border border-gray-200 text-gray-600 font-semibold rounded-xl py-2.5 text-sm hover:bg-gray-50 transition">
                     Cancel
                   </button>
                 </div>

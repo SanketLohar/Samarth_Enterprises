@@ -48,7 +48,7 @@ export default function HelperDashboard() {
       );
 
   const activeTasks = assignedTasks.filter(task => 
-    ['New', 'In Progress', 'On Hold', 'Issue Reported', 'In Discussion', 'Quotation Sent', 'No Response'].includes(task.status)
+    ['New', 'In Progress', 'Issue Reported', 'In Discussion', 'Quotation Sent', 'No Response'].includes(task.status)
   );
   
   const historyTasks = assignedTasks.filter(task => 
@@ -213,16 +213,16 @@ export default function HelperDashboard() {
           remarks: closeoutNotesText,
         })
       } else if (actionType === 'Hold') {
-        updateData.status = 'On Hold'
+        updateData.status = 'Issue Reported' // Clean consolidation step
         await addNotification({
           technicianId: currentUser.uid,
           technicianName: currentUserProfile?.name || 'Technician',
-          message: `${currentUserProfile?.name || 'Technician'} put job on HOLD for client ${task.name}`,
+          type: 'issue_reported',
+          title: 'Issue Reported / Job Delayed',
+          message: `${currentUserProfile?.name || 'Technician'} flagged an issue or delay for client ${task.name}`,
           clientName: task.name,
           serviceName: task.productName || 'General Service',
-          paymentMode: currentSelectStatus,
-          amountCollected: Number(amounts[task.id]) || 0,
-          remarks: closeoutNotesText || 'No remarks provided',
+          remarks: closeoutNotesText || 'No additional remarks provided',
         })
       }
 
@@ -250,7 +250,6 @@ export default function HelperDashboard() {
         return 'bg-indigo-50 text-indigo-700 border-indigo-200'
       case 'Consultation Completed':
         return 'bg-teal-50 text-teal-700 border-teal-200'
-      case 'On Hold':
       case 'Issue Reported':
       case 'No Response':
         return 'bg-amber-50 text-amber-600 border-amber-200'
