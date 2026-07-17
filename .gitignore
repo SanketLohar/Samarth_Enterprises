@@ -78,3 +78,6 @@ scripts/
 # ── Package Manager Lock Files (keep package-lock.json, ignore others) ────────
 yarn.lock
 pnpm-lock.yaml
+
+firestore.rules
+mockConsultant.cjs

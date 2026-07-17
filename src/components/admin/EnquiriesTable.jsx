@@ -6,9 +6,10 @@ import { doc, updateDoc } from 'firebase/firestore'
 import { db } from '../../firebase/config'
 
 const ALL_STATUSES = ['New', 'Contacted', 'Resolved', 'Deal Done', 'In Progress', 'Pending Billing', 'Partially Paid', 'Warranty Service']
+const PRODUCT_STATUSES = ['New', 'In Discussion', 'Quotation Sent', 'Consultation Completed', 'No Response', 'Lost Lead', 'Converted to Client']
 
 export default function EnquiriesTable({ data = [], collectionName = 'enquiries', title = 'Enquiries Inbox', currentView = 'all' }) {
-  const { updateProductStock, technicians } = useApp()
+  const { updateProductStock, technicians, consultants } = useApp()
 
   // Deal Done confirmation modal state
   const [dealModal, setDealModal] = useState(null) // { enquiry }
@@ -47,18 +48,20 @@ export default function EnquiriesTable({ data = [], collectionName = 'enquiries'
     setQty('')
   }
 
-  const handleAssignTechnician = async (enquiryId, techId) => {
-    if (!techId) return
-    const tech = technicians.find((t) => t.id === techId)
-    if (!tech) return
+  const handleAssignStaff = async (enquiryId, staffId) => {
+    if (!staffId) return
+    const isProduct = collectionName === 'product_inquiries'
+    const staffList = isProduct ? (consultants || []) : (technicians || [])
+    const staff = staffList.find((s) => s.id === staffId || s.uid === staffId)
+    if (!staff) return
     try {
       await updateDoc(doc(db, collectionName, enquiryId), {
-        assignedToId: tech.id, // Strictly use Firestore document ID
-        assignedToName: tech.name,
-        status: 'In Progress'
+        assignedToId: staff.id, 
+        assignedTo: staff.name,
+        status: isProduct ? 'In Discussion' : 'In Progress'
       })
     } catch (err) {
-      console.error('Error assigning technician:', err)
+      console.error('Error assigning staff:', err)
     }
   }
 
@@ -109,34 +112,47 @@ export default function EnquiriesTable({ data = [], collectionName = 'enquiries'
                     <td className="px-4 py-3">
                       <select
                         value={e.assignedToId || ''}
-                        disabled={e.status === 'Resolved' || e.status === 'Pending Billing' || e.status === 'Partially Paid' || e.status === 'Warranty Service'}
-                        onChange={(ev) => handleAssignTechnician(e.id, ev.target.value)}
+                        disabled={
+                          collectionName === 'product_inquiries' 
+                            ? ['Converted to Client', 'Lost Lead'].includes(e.status)
+                            : ['Resolved', 'Pending Billing', 'Partially Paid', 'Warranty Service'].includes(e.status)
+                        }
+                        onChange={(ev) => handleAssignStaff(e.id, ev.target.value)}
                         className="text-xs font-medium px-2 py-1.5 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-cyan/30 text-gray-700 max-w-[120px] disabled:opacity-60 disabled:cursor-not-allowed"
                       >
                         <option value="">Unassigned</option>
-                        {technicians.map((t) => (
-                          <option key={t.id} value={t.id}>{t.name}</option>
+                        {(collectionName === 'product_inquiries' ? (consultants || []) : (technicians || [])).map((s) => (
+                          <option key={s.id} value={s.id}>{s.name}</option>
                         ))}
                       </select>
                     </td>
                     <td className="px-4 py-3">
                       <select
                         value={e.status}
-                        disabled={e.status === 'Resolved' || e.status === 'Pending Billing' || e.status === 'Partially Paid' || e.status === 'Warranty Service'}
+                        disabled={
+                          collectionName === 'product_inquiries'
+                            ? ['Converted to Client', 'Lost Lead'].includes(e.status)
+                            : ['Resolved', 'Pending Billing', 'Partially Paid', 'Warranty Service'].includes(e.status)
+                        }
                         onChange={(ev) => handleStatusChange(e, ev.target.value)}
                         className={`text-xs font-semibold px-2 py-1 rounded-lg border focus:outline-none focus:ring-2 focus:ring-brand-cyan/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-gray-50 ${
-                          e.status === 'Deal Done' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' :
+                          ['Converted to Client', 'Deal Done'].includes(e.status) ? 'bg-emerald-50 border-emerald-200 text-emerald-700' :
                           e.status === 'Warranty Service' ? 'bg-cyan-50 text-cyan-700 border-cyan-200' :
+                          e.status === 'Quotation Sent' ? 'bg-indigo-50 text-indigo-700 border-indigo-200' :
+                          e.status === 'Consultation Completed' ? 'bg-teal-50 text-teal-700 border-teal-200' :
+                          e.status === 'Lost Lead' ? 'bg-red-50 text-red-700 border-red-200' :
+                          e.status === 'No Response' ? 'bg-orange-50 text-orange-700 border-orange-200' :
                           e.status === 'Pending Billing' ? 'bg-amber-50 text-amber-700 border-amber-200' :
                           e.status === 'Partially Paid' ? 'bg-purple-50 text-purple-700 border-purple-200' :
-                          e.status === 'In Progress' ? 'bg-blue-50 border-blue-200 text-blue-700' :
+                          ['In Progress', 'In Discussion'].includes(e.status) ? 'bg-blue-50 border-blue-200 text-blue-700' :
                           e.status === 'New' ? 'bg-amber-50 border-amber-200 text-amber-700' :
                           'bg-white border-gray-200 text-gray-700'
                         }`}
                       >
-                        {ALL_STATUSES.map((s) => (
-                          <option key={s} value={s}>{s}</option>
-                        ))}
+                        {collectionName === 'product_inquiries' 
+                          ? PRODUCT_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)
+                          : ALL_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)
+                        }
                       </select>
                     </td>
                   </tr>

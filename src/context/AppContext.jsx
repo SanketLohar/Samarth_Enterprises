@@ -14,6 +14,7 @@ export function AppProvider({ children }) {
   const [productEnquiries, setProductEnquiries] = useState([])
   const [services, setServices] = useState([])
   const [technicians, setTechnicians] = useState([])
+  const [consultants, setConsultants] = useState([])
   const [notifications, setNotifications] = useState([])
   const [isAuthenticated, setIsAuthenticated] = useState(null)
   const [currentUser, setCurrentUser] = useState(null)
@@ -122,12 +123,21 @@ export function AppProvider({ children }) {
       (err) => console.error('Technicians stream error:', err)
     )
 
+    const unsubConsultants = onSnapshot(
+      collection(db, 'consultants'),
+      (snapshot) => {
+        setConsultants(snapshot.docs.map(d => ({ id: d.id, ...d.data() })))
+      },
+      (err) => console.error('Consultants stream error:', err)
+    )
+
     // Teardown: unsubscribe all when user logs out or component unmounts
     return () => {
       unsubEnquiries()
       unsubProductEnquiries()
       unsubServices()
       unsubTechnicians()
+      unsubConsultants()
     }
   }, [currentUser])
 
@@ -287,14 +297,19 @@ export function AppProvider({ children }) {
   const login = useCallback(async (email, password) => {
     try {
       // Step A: Check Firestore for Technician Custom Login first
-      const techQuery = query(
-        collection(db, 'technicians'),
-        where('email', '==', email.toLowerCase().trim())
-      );
-      const querySnapshot = await getDocs(techQuery);
+      let techSnapshot = null;
+      try {
+        const techQuery = query(
+          collection(db, 'technicians'),
+          where('email', '==', email.toLowerCase().trim())
+        );
+        techSnapshot = await getDocs(techQuery);
+      } catch (err) {
+        console.warn('Skipping technician lookup:', err.message);
+      }
       
-      if (!querySnapshot.empty) {
-        const techDoc = querySnapshot.docs[0];
+      if (techSnapshot && !techSnapshot.empty) {
+        const techDoc = techSnapshot.docs[0];
         const techData = techDoc.data();
         
         // Step B: Verify Password & Status
@@ -314,6 +329,41 @@ export function AppProvider({ children }) {
           return userObj;
         } else {
           throw new Error('Invalid technician password.');
+        }
+      }
+
+      // Step A.5: Check Firestore for Consultant Login if not found in technicians
+      let consultantSnapshot = null;
+      try {
+        const consultantQuery = query(
+          collection(db, 'consultants'),
+          where('email', '==', email.toLowerCase().trim())
+        );
+        consultantSnapshot = await getDocs(consultantQuery);
+      } catch (err) {
+        console.warn('Skipping consultant lookup:', err.message);
+      }
+
+      if (consultantSnapshot && !consultantSnapshot.empty) {
+        const consultantDoc = consultantSnapshot.docs[0];
+        const consultantData = consultantDoc.data();
+        
+        if (consultantData.password === password) {
+          if (consultantData.active === false || consultantData.status === 'Inactive') {
+            throw new Error('Your consultant account is inactive. Please contact your administrator.');
+          }
+          
+          const userObj = { uid: consultantDoc.id, email: consultantData.email, role: 'consultant' };
+          
+          // Save session
+          localStorage.setItem('techSession', JSON.stringify(userObj)); // Use same session token block
+          
+          setCurrentUser(userObj);
+          setIsTechnician(true); // Using true routes them securely to HelperDashboard, where role differentiates UI
+          setIsAuthenticated(true);
+          return userObj;
+        } else {
+          throw new Error('Invalid consultant password.');
         }
       }
 
@@ -356,7 +406,7 @@ export function AppProvider({ children }) {
 
   const value = {
     appReady, showSplash, products, visibleProducts, categories,
-    enquiries, productEnquiries, services, technicians, currentUser, isAuthenticated,
+    enquiries, productEnquiries, services, technicians, consultants, currentUser, isAuthenticated,
     isTechnician, authReady,
     addEnquiry, updateEnquiryStatus,
     updateProduct, updateProductStock, toggleProductVisibility,

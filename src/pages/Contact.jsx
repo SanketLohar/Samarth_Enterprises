@@ -65,7 +65,7 @@ export default function Contact() {
     
     setIsSubmitting(true)
     try {
-      await addDoc(collection(db, "enquiries"), {
+      await addDoc(collection(db, "product_inquiries"), {
         name: form.name,
         email: form.email || "",
         phone: form.phone,
