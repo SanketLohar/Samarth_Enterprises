@@ -86,6 +86,28 @@ export default function HelperDashboard() {
       
       // ─── PIPELINE A: CONSULTANT SALES TRANSITIONS ───
       if (currentUser?.role === 'consultant' || actionType === 'Consultation Update') {
+
+        // ── SUB-BRANCH: Report Issue (stays in active view) ──
+        if (actionType === 'ConsultantIssue') {
+          await updateDoc(doc(db, 'product_inquiries', task.id), {
+            status: 'Issue Reported',
+            updatedAt: new Date().toISOString()
+          })
+          await addNotification({
+            technicianId: currentUser.uid,
+            technicianName: currentUserProfile?.name || 'Consultant',
+            type: 'issue_reported',
+            title: '⚠️ Consultation Issue Flagged',
+            message: `${currentUserProfile?.name || 'Consultant'} reported an issue on lead: ${task.name}. Requires admin review.`,
+            clientName: task.name,
+            serviceName: task.productName || 'Product Lead',
+            remarks: notes[task.id] || 'No additional remarks provided',
+          })
+          setSuccessToast('Issue flagged. Lead remains in your active queue.')
+          setTimeout(() => setSuccessToast(null), 4000)
+          return  // Do NOT switch to history tab
+        }
+
         if (!currentSelectStatus || currentSelectStatus === "") {
           setErrorToast('Please select a valid Follow-up Status.')
           setTimeout(() => setErrorToast(null), 4000)
@@ -109,11 +131,9 @@ export default function HelperDashboard() {
           updateData.resolvedAt = new Date().toISOString()
         }
 
-        // Fire target database transactional update
         await updateDoc(doc(db, 'product_inquiries', task.id), updateData)
         console.log("Firestore sales lead update pushed successfully.");
 
-        // Push alert packet to admin notification bells
         await addNotification({
           technicianId: currentUser.uid,
           technicianName: currentUserProfile?.name || 'Consultant',
@@ -125,11 +145,9 @@ export default function HelperDashboard() {
           remarks: closeoutNotesText,
         })
 
-        // Deploy standalone green success message feedback loops
         setSuccessToast('Consultation log updated successfully!');
         setTimeout(() => setSuccessToast(null), 4000);
 
-        // Instantly force pipeline shifts out of active rows if resolved
         if (isTerminalState) {
           setActiveTab('history');
         }
@@ -516,13 +534,23 @@ export default function HelperDashboard() {
                       {/* Primary Trigger Buttons */}
                       <div className="flex flex-col gap-2">
                         {currentUser?.role === 'consultant' ? (
-                          <button
-                            type="button"
-                            onClick={() => handleUpdateTask(task, 'Consultation Update')}
-                            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm bg-brand-deep text-white hover:bg-brand-cyan transition-all duration-200 shadow-lg shadow-brand-deep/20"
-                          >
-                            💼 Submit Consultation Updates
-                          </button>
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => handleUpdateTask(task, 'ConsultantIssue')}
+                              className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl font-bold text-xs bg-amber-50 text-amber-700 border border-amber-300 hover:bg-amber-100 transition-colors mb-1"
+                            >
+                              <AlertTriangle className="w-4 h-4" /> ⚠️ Report Issue / Hold
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleUpdateTask(task, 'Consultation Update')}
+                              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm bg-brand-deep text-white hover:bg-brand-cyan transition-all duration-200 shadow-lg shadow-brand-deep/20"
+                            >
+                              💼 Submit Consultation Updates
+                            </button>
+                          </>
+
                         ) : (
                           <>
                             <button

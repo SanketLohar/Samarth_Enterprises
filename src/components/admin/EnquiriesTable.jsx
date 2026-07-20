@@ -6,7 +6,7 @@ import { doc, updateDoc } from 'firebase/firestore'
 import { db } from '../../firebase/config'
 
 const ALL_STATUSES = ['New', 'In Progress', 'Issue Reported', 'Pending Billing', 'Partially Paid', 'Warranty Service', 'Resolved']
-const PRODUCT_STATUSES = ['New', 'In Discussion', 'Quotation Sent', 'Consultation Completed', 'No Response', 'Lost Lead', 'Converted to Client']
+const PRODUCT_STATUSES = ['New', 'In Discussion', 'Quotation Sent', 'Consultation Completed', 'No Response', 'Lost Lead', 'Converted to Client', 'Issue Reported']
 
 export default function EnquiriesTable({ data = [], collectionName = 'enquiries', title = 'Enquiries Inbox', currentView = 'all' }) {
   const { updateProductStock, technicians, consultants } = useApp()

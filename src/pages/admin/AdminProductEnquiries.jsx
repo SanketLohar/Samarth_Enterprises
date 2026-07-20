@@ -5,8 +5,8 @@ export default function AdminProductEnquiries() {
   const { productEnquiries } = useApp()
   const totalLeads = productEnquiries.length;
   const openDiscussions = productEnquiries.filter(e => ['In Discussion', 'Quotation Sent', 'No Response'].includes(e.status)).length;
-  const dealsWon = productEnquiries.filter(e => ['Converted to Client', 'Consultation Completed'].includes(e.status)).length;
-  const lostLeads = productEnquiries.filter(e => e.status === 'Lost Lead').length;
+  const consultationCompleted = productEnquiries.filter(e => e.status === 'Consultation Completed').length;
+  const issueReported = productEnquiries.filter(e => e.status === 'Issue Reported').length;
 
   return (
     <div className="p-6 lg:p-8">
@@ -29,14 +29,14 @@ export default function AdminProductEnquiries() {
           <p className="text-xs font-semibold text-slate-400 mt-1 uppercase tracking-wider">Active Discussions</p>
         </div>
 
-        <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
-          <p className="text-2xl font-bold text-emerald-600">{dealsWon}</p>
-          <p className="text-xs font-semibold text-slate-400 mt-1 uppercase tracking-wider">Deals Won</p>
+        <div className="bg-teal-50 p-5 rounded-xl border border-teal-100 shadow-sm">
+          <p className="text-2xl font-bold text-teal-700">{consultationCompleted}</p>
+          <p className="text-xs font-semibold text-teal-500 mt-1 uppercase tracking-wider">Consultation Completed</p>
         </div>
 
-        <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
-          <p className="text-2xl font-bold text-red-600">{lostLeads}</p>
-          <p className="text-xs font-semibold text-slate-400 mt-1 uppercase tracking-wider">Lost Leads</p>
+        <div className="bg-amber-50 p-5 rounded-xl border border-amber-100 shadow-sm">
+          <p className="text-2xl font-bold text-amber-700">{issueReported}</p>
+          <p className="text-xs font-semibold text-amber-500 mt-1 uppercase tracking-wider">Issue Reported</p>
         </div>
       </div>
 
