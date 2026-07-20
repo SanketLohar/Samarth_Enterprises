@@ -73,7 +73,14 @@ export default function ProductForm({ product, onSave, onCancel }) {
         </div>
         <div>
           <label className="block text-xs font-semibold text-gray-500 mb-1">Category *</label>
-          <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className={inputCls}>
+          <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} 
+            className="w-full sm:w-auto min-w-[130px] px-2.5 py-1.5 text-xs font-medium rounded-md border border-gray-300 bg-white text-gray-700 shadow-sm outline-none cursor-pointer focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all appearance-none pr-8 relative bg-no-repeat"
+            style={{
+              backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234B5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
+              backgroundPosition: 'right 0.5rem center',
+              backgroundSize: '1.25em 1.25em'
+            }}
+          >
             {Object.entries(categoryMeta).map(([id, meta]) => (
               <option key={id} value={id}>{meta.label}</option>
             ))}

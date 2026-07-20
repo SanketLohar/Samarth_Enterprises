@@ -182,13 +182,13 @@ export default function AdminStaff() {
               <p className="text-sm text-brand-muted mt-2">Add your first field technician to start assigning service tickets.</p>
             </div>
           ) : (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
               {technicians.map((tech) => (
                 <motion.div
                   key={tech.id}
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-white rounded-2xl border border-gray-100 p-6 flex items-start gap-4 shadow-sm hover:shadow-md transition"
+                  className="bg-white rounded-2xl border border-gray-100 p-6 flex items-start gap-4 shadow-sm hover:shadow-md transition w-full"
                 >
                   <div className="w-12 h-12 bg-brand-light rounded-xl flex items-center justify-center shrink-0">
                     <UserCircle2 className="w-7 h-7 text-brand-cyan" />
@@ -251,13 +251,13 @@ export default function AdminStaff() {
               <p className="text-sm text-brand-muted mt-2">Add your first sales consultant to start processing product inquiries.</p>
             </div>
           ) : (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
               {consultants.map((consult) => (
                 <motion.div
                   key={consult.id}
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-white rounded-2xl border border-gray-100 p-6 flex items-start gap-4 shadow-sm hover:shadow-md transition"
+                  className="bg-white rounded-2xl border border-gray-100 p-6 flex items-start gap-4 shadow-sm hover:shadow-md transition w-full"
                 >
                   <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center shrink-0">
                     <UserCircle2 className="w-7 h-7 text-amber-500" />
@@ -373,7 +373,12 @@ export default function AdminStaff() {
                   <div>
                     <label className="block text-xs font-semibold text-gray-500 mb-1">Area of Specialization <span className="text-red-500 ml-1">*</span></label>
                     <select value={techForm.specialization} onChange={(e) => { setTechForm({ ...techForm, specialization: e.target.value }); if(errors.specialization) setErrors({...errors, specialization: null}) }}
-                      className={`w-full px-4 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 ${errors.specialization ? 'border-red-500 focus:ring-red-500/30' : 'border-gray-200 focus:ring-brand-cyan/30'} bg-white`}
+                      className={`w-full min-w-[130px] px-2.5 py-1.5 text-xs font-medium rounded-md border ${errors.specialization ? 'border-red-500 focus:ring-red-500/30' : 'border-gray-300'} bg-white text-gray-700 shadow-sm outline-none cursor-pointer focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all appearance-none pr-8 relative bg-no-repeat`}
+                      style={{
+                        backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234B5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
+                        backgroundPosition: 'right 0.5rem center',
+                        backgroundSize: '1.25em 1.25em'
+                      }}
                     >
                       <option value="">-- Select --</option>
                       <option value="RO Installation">RO Installation</option>

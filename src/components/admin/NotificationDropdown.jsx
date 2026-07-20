@@ -33,7 +33,7 @@ export default function NotificationDropdown({ notifications, onClose }) {
 
   return (
     <div
-      className="absolute right-0 mt-2 w-96 rounded-2xl bg-white shadow-xl border border-gray-100 py-2 z-[100] text-slate-800"
+      className="absolute right-0 mt-2 w-[calc(100vw-2rem)] sm:w-96 max-w-md rounded-2xl bg-white shadow-xl border border-gray-100 py-2 z-[100] text-slate-800 left-auto"
       onClick={(e) => e.stopPropagation()}
     >
       <div className="flex items-center justify-between px-4 py-2 border-b border-gray-50">

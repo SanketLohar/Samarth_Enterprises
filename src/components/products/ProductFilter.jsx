@@ -23,10 +23,10 @@ export default function ProductFilter({ categories, activeCategory, onCategoryCh
         <label className="block text-xs font-bold uppercase tracking-wider text-brand-muted mb-3">
           Category
         </label>
-        <div className="space-y-1">
+        <div className="flex flex-row overflow-x-auto whitespace-nowrap gap-2 pb-3 scrollbar-none md:flex-col md:overflow-visible md:whitespace-normal md:space-y-1 md:gap-0 md:pb-0">
           <button
             onClick={() => onCategoryChange('all')}
-            className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition ${
+            className={`flex-shrink-0 w-auto md:w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition ${
               activeCategory === 'all'
                 ? 'bg-brand-deep text-white'
                 : 'text-brand-dark hover:bg-brand-light'
@@ -38,7 +38,7 @@ export default function ProductFilter({ categories, activeCategory, onCategoryCh
             <button
               key={cat.id}
               onClick={() => onCategoryChange(cat.id)}
-              className={`w-full text-left px-3 py-2 rounded-lg text-sm transition flex justify-between items-center ${
+              className={`flex-shrink-0 w-auto md:w-full text-left px-3 py-2 rounded-lg text-sm transition flex justify-between items-center gap-2 ${
                 activeCategory === cat.id
                   ? 'bg-brand-deep text-white font-medium'
                   : 'text-brand-dark hover:bg-brand-light'

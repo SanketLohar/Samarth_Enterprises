@@ -248,6 +248,16 @@ export default function Navbar() {
                     Request a Quote
                   </Button>
                 </Link>
+                <button
+                  onClick={() => {
+                    setMobileOpen(false)
+                    handleProfileClick()
+                  }}
+                  className="w-full flex items-center justify-center gap-2 mt-4 px-4 py-3 rounded-lg border border-brand-cyan/40 bg-brand-light text-brand-cyan font-bold transition"
+                >
+                  <User className="w-5 h-5" />
+                  {isAuthenticated ? 'My Account' : 'Staff Login'}
+                </button>
               </div>
             </motion.div>
           )}

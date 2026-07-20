@@ -432,7 +432,12 @@ export default function HelperDashboard() {
                               <select
                                 value={payments[task.id] || ''}
                                 onChange={(e) => setPayments({ ...payments, [task.id]: e.target.value })}
-                                className="w-full px-3 py-2 text-sm text-slate-700 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-cyan/30 bg-white"
+                                className="w-full sm:w-auto min-w-[130px] px-2.5 py-1.5 text-xs font-medium rounded-md border border-gray-300 bg-white text-gray-700 shadow-sm outline-none cursor-pointer focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all appearance-none pr-8 relative bg-no-repeat"
+                                style={{
+                                  backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234B5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
+                                  backgroundPosition: 'right 0.5rem center',
+                                  backgroundSize: '1.25em 1.25em'
+                                }}
                               >
                                 <option value="">Select Follow-up Status *</option>
                                 <option value="In Discussion">In Discussion</option>
@@ -468,7 +473,12 @@ export default function HelperDashboard() {
                                       setAmounts({ ...amounts, [task.id]: '0' });
                                     }
                                   }}
-                                  className="w-full px-3 py-2 text-sm text-slate-700 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-cyan/30 bg-white"
+                                  className="w-full sm:w-auto min-w-[130px] px-2.5 py-1.5 text-xs font-medium rounded-md border border-gray-300 bg-white text-gray-700 shadow-sm outline-none cursor-pointer focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all appearance-none pr-8 relative bg-no-repeat"
+                                  style={{
+                                    backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234B5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
+                                    backgroundPosition: 'right 0.5rem center',
+                                    backgroundSize: '1.25em 1.25em'
+                                  }}
                                 >
                                   <option value="">-- Select --</option>
                                   {PAYMENT_OPTIONS.map(opt => (

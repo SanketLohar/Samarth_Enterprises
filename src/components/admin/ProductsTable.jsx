@@ -30,21 +30,21 @@ export default function ProductsTable() {
 
   return (
     <div>
-      <div className="flex flex-col sm:flex-row sm:items-center gap-4 justify-between w-full mb-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between w-full mb-6">
         <h2 className="text-xl font-bold text-gray-900">Products Management</h2>
-        <div className="flex items-center gap-3">
-          <div className="relative">
+        <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+          <div className="relative w-full sm:w-auto">
             <input
               type="text"
               placeholder="Search product name, category..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-64 px-4 py-2 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-cyan/30"
+              className="w-full sm:w-64 px-4 py-2 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-cyan/30"
             />
           </div>
           <button
             onClick={() => { setShowForm(true); setEditing(null) }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-brand-deep text-white rounded-lg text-sm font-semibold hover:bg-brand-cyan transition"
+            className="w-full sm:w-auto justify-center inline-flex items-center gap-2 px-4 py-2 bg-brand-deep text-white rounded-lg text-sm font-semibold hover:bg-brand-cyan transition"
           >
             <Plus className="w-4 h-4" /> Add Product
           </button>
