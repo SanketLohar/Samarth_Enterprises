@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { ArrowRight, Phone } from 'lucide-react'
 import Button from '../ui/Button'
 import { companyInfo } from '../../data/categories'
+import BlurText from '../react-bits/BlurText'
 
 export default function CTASection() {
   return (
@@ -20,7 +21,7 @@ export default function CTASection() {
           className="text-center max-w-2xl mx-auto"
         >
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Ready for Pure, Healthy Water?
+            <BlurText delay={0.1}>Ready for Pure, Healthy Water?</BlurText>
           </h2>
           <p className="mt-4 text-white/70 text-lg">
             Get a free consultation and customized solution for your home, institution, or industry. No pricing pressure — just expert guidance.

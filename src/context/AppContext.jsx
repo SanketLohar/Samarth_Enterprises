@@ -58,11 +58,21 @@ export function AppProvider({ children }) {
   }, [])
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, 'products'), (snapshot) => {
+    const unsubProducts = onSnapshot(collection(db, 'products'), (snapshot) => {
       const fetched = snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
       setProducts(fetched.map(normalizeProduct))
     }, (err) => console.error("products:", err))
-    return () => unsubscribe()
+
+    const unsubServices = onSnapshot(collection(db, 'services'), (snapshot) => {
+      const fetched = snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
+      console.log("Fetched Services:", fetched)
+      setServices(fetched)
+    }, (err) => console.error('Services stream error:', err))
+
+    return () => {
+      unsubProducts()
+      unsubServices()
+    }
   }, [])
 
   // ── Auth-guarded private collection listeners ──────────────────────────
@@ -74,7 +84,6 @@ export function AppProvider({ children }) {
       // Clear stale data on logout so private data doesn't persist in memory
       setEnquiries([])
       setProductEnquiries([])
-      setServices([])
       setTechnicians([])
       return
     }
@@ -107,14 +116,6 @@ export function AppProvider({ children }) {
       (err) => console.error('Product Enquiries stream error:', err)
     )
 
-    const unsubServices = onSnapshot(
-      collection(db, 'services'),
-      (snapshot) => {
-        setServices(snapshot.docs.map(d => ({ id: d.id, ...d.data() })))
-      },
-      (err) => console.error('Services stream error:', err)
-    )
-
     const unsubTechnicians = onSnapshot(
       collection(db, 'technicians'),
       (snapshot) => {
@@ -135,7 +136,6 @@ export function AppProvider({ children }) {
     return () => {
       unsubEnquiries()
       unsubProductEnquiries()
-      unsubServices()
       unsubTechnicians()
       unsubConsultants()
     }
@@ -222,7 +222,7 @@ export function AppProvider({ children }) {
   }, [])
 
   const addService = useCallback(async (serviceData) => {
-    try { await addDoc(collection(db, 'services'), serviceData) }
+    try { await addDoc(collection(db, 'services'), { ...serviceData, hidden: false, createdAt: serverTimestamp() }) }
     catch (e) { console.error(e) }
   }, [])
 

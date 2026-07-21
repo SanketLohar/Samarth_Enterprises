@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Award, Briefcase, UserCheck, Map } from 'lucide-react'
 import SectionHeader from '../ui/SectionHeader'
+import BlurText from '../react-bits/BlurText'
 
 const metrics = [
   { icon: Award, title: 'ISO Certified', desc: 'Quality Assurance' },
@@ -34,7 +35,9 @@ export default function WhyChooseUs() {
               <div className="w-16 h-16 mx-auto rounded-full bg-brand-cyan/20 flex items-center justify-center mb-6">
                 <metric.icon className="w-8 h-8 text-brand-cyan" />
               </div>
-              <h3 className="text-xl font-bold mb-2">{metric.title}</h3>
+              <h3 className="text-xl font-bold mb-2">
+                <BlurText delay={0.1 + idx * 0.05}>{metric.title}</BlurText>
+              </h3>
               <p className="text-white/60">{metric.desc}</p>
             </motion.div>
           ))}

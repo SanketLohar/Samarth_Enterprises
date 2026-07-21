@@ -2,6 +2,8 @@ import { motion } from 'framer-motion'
 import { Wrench, ShieldCheck, Droplet, ArrowRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import SectionHeader from '../ui/SectionHeader'
+import BlurText from '../react-bits/BlurText'
+import SpotlightCard from '../react-bits/SpotlightCard'
 
 const services = [
   {
@@ -33,7 +35,7 @@ export default function ExpertServices() {
       <div className="max-w-7xl mx-auto relative z-10">
         <SectionHeader
           eyebrow="Professional Support"
-          title="Expert Services & Maintenance"
+          title={<BlurText delay={0.2}>Expert Services &amp; Maintenance</BlurText>}
           subtitle="Beyond sales, our dedicated service network guarantees the longevity and performance of your water purification systems."
           align="center"
         />
@@ -46,18 +48,21 @@ export default function ExpertServices() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-50px' }}
               transition={{ duration: 0.5, delay: index * 0.15 }}
-              className="bg-white rounded-3xl p-8 shadow-xl shadow-brand-deep/5 border border-gray-100 group hover:-translate-y-2 transition-transform duration-300"
             >
-              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 ${service.color}`}>
-                <service.icon className="w-7 h-7" />
-              </div>
-              <h3 className="text-xl font-bold text-brand-dark mb-3">{service.title}</h3>
-              <p className="text-brand-muted leading-relaxed mb-6">
-                {service.description}
-              </p>
-              <Link to={service.link} className="inline-flex items-center gap-2 text-sm font-bold text-brand-cyan group-hover:text-brand-deep transition-colors">
-                Learn More <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </Link>
+              <SpotlightCard spotlightColor="rgba(14, 116, 144, 0.12)" className="bg-white rounded-3xl p-8 shadow-xl shadow-brand-deep/5 border border-gray-100 group hover:-translate-y-2 transition-transform duration-300 h-full">
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 ${service.color}`}>
+                  <service.icon className="w-7 h-7" />
+                </div>
+                <h3 className="text-xl font-bold text-brand-dark mb-3">
+                  <BlurText delay={0.1}>{service.title}</BlurText>
+                </h3>
+                <p className="text-brand-muted leading-relaxed mb-6">
+                  {service.description}
+                </p>
+                <Link to={service.link} className="inline-flex items-center gap-2 text-sm font-bold text-brand-cyan group-hover:text-brand-deep transition-colors">
+                  Learn More <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                </Link>
+              </SpotlightCard>
             </motion.div>
           ))}
         </div>

@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { ShieldCheck, CheckCircle2, PhoneCall, ArrowRight, Settings, Users, PenTool, ClipboardCheck } from 'lucide-react'
-import { Link } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import Button from '../components/ui/Button'
 import SectionHeader from '../components/ui/SectionHeader'
 import BookServiceModal from '../components/services/BookServiceModal'
+import SpotlightCard from '../components/react-bits/SpotlightCard'
+import StarBorder from '../components/react-bits/StarBorder'
+import BlurText from '../components/react-bits/BlurText'
 
 const steps = [
   { step: '01', title: 'Service Request', desc: 'Book a service online or call us directly.', icon: PhoneCall },
@@ -28,16 +30,59 @@ const hardcodedServices = [
   { id: 5, name: 'STP Operations & Overhauls', description: 'End-to-end management, maintenance, and periodic overhauls for Sewage Treatment Plants.', image: 'STP Operations & Overhauls.jpg' },
   { id: 6, name: 'ETP Management Solutions', description: 'Advanced operational support and compliance management for Industrial Effluent Treatment Plants.', image: 'ETP Management Solutions.jpg' },
 ]
-
 export default function Services() {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const { services } = useApp()
+  
+  // Safe filtering: fallback to hardcoded if empty, and strictly check !== true
+  const rawServices = services && services.length > 0 ? services : hardcodedServices;
+  const activeServices = (rawServices || []).filter(s => s.hidden !== true)
+
+  console.log("Services Page activeServices:", activeServices)
+
+  const getImageUrl = (service) => {
+    // If it's a dynamic URL, check if it's already absolute
+    if (service.imageUrl) {
+      if (service.imageUrl.startsWith('http') || service.imageUrl.startsWith('/')) {
+        return service.imageUrl;
+      }
+      return `/images/${service.imageUrl}`;
+    }
+    
+    // Fallback to local image property if it exists directly on the object
+    if (service.image) {
+      if (service.image.startsWith('http') || service.image.startsWith('/')) {
+        return service.image;
+      }
+      return `/images/${service.image}`;
+    }
+
+    const nameLower = (service.name || '').toLowerCase();
+
+    // Explicit keyword matching for user-defined admin names
+    if (nameLower.includes('filter replacement') || nameLower.includes('filter & membrane')) {
+      return `/images/filter and membrane replacement 1.png`;
+    }
+    if (nameLower.includes('repair & maintenance') || nameLower.includes('specialized repair')) {
+      return `/images/specialized repair and dignostic (1).png`;
+    }
+
+    // Smart Fallback: Align images based on the service name matching the registry
+    const matchedFallback = hardcodedServices.find(h => h.name.toLowerCase() === nameLower);
+    if (matchedFallback && matchedFallback.image) {
+      return `/images/${matchedFallback.image}`;
+    }
+
+    // Absolute fallback
+    return 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=800&q=80'
+  }
 
   return (
     <div className="bg-gray-50 min-h-screen">
       {/* Page header */}
       <div className="bg-brand-deep text-white py-20 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(50,140,193,0.2)_0%,transparent_60%)] pointer-events-none" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+        <div className="max-w-7xl mx-auto px-4 sm:-6 lg:px-8 relative z-10 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -62,50 +107,56 @@ export default function Services() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         {/* Services Grid */}
         <div className="mb-24">
-          <SectionHeader
-            eyebrow="Our Offerings"
-            title="Comprehensive Water Management"
-            subtitle="Explore our range of operational and maintenance services dedicated to keeping your systems in peak condition."
-            align="center"
-          />
+          <BlurText delay={0.2}>
+            <SectionHeader
+              eyebrow="Our Offerings"
+              title="Comprehensive Water Management"
+              subtitle="Explore our range of operational and maintenance services dedicated to keeping your systems in peak condition."
+              align="center"
+            />
+          </BlurText>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16">
-            {hardcodedServices.map((service, idx) => (
+            {activeServices.map((service, idx) => (
               <motion.div
                 key={service.id}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-50px' }}
                 transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className="group bg-white rounded-3xl overflow-hidden shadow-lg shadow-gray-200/50 border border-gray-100 flex flex-col h-full hover:shadow-xl transition-shadow duration-300"
+                className="h-full"
               >
-                <div className="aspect-[4/3] bg-gray-100 relative overflow-hidden">
-                  <img
-                    src={`/images/${service.image}`}
-                    alt={service.name.replace(/nexapure/gi, 'Samarth Enterprises')}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                    onError={(e) => {
-                      e.target.onerror = null
-                      e.target.src = '/images/company_logo.png'
-                      e.target.className = 'w-full h-full object-contain p-12 group-hover:scale-105 transition-transform duration-700'
-                    }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/80 via-transparent to-transparent opacity-60" />
-                </div>
-                
-                <div className="p-8 flex flex-col flex-1 relative bg-white">
-                  <h3 className="text-xl font-bold text-brand-dark mb-3">
-                    {service.name.replace(/nexapure/gi, 'Samarth Enterprises')}
-                  </h3>
-                  <p className="text-brand-muted leading-relaxed mb-8 flex-1">
-                    {service.description.replace(/nexapure/gi, 'Samarth Enterprises')}
-                  </p>
+                <SpotlightCard spotlightColor="rgba(14, 116, 144, 0.15)" className="group bg-white rounded-3xl overflow-hidden shadow-lg shadow-gray-200/50 border border-gray-100 flex flex-col h-full hover:shadow-xl transition-shadow duration-300">
+                  <div className="aspect-[4/3] bg-gray-100 relative overflow-hidden">
+                    <img
+                      src={getImageUrl(service)}
+                      alt={service.name || 'Service'}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                      onError={(e) => {
+                        e.target.onerror = null
+                        e.target.src = '/images/company_logo.png'
+                        e.target.className = 'w-full h-full object-contain p-12 group-hover:scale-105 transition-transform duration-700'
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/80 via-transparent to-transparent opacity-60" />
+                  </div>
                   
-                  <Button onClick={() => setIsModalOpen(true)} variant="outline" className="w-full justify-center group-hover:bg-brand-cyan group-hover:text-brand-deep group-hover:border-brand-cyan transition-colors">
-                    Book Service
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                </div>
+                  <div className="p-8 flex flex-col flex-1 relative bg-white">
+                    <h3 className="text-xl font-bold text-brand-dark mb-3">
+                      {service.name}
+                    </h3>
+                    <p className="text-brand-muted leading-relaxed mb-8 flex-1">
+                      {service.description}
+                    </p>
+                    
+                    <StarBorder color="#00e5ff" speed="4s" className="rounded-xl mt-auto w-full">
+                      <Button onClick={() => setIsModalOpen(true)} variant="outline" className="w-full relative z-10 justify-center group-hover:bg-brand-cyan group-hover:text-brand-deep border-none bg-white transition-colors h-full">
+                        Book Service
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Button>
+                    </StarBorder>
+                  </div>
+                </SpotlightCard>
               </motion.div>
             ))}
           </div>

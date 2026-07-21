@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion'
 import { CheckCircle2 } from 'lucide-react'
 import SectionHeader from '../ui/SectionHeader'
+import Particles from '../react-bits/Particles'
+import BlurText from '../react-bits/BlurText'
 
 const features = [
   'R.O. Systems',
@@ -11,10 +13,23 @@ const features = [
 
 export default function CorporateAbout() {
   return (
-    <section className="section-padding bg-white overflow-hidden">
-      <div className="max-w-7xl mx-auto">
+    <section
+      className="section-padding bg-gradient-to-b from-slate-50 to-white relative overflow-hidden"
+      style={{ position: 'relative' }}
+    >
+      {/* Particles canvas — must be absolute and fill this section */}
+      <Particles
+        particleCount={50}
+        particleColors={['#00e5ff', '#8dbcd8', '#0e7490']}
+        speed={0.4}
+        moveParticlesOnHover={false}
+        style={{ opacity: 0.3, zIndex: 0, pointerEvents: 'none' }}
+      />
+
+      <div className="max-w-7xl mx-auto relative" style={{ zIndex: 10 }}>
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          {/* Left: Corporate Identity */}
+
+          {/* Left: Company Logo Card — glassmorphism, no harsh white box */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -22,21 +37,28 @@ export default function CorporateAbout() {
             transition={{ duration: 0.6 }}
             className="relative"
           >
+            {/* Tilted accent behind card */}
             <div className="absolute inset-0 bg-brand-light/40 rounded-[2.5rem] transform -rotate-3 scale-105" />
-            <div className="relative bg-white border border-gray-100 rounded-[2rem] p-10 lg:p-14 shadow-xl flex flex-col items-center justify-center min-h-[360px]">
-              <img
-                src="/images/company_logo.png"
-                alt="Samarth Enterprises"
-                className="w-full max-w-[280px] h-auto drop-shadow-sm"
-                onError={(e) => {
-                  e.target.onerror = null
-                  e.target.src = '/images/company_logo.png'
-                }}
-              />
+
+            {/* Outer card — glassmorphism */}
+            <div className="relative bg-slate-100/80 border border-slate-200 rounded-2xl p-8 shadow-md flex items-center justify-center min-h-[360px]">
+              {/* Inner logo wrapper — frosted, no jarring white box */}
+              <div className="p-4 rounded-xl bg-white/60 backdrop-blur-sm border border-slate-200/50 shadow-inner flex justify-center items-center w-full">
+                <img
+                  src="/images/company_logo.png"
+                  alt="Samarth Enterprises"
+                  className="w-full max-w-[280px] h-auto"
+                  style={{ mixBlendMode: 'multiply' }}
+                  onError={(e) => {
+                    e.target.onerror = null
+                    e.target.src = '/images/company_logo.png'
+                  }}
+                />
+              </div>
             </div>
           </motion.div>
 
-          {/* Right: Corporate Overview */}
+          {/* Right: Corporate Overview Text */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -45,11 +67,11 @@ export default function CorporateAbout() {
           >
             <SectionHeader
               eyebrow="Corporate Overview"
-              title="Pioneering Pure Water Solutions"
+              title={<BlurText delay={0.2}>Pioneering Pure Water Solutions</BlurText>}
               subtitle="Samarth Enterprises is a premier Water Treatment Consultant and service provider specializing in end-to-end water management architectures across Domestic, Commercial, and Industrial sectors. Headquartered in Sangli, we deliver high-performance solutions tailored for absolute purity, safety, and compliance."
               align="left"
             />
-            
+
             <div className="mt-8 grid sm:grid-cols-2 gap-x-6 gap-y-4">
               {features.map((feature, idx) => (
                 <div key={idx} className="flex items-start gap-3">
@@ -68,6 +90,7 @@ export default function CorporateAbout() {
               </p>
             </div>
           </motion.div>
+
         </div>
       </div>
     </section>

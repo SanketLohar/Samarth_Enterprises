@@ -4,6 +4,7 @@ import { X, Send, CheckCircle } from 'lucide-react'
 import Button from '../ui/Button'
 import { useApp } from '../../context/AppContext'
 
+// Static options fallback
 const SERVICE_OPTIONS = [
   'Alkaline Purifier Servicing',
   'Water Softener Maintenance',
@@ -15,7 +16,14 @@ const SERVICE_OPTIONS = [
 ]
 
 export default function BookServiceModal({ open, onClose }) {
-  const { addEnquiry } = useApp()
+  const { addEnquiry, services } = useApp()
+  // Safe filtering: fallback if services is empty
+  const rawServices = services && services.length > 0 ? services.map(s => s.name) : SERVICE_OPTIONS;
+  // Make sure we have objects with names or just strings if it's the fallback
+  const activeServiceNames = (services && services.length > 0) 
+    ? services.filter(s => s.hidden !== true).map(s => s.name) 
+    : SERVICE_OPTIONS;
+
   const [submitted, setSubmitted] = useState(false)
   const [form, setForm] = useState({ 
     name: '', 
@@ -163,9 +171,10 @@ export default function BookServiceModal({ open, onClose }) {
                   }}
                 >
                   <option value="" disabled>Select a service</option>
-                  {SERVICE_OPTIONS.map((opt) => (
-                    <option key={opt} value={opt}>{opt}</option>
+                  {activeServiceNames.map((optName) => (
+                    <option key={optName} value={optName}>{optName}</option>
                   ))}
+                  {!activeServiceNames.includes("Other") && <option value="Other">Other</option>}
                 </select>
                 {errors.serviceType && <p className="text-red-500 text-xs mt-1">{errors.serviceType}</p>}
               </div>
