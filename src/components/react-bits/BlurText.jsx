@@ -3,7 +3,7 @@ import { motion, useInView } from 'framer-motion'
 
 export default function BlurText({ children, className = '', delay = 0, duration = 0.65 }) {
   const ref = useRef(null)
-  const inView = useInView(ref, { once: true, amount: 0.3 })
+  const inView = useInView(ref, { once: false, amount: 0.3 })
 
   if (typeof children !== 'string') return <span className={className}>{children}</span>
 

@@ -25,7 +25,7 @@ export default function SectionHeader({ eyebrow, title, subtitle, align = 'cente
   const alignClass = align === 'left' ? 'text-left' : 'text-center'
   const ref = useRef(null)
   // amount: 0.3 means 30% of the heading must be visible before firing
-  const inView = useInView(ref, { once: true, amount: 0.3 })
+  const inView = useInView(ref, { once: false, amount: 0.3 })
 
   return (
     <div ref={ref} className={`mb-12 lg:mb-16 ${alignClass}`}>
