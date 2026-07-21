@@ -1,73 +1,89 @@
-import { motion } from 'framer-motion'
+import { useRef } from 'react'
+import { motion, useInView } from 'framer-motion'
 import { CheckCircle2 } from 'lucide-react'
 import SectionHeader from '../ui/SectionHeader'
-import Particles from '../react-bits/Particles'
-import BlurText from '../react-bits/BlurText'
 
-const features = [
-  'R.O. Systems',
-  'W.T.P.',
-  'E.T.P.',
-  'S.T.P.'
-]
+const features = ['R.O. Systems', 'W.T.P.', 'E.T.P.', 'S.T.P.']
 
 export default function CorporateAbout() {
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, amount: 0.15 })
+
   return (
     <section
-      className="section-padding bg-gradient-to-b from-slate-50 to-white relative overflow-hidden"
-      style={{ position: 'relative' }}
+      ref={ref}
+      className="section-padding relative overflow-hidden"
+      style={{
+        background: 'linear-gradient(160deg, #f0f9ff 0%, #e8f4fb 40%, #f8fafc 100%)',
+      }}
     >
-      {/* Particles canvas — must be absolute and fill this section */}
-      <Particles
-        particleCount={50}
-        particleColors={['#00e5ff', '#8dbcd8', '#0e7490']}
-        speed={0.4}
-        moveParticlesOnHover={false}
-        style={{ opacity: 0.3, zIndex: 0, pointerEvents: 'none' }}
+      {/* Pure CSS ambient radial glow — no canvas, guaranteed visible */}
+      <div
+        aria-hidden
+        style={{
+          position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none',
+          background: 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(14,116,144,0.10) 0%, transparent 70%)',
+        }}
+      />
+      {/* Subtle dot-grid mesh */}
+      <div
+        aria-hidden
+        style={{
+          position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none',
+          backgroundImage: 'linear-gradient(to right,#80808010 1px,transparent 1px),linear-gradient(to bottom,#80808010 1px,transparent 1px)',
+          backgroundSize: '28px 28px',
+        }}
       />
 
       <div className="max-w-7xl mx-auto relative" style={{ zIndex: 10 }}>
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
-          {/* Left: Company Logo Card — glassmorphism, no harsh white box */}
+          {/* Left: Elevated logo focus card */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.6 }}
+            animate={inView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="relative"
           >
-            {/* Tilted accent behind card */}
-            <div className="absolute inset-0 bg-brand-light/40 rounded-[2.5rem] transform -rotate-3 scale-105" />
+            {/* Tilted accent slab behind card */}
+            <div
+              aria-hidden
+              className="absolute inset-0 rounded-3xl transform -rotate-2 scale-105"
+              style={{ background: 'linear-gradient(135deg,rgba(14,116,144,0.12),rgba(186,230,253,0.35))', zIndex: 0 }}
+            />
 
-            {/* Outer card — glassmorphism */}
-            <div className="relative bg-slate-100/80 border border-slate-200 rounded-2xl p-8 shadow-md flex items-center justify-center min-h-[360px]">
-              {/* Inner logo wrapper — frosted, no jarring white box */}
-              <div className="p-4 rounded-xl bg-white/60 backdrop-blur-sm border border-slate-200/50 shadow-inner flex justify-center items-center w-full">
-                <img
-                  src="/images/company_logo.png"
-                  alt="Samarth Enterprises"
-                  className="w-full max-w-[280px] h-auto"
-                  style={{ mixBlendMode: 'multiply' }}
-                  onError={(e) => {
-                    e.target.onerror = null
-                    e.target.src = '/images/company_logo.png'
-                  }}
-                />
-              </div>
+            {/* Focus card — high elevation, no inner white box */}
+            <div
+              className="relative rounded-3xl p-10 flex items-center justify-center"
+              style={{
+                zIndex: 1,
+                background: 'rgba(255,255,255,0.82)',
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
+                border: '1px solid rgba(148,163,184,0.5)',
+                boxShadow: '0 20px 50px rgba(8,112,184,0.10), 0 4px 16px rgba(0,0,0,0.04)',
+                minHeight: '360px',
+              }}
+            >
+              <img
+                src="/images/company_logo.png"
+                alt="Samarth Enterprises"
+                className="max-h-64 w-full object-contain drop-shadow-md"
+                style={{ mixBlendMode: 'multiply' }}
+                onError={(e) => { e.target.onerror = null }}
+              />
             </div>
           </motion.div>
 
-          {/* Right: Corporate Overview Text */}
+          {/* Right: Corporate overview text */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.6 }}
+            animate={inView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
           >
             <SectionHeader
               eyebrow="Corporate Overview"
-              title={<BlurText delay={0.2}>Pioneering Pure Water Solutions</BlurText>}
+              title="Pioneering Pure Water Solutions"
               subtitle="Samarth Enterprises is a premier Water Treatment Consultant and service provider specializing in end-to-end water management architectures across Domestic, Commercial, and Industrial sectors. Headquartered in Sangli, we deliver high-performance solutions tailored for absolute purity, safety, and compliance."
               align="left"
             />

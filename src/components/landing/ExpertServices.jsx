@@ -31,7 +31,22 @@ const services = [
 
 export default function ExpertServices() {
   return (
-    <section className="section-padding bg-brand-light/30 relative overflow-hidden">
+    <section
+      className="relative overflow-hidden section-padding"
+      style={{
+        background: 'linear-gradient(160deg,#f0f9ff 0%,#e8f4fb 50%,#f8fafc 100%)',
+        position: 'relative',
+      }}
+    >
+      {/* CSS mesh grid overlay */}
+      <div
+        aria-hidden
+        style={{
+          position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none',
+          backgroundImage: 'linear-gradient(to right,#80808012 1px,transparent 1px),linear-gradient(to bottom,#80808012 1px,transparent 1px)',
+          backgroundSize: '24px 24px',
+        }}
+      />
       <div className="max-w-7xl mx-auto relative z-10">
         <SectionHeader
           eyebrow="Professional Support"

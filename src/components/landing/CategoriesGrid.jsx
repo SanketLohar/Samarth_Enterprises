@@ -7,7 +7,6 @@ import {
 import { useApp } from '../../context/AppContext'
 import SectionHeader from '../ui/SectionHeader'
 import SpotlightCard from '../react-bits/SpotlightCard'
-import BlurText from '../react-bits/BlurText'
 
 const iconMap = {
   Droplets, Sparkles, Waves, Building2, Factory, Filter,
@@ -28,11 +27,26 @@ export default function CategoriesGrid() {
   const { categories } = useApp()
 
   return (
-    <section className="section-padding bg-white">
-      <div className="max-w-7xl mx-auto">
+    <section
+      className="section-padding relative overflow-hidden"
+      style={{
+        background: 'linear-gradient(180deg,#f8fafc 0%,#ffffff 100%)',
+        position: 'relative',
+      }}
+    >
+      {/* CSS mesh grid overlay */}
+      <div
+        aria-hidden
+        style={{
+          position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none',
+          backgroundImage: 'linear-gradient(to right,#80808012 1px,transparent 1px),linear-gradient(to bottom,#80808012 1px,transparent 1px)',
+          backgroundSize: '24px 24px',
+        }}
+      />
+      <div className="max-w-7xl mx-auto relative" style={{ zIndex: 10 }}>
         <SectionHeader
           eyebrow="Product Categories"
-          title={<BlurText delay={0.2}>Complete Water Treatment Solutions</BlurText>}
+          title="Complete Water Treatment Solutions"
           subtitle="From residential purifiers to industrial RO plants — browse our full range of authorized products and components."
         />
 
@@ -47,7 +61,7 @@ export default function CategoriesGrid() {
             const Icon = iconMap[cat.icon] || Package
             return (
               <motion.div key={cat.id} variants={item}>
-                <SpotlightCard spotlightColor="rgba(14, 116, 144, 0.15)" className="h-full rounded-2xl border border-gray-100 bg-white hover:border-brand-cyan/30">
+                <SpotlightCard spotlightColor="rgba(14, 116, 144, 0.15)" className="h-full bg-white/90 backdrop-blur-sm rounded-2xl border border-slate-200/60 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                   <Link
                     to={`/products?category=${encodeURIComponent(cat.id)}`}
                     className="group card-lift block h-full p-5 relative overflow-hidden"

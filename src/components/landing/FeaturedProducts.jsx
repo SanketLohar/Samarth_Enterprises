@@ -15,7 +15,10 @@ export default function FeaturedProducts() {
   if (!featured.length) return null
 
   return (
-    <section className="section-padding bg-white">
+    <section
+      className="section-padding relative overflow-hidden"
+      style={{ background: 'linear-gradient(180deg,#ffffff 0%,#f0f9ff 60%,#f8fafc 100%)' }}
+    >
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
           <SectionHeader
