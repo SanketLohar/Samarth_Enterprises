@@ -72,14 +72,14 @@ export default function About() {
             className="relative"
           >
             {/* Corporate Footage */}
-            <div className="aspect-[4/3] rounded-[2rem] overflow-hidden shadow-2xl bg-gray-100 relative">
+            <div className="aspect-[4/3] rounded-[2rem] overflow-hidden shadow-2xl bg-white relative pb-8 px-8">
               <video
                 src="/videos/aboutus.mp4"
                 autoPlay
                 loop
                 muted
                 playsInline
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
                 poster="/images/company_logo.png"
               />
               <div className="absolute inset-0 border border-black/5 rounded-[2rem] pointer-events-none" />
