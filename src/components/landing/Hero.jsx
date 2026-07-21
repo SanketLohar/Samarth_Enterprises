@@ -40,9 +40,9 @@ export default function Hero() {
   }, [])
 
   return (
-    <section className="relative w-full bg-slate-950 text-white pt-20 sm:pt-24 md:pt-0">
+    <section className="relative w-full bg-[#0b192c] overflow-hidden pt-20 sm:pt-24 md:pt-0">
       {/* Mobile Video Container Wrapper */}
-      <div className="relative w-full min-h-[480px] h-[70vh] md:h-screen flex items-center justify-center overflow-hidden">
+      <div className="relative w-full min-h-[480px] h-[85vh] md:h-screen flex items-center justify-center overflow-hidden">
         
         {/* ── Full-bleed background video ── */}
         <video
@@ -57,13 +57,13 @@ export default function Hero() {
         </video>
 
         {/* ── Gradient Dark Overlay for Text Readability ── */}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-slate-950/30 z-[1]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0b192c] via-[#0b192c]/50 to-transparent z-[1]" />
         {/* Desktop Brand Overlay (Left fade) */}
-        <div className="absolute inset-0 z-[1] bg-gradient-to-r from-slate-950/80 via-slate-900/40 to-transparent hidden md:block pointer-events-none" />
+        <div className="absolute inset-0 z-[1] bg-gradient-to-r from-[#0b192c]/80 via-slate-900/40 to-transparent hidden md:block pointer-events-none" />
 
         {/* ── Content Overlay ── */}
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 flex flex-col justify-center h-full pt-4 pb-8">
-          <div className="max-w-2xl">
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 pt-20 pb-8 md:py-0 h-[85vh] md:h-screen flex flex-col justify-end md:justify-center">
+          <div className="max-w-2xl text-left space-y-3 md:space-y-4">
             <AnimatePresence mode="wait">
               <motion.div
                 key={current}
@@ -71,35 +71,35 @@ export default function Hero() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 32 }}
                 transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-                className="p-4 sm:p-6 md:p-0 rounded-2xl bg-slate-900/60 md:bg-transparent backdrop-blur-md md:backdrop-blur-none border border-white/10 md:border-none w-full"
+                className="w-full"
               >
                 {/* Mobile Tag Pills */}
                 <div className="flex flex-wrap gap-2 mb-3">
-                  <span className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-medium bg-cyan-950/80 backdrop-blur-md text-cyan-300 border border-cyan-500/30 px-3 py-1.5 rounded-full shadow-sm">
+                  <span className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-semibold text-cyan-300 bg-cyan-950/70 border border-cyan-500/30 px-3 py-1 rounded-full">
                     <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
                     {slides[current].eyebrow}
                   </span>
                 </div>
 
                 {/* Responsive Headline */}
-                <h1 className="text-2xl sm:text-4xl md:text-6xl font-bold tracking-tight text-white leading-tight max-w-2xl drop-shadow-lg">
+                <h1 className="text-2xl sm:text-4xl md:text-6xl font-bold tracking-tight text-white leading-snug drop-shadow-md">
                   <SplitText>{slides[current].title}</SplitText>
                 </h1>
 
                 {/* Description - Brief on Mobile */}
-                <div className="mt-2 text-xs sm:text-base text-slate-300 max-w-lg leading-relaxed line-clamp-3 md:line-clamp-none drop-shadow">
+                <div className="mt-2 text-xs sm:text-base text-slate-200 leading-relaxed drop-shadow-sm">
                   <p>{slides[current].subtitle}</p>
                 </div>
 
                 {/* CTA Buttons */}
-                <div className="mt-5 flex items-center gap-3">
+                <div className="pt-1 flex items-center gap-3">
                   <Link to={slides[current].link}>
-                    <button className="px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold text-xs sm:text-sm transition-all shadow-lg shadow-cyan-500/20">
+                    <button className="flex-1 sm:flex-none px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold text-xs sm:text-sm shadow-md transition-all text-center">
                       {slides[current].cta} &rarr;
                     </button>
                   </Link>
                   <Link to="/contact">
-                    <button className="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-medium text-xs sm:text-sm border border-white/20 transition-all">
+                    <button className="flex-1 sm:flex-none px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium text-xs sm:text-sm border border-white/20 transition-all text-center">
                       Enquire Now
                     </button>
                   </Link>
