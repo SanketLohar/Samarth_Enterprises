@@ -42,7 +42,7 @@ export default function Hero() {
   return (
     <section className="relative w-full overflow-hidden bg-slate-950 text-white">
       {/* Mobile Video Container Wrapper */}
-      <div className="relative w-full h-[320px] sm:h-[400px] md:h-screen md:min-h-[500px] flex flex-col md:flex-row items-center justify-center overflow-hidden">
+      <div className="relative w-full aspect-video md:aspect-auto md:h-screen md:min-h-[500px] bg-slate-950 flex flex-col md:flex-row items-center justify-center overflow-hidden">
         
         {/* ── Full-bleed background video ── */}
         <video
@@ -51,15 +51,15 @@ export default function Hero() {
           muted
           playsInline
           preload="auto"
-          className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none z-0"
+          className="absolute inset-0 w-full h-full object-contain md:object-cover pointer-events-none z-0"
         >
           <source src="/images/animated_video.mp4" type="video/mp4" />
         </video>
 
         {/* ── Gradient Dark Overlay for Text Readability ── */}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent z-[1]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent pointer-events-none z-[1]" />
         {/* Desktop Brand Overlay (Left fade) */}
-        <div className="absolute inset-0 z-[1] bg-gradient-to-r from-slate-950/80 via-slate-900/40 to-transparent hidden md:block" />
+        <div className="absolute inset-0 z-[1] bg-gradient-to-r from-slate-950/80 via-slate-900/40 to-transparent hidden md:block pointer-events-none" />
 
         {/* ── Content Overlay ── */}
         <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-end md:justify-center h-full pb-6 md:pb-0">
