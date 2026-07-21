@@ -41,13 +41,14 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto section-padding grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12">
-        <div>
-          <div className="bg-white p-4 rounded-xl inline-flex mb-6">
+      <div className="max-w-7xl mx-auto section-padding grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+        <div className="text-center md:text-left flex flex-col items-center md:items-start border-b border-slate-800/60 pb-6 md:border-none md:pb-0">
+          <div className="bg-white/80 backdrop-blur-md p-3.5 rounded-xl inline-flex mb-6 shadow-[0_0_20px_rgba(255,255,255,0.05)] border border-white/10">
             <img
               src="/images/company_logo.png"
               alt={companyInfo.name}
-              className="h-10 w-auto object-contain"
+              className="h-10 w-auto object-contain filter drop-shadow-sm bg-transparent"
+              style={{ mixBlendMode: 'multiply', backgroundColor: 'transparent' }}
               onError={(e) => { e.target.onerror = null; e.target.src = '/images/company_logo.png' }}
             />
           </div>
@@ -56,7 +57,7 @@ export default function Footer() {
           </p>
         </div>
 
-        <div>
+        <div className="border-b border-slate-800/60 pb-6 md:border-none md:pb-0 text-left">
           <h4 className="font-bold text-sm tracking-wider uppercase mb-5 text-brand-cyan">Quick Links</h4>
           <ul className="space-y-2.5">
             {quickLinks.map(({ to, label }) => (
@@ -69,7 +70,7 @@ export default function Footer() {
           </ul>
         </div>
 
-        <div>
+        <div className="border-b border-slate-800/60 pb-6 md:border-none md:pb-0 text-left">
           <h4 className="font-bold text-sm tracking-wider uppercase mb-5 text-brand-cyan">Solutions</h4>
           <ul className="space-y-2.5">
             {customerLinks.map(({ to, label }) => (
@@ -82,7 +83,7 @@ export default function Footer() {
           </ul>
         </div>
 
-        <div>
+        <div className="text-left">
           <h4 className="font-bold text-sm tracking-wider uppercase mb-5 text-brand-cyan">Contact</h4>
           <ul className="space-y-3 text-sm text-white/60">
             <li className="flex gap-3">
@@ -106,8 +107,8 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-white/40 text-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-20 md:pb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <p className="text-white/40 text-xs text-center md:text-left">
             © {new Date().getFullYear()} {companyInfo.name}. All rights reserved.
           </p>
         </div>
