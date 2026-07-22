@@ -237,7 +237,7 @@ export default function Services() {
             <p className="text-white/90 text-lg mb-10 max-w-2xl mx-auto">
               Our technical support team is ready to dispatch experts to your location for emergency repairs or scheduled maintenance.
             </p>
-            <Button onClick={() => setIsModalOpen(true)} size="xl" className="!bg-white !text-brand-deep hover:!bg-gray-100 border-none shadow-xl shadow-brand-deep/20">
+            <Button onClick={() => setIsModalOpen(true)} size="xl" className="px-10 py-4 font-bold !bg-white !text-brand-deep hover:!bg-gray-100 border-none shadow-xl shadow-brand-deep/20 hover:scale-105 transition-all">
               Book a Service Now
             </Button>
           </div>
