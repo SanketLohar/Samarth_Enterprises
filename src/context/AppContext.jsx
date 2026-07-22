@@ -58,21 +58,21 @@ export function AppProvider({ children }) {
   }, [])
 
   useEffect(() => {
-    const unsubProducts = onSnapshot(collection(db, 'products'), (snapshot) => {
-      const fetched = snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
-      setProducts(fetched.map(normalizeProduct))
-    }, (err) => console.error("products:", err))
+    const fetchCatalog = async () => {
+      try {
+        const productsSnap = await getDocs(collection(db, 'products'))
+        const fetchedProducts = productsSnap.docs.map(d => ({ id: d.id, ...d.data() }))
+        setProducts(fetchedProducts.map(normalizeProduct))
 
-    const unsubServices = onSnapshot(collection(db, 'services'), (snapshot) => {
-      const fetched = snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
-      console.log("Fetched Services:", fetched)
-      setServices(fetched)
-    }, (err) => console.error('Services stream error:', err))
-
-    return () => {
-      unsubProducts()
-      unsubServices()
+        const servicesSnap = await getDocs(collection(db, 'services'))
+        const fetchedServices = servicesSnap.docs.map(d => ({ id: d.id, ...d.data() }))
+        setServices(fetchedServices)
+      } catch (err) {
+        console.error('Catalog fetch error:', err)
+      }
     }
+
+    fetchCatalog()
   }, [])
 
   // ── Auth-guarded private collection listeners ──────────────────────────

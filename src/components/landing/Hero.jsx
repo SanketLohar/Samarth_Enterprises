@@ -46,15 +46,14 @@ export default function Hero() {
         
         {/* ── Full-bleed background video ── */}
         <video
+          src="/images/animated_video.mp4"
           autoPlay
           loop
           muted
           playsInline
           preload="auto"
           className="absolute inset-0 w-full h-full object-cover object-top pointer-events-none z-0"
-        >
-          <source src="/images/animated_video.mp4" type="video/mp4" />
-        </video>
+        />
 
         {/* ── Gradient Dark Overlay for Text Readability ── */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#0b192c] via-[#0b192c]/50 to-transparent z-[1]" />
