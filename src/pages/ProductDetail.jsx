@@ -29,17 +29,17 @@ export default function ProductDetail() {
   }, [product])
 
   return (
-    <div className="bg-white min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="bg-white min-h-screen pt-12 lg:pt-20 pb-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <Link
           to={`/products?category=${encodeURIComponent(product.category)}`}
-          className="inline-flex items-center gap-1.5 text-sm text-brand-muted hover:text-brand-cyan transition mb-8"
+          className="inline-flex items-center gap-1.5 text-sm text-brand-muted hover:text-brand-cyan transition mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to {cat?.shortLabel || 'Products'}
         </Link>
 
-        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 mt-10 lg:mt-14">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
