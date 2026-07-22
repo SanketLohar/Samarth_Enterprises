@@ -21,7 +21,7 @@ const capabilities = [
 export default function About() {
   return (
     <>
-      <div className="bg-brand-deep text-white py-20 relative overflow-hidden">
+      <div className="bg-brand-deep text-white pt-30 md:pt-40 pb-12 md:pb-16 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(50,140,193,0.15),transparent_50%)]" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>

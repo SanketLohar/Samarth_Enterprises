@@ -115,27 +115,25 @@ export default function AdminStaff() {
   }
 
   const getTechMetrics = (techId) => {
-    let assigned = 0, active = 0, done = 0;
+    let assigned = 0, done = 0;
     enquiries.forEach(e => {
       if (e.assignedToId === techId || e.technicianId === techId) {
-        if (e.status === 'New' || e.status === 'Contacted') assigned++;
-        else if (e.status === 'In Progress') active++;
-        else if (e.status === 'Resolved' || e.status === 'Deal Done') done++;
+        if (['Resolved', 'Completed', 'Deal Done'].includes(e.status)) done++;
+        else assigned++;
       }
     });
-    return { assigned, active, done };
+    return { assigned, done };
   }
 
   const getConsultantMetrics = (consultantId) => {
-    let assigned = 0, active = 0, done = 0;
+    let assigned = 0, done = 0;
     (productEnquiries || []).forEach(e => {
       if (e.assignedToId === consultantId) {
-        if (e.status === 'New') assigned++;
-        else if (['In Discussion', 'Quotation Sent', 'No Response'].includes(e.status)) active++;
-        else if (['Consultation Completed', 'Converted to Client', 'Lost Lead'].includes(e.status)) done++;
+        if (['Consultation Completed', 'Converted to Client', 'Lost Lead', 'Completed'].includes(e.status)) done++;
+        else assigned++;
       }
     });
-    return { assigned, active, done };
+    return { assigned, done };
   }
 
   return (
@@ -213,16 +211,11 @@ export default function AdminStaff() {
                     )}
                     
                     {/* Dynamic Metrics */}
-                    <div className="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-gray-100">
+                    <div className="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-gray-100">
                       <div className="bg-amber-50 rounded-lg p-2 text-center">
                         <ClipboardList className="w-4 h-4 text-amber-500 mx-auto mb-1" />
                         <p className="text-xs font-semibold text-amber-700">Assigned</p>
                         <p className="text-lg font-bold text-amber-800">{getTechMetrics(tech.id).assigned}</p>
-                      </div>
-                      <div className="bg-blue-50 rounded-lg p-2 text-center">
-                        <Activity className="w-4 h-4 text-blue-500 mx-auto mb-1" />
-                        <p className="text-xs font-semibold text-blue-700">Active</p>
-                        <p className="text-lg font-bold text-blue-800">{getTechMetrics(tech.id).active}</p>
                       </div>
                       <div className="bg-emerald-50 rounded-lg p-2 text-center">
                         <CheckCircle className="w-4 h-4 text-emerald-500 mx-auto mb-1" />
@@ -277,16 +270,11 @@ export default function AdminStaff() {
                     </p>
                     
                     {/* Dynamic Metrics */}
-                    <div className="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-gray-100">
+                    <div className="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-gray-100">
                       <div className="bg-amber-50 rounded-lg p-2 text-center">
                         <ClipboardList className="w-4 h-4 text-amber-500 mx-auto mb-1" />
                         <p className="text-xs font-semibold text-amber-700">Assigned</p>
                         <p className="text-lg font-bold text-amber-800">{getConsultantMetrics(consult.id).assigned}</p>
-                      </div>
-                      <div className="bg-blue-50 rounded-lg p-2 text-center">
-                        <Activity className="w-4 h-4 text-blue-500 mx-auto mb-1" />
-                        <p className="text-xs font-semibold text-blue-700">Active</p>
-                        <p className="text-lg font-bold text-blue-800">{getConsultantMetrics(consult.id).active}</p>
                       </div>
                       <div className="bg-emerald-50 rounded-lg p-2 text-center">
                         <CheckCircle className="w-4 h-4 text-emerald-500 mx-auto mb-1" />
