@@ -80,7 +80,7 @@ export default function Services() {
   return (
     <div className="bg-gray-50 min-h-screen">
       {/* Page header */}
-      <div className="bg-brand-deep text-white py-20 relative overflow-hidden">
+      <div className="bg-brand-deep text-white pt-40 md:pt-40 pb-12 md:pb-16 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(50,140,193,0.2)_0%,transparent_60%)] pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:-6 lg:px-8 relative z-10 text-center">
           <motion.div

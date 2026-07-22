@@ -100,7 +100,7 @@ export default function Contact() {
 
   return (
     <>
-      <div className="bg-brand-deep text-white py-20">
+      <div className="bg-brand-deep text-white pt-40 md:pt-40 pb-12 md:pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <span className="text-brand-cyan text-xs font-bold tracking-[0.25em] uppercase">Get in Touch</span>

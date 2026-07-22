@@ -5,34 +5,25 @@ import SectionHeader from '../ui/SectionHeader'
 
 const features = ['R.O. Systems', 'W.T.P.', 'E.T.P.', 'S.T.P.']
 
-const QUOTE = "Our commitment goes beyond standard filtration. We design, engineer, and maintain robust treatment frameworks to secure water quality, optimize industrial processing lifecycle demands, and ensure absolute consumer health."
+const QUOTE = "Clean water isn't just our service, it's our commitment. Every drop we treat is a promise of quality."
+const words = QUOTE.split(" ")
 
-// Typewriter hook — starts typing only when `start` becomes true
-function useTypewriter(text, speed = 18) {
-  const [displayed, setDisplayed] = useState('')
-  const [started, setStarted] = useState(false)
+const quoteContainer = {
+  hidden: { opacity: 1 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.08, delayChildren: 0.1 }
+  }
+}
 
-  useEffect(() => {
-    if (!started) return
-    if (displayed.length >= text.length) return
-    const timer = setTimeout(() => {
-      setDisplayed(text.slice(0, displayed.length + 1))
-    }, speed)
-    return () => clearTimeout(timer)
-  }, [displayed, started, text, speed])
-
-  return { displayed, start: () => setStarted(true) }
+const wordVariant = {
+  hidden: { opacity: 0, y: 10 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } }
 }
 
 export default function CorporateAbout() {
   const sectionRef = useRef(null)
   const inView = useInView(sectionRef, { once: false, amount: 0.15 })
-  const { displayed: typedQuote, start: startTyping } = useTypewriter(QUOTE, 16)
-
-  // Kick off typewriter once the section enters view
-  useEffect(() => {
-    if (inView) startTyping()
-  }, [inView])
 
   return (
     <section
@@ -112,29 +103,40 @@ export default function CorporateAbout() {
             </div>
 
             {/* Glassmorphic dark quote card with typewriter effect */}
-            <div
-              className="relative z-10 mt-8 rounded-2xl p-8 shadow-xl overflow-hidden"
-              style={{
-                background: 'linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%)',
-                border: '1px solid rgba(51,65,85,0.8)',
-              }}
-            >
-              {/* Subtle inner glow */}
-              <div aria-hidden style={{
-                position: 'absolute', top: 0, left: 0, right: 0, height: '1px',
-                background: 'linear-gradient(90deg,transparent,rgba(34,211,238,0.4),transparent)',
-              }} />
+              <motion.div
+                variants={quoteContainer}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: false, amount: 0.3 }}
+                className="relative z-10 mt-8 rounded-2xl p-8 shadow-xl overflow-hidden"
+                style={{
+                  background: 'linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%)',
+                  border: '1px solid rgba(51,65,85,0.8)',
+                }}
+              >
+                {/* Subtle inner glow */}
+                <div aria-hidden style={{
+                  position: 'absolute', top: 0, left: 0, right: 0, height: '1px',
+                  background: 'linear-gradient(90deg,transparent,rgba(34,211,238,0.4),transparent)',
+                }} />
 
-              <p className="text-lg md:text-xl font-serif italic text-cyan-50 leading-relaxed tracking-wide min-h-[6rem]">
-                "{typedQuote}
-                {typedQuote.length < QUOTE.length && (
-                  <span className="animate-pulse text-cyan-400">|</span>
-                )}"
+                <p className="text-lg md:text-xl font-serif italic text-cyan-50 leading-relaxed tracking-wide min-h-[6rem] flex flex-wrap gap-x-1.5">
+                <span className="mr-0.5">"</span>
+                {words.map((word, i) => (
+                  <motion.span key={i} variants={wordVariant}>
+                    {word}{i === words.length - 1 ? '"' : ''}
+                  </motion.span>
+                ))}
               </p>
-              <span className="mt-4 block text-xs font-semibold tracking-widest uppercase text-cyan-300 font-sans">
-                — Mr. Satish Panhalkar, Water Treatment Consultant
-              </span>
-            </div>
+              <motion.div
+                variants={wordVariant}
+                className="mt-4 pt-3 border-t border-slate-700/60"
+              >
+                <p className="text-xs font-semibold tracking-widest uppercase text-cyan-300 font-sans">
+                  — Mr. Satish Panhalkar, <span className="text-slate-400 font-normal">Water Treatment Consultant</span>
+                </p>
+              </motion.div>
+            </motion.div>
           </motion.div>
 
         </div>
