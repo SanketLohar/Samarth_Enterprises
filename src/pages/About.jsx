@@ -117,8 +117,8 @@ export default function About() {
                 transition={{ delay: i * 0.1 }}
                 className="bg-white p-8 rounded-3xl border border-gray-100 hover:shadow-xl hover:shadow-brand-deep/5 transition-all duration-300 group"
               >
-                <div className="bg-brand-light w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-brand-cyan transition-colors">
-                  <Icon className="w-7 h-7 text-brand-cyan group-hover:text-brand-deep transition-colors" />
+                <div className="bg-brand-light w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-brand-cyan transition-all duration-300 shadow-xs group-hover:shadow-md group-hover:shadow-brand-cyan/30">
+                  <Icon className="w-7 h-7 text-brand-cyan group-hover:text-white transition-all duration-300 group-hover:scale-110" />
                 </div>
                 <h3 className="font-bold text-xl text-brand-dark mb-3">{title}</h3>
                 <p className="text-sm text-brand-muted leading-relaxed">{desc}</p>

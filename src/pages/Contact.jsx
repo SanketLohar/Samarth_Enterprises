@@ -121,9 +121,9 @@ export default function Contact() {
               { icon: Mail, label: 'Email', value: companyInfo.email, href: `mailto:${companyInfo.email}` },
               { icon: Clock, label: 'Business Hours', value: companyInfo.hours },
             ].map(({ icon: Icon, label, value, href }) => (
-              <div key={label} className="flex gap-4">
-                <div className="w-10 h-10 rounded-xl bg-brand-light flex items-center justify-center shrink-0">
-                  <Icon className="w-5 h-5 text-brand-cyan" />
+              <div key={label} className="flex gap-4 group">
+                <div className="w-10 h-10 rounded-xl bg-brand-light group-hover:bg-brand-cyan flex items-center justify-center shrink-0 transition-all duration-300 shadow-xs group-hover:shadow-md group-hover:shadow-brand-cyan/30">
+                  <Icon className="w-5 h-5 text-brand-cyan group-hover:text-white transition-all duration-300 group-hover:scale-110" />
                 </div>
                 <div>
                   <p className="text-xs font-bold text-brand-muted uppercase tracking-wider">{label}</p>

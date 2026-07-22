@@ -180,10 +180,10 @@ export default function Services() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.15 }}
-                className="relative text-center"
+                className="relative text-center group"
               >
-                <div className="w-24 h-24 mx-auto bg-white border-[6px] border-gray-50 rounded-full flex items-center justify-center shadow-md relative z-10 mb-6">
-                  <step.icon className="w-8 h-8 text-brand-cyan" />
+                <div className="w-24 h-24 mx-auto bg-white border-[6px] border-gray-50 rounded-full flex items-center justify-center shadow-md relative z-10 mb-6 group-hover:border-brand-cyan/30 group-hover:bg-brand-light transition-all duration-300">
+                  <step.icon className="w-8 h-8 text-brand-cyan group-hover:scale-110 transition-all duration-300" />
                 </div>
                 <div className="text-sm font-black text-brand-cyan mb-2 tracking-widest">{step.step}</div>
                 <h4 className="text-lg font-bold text-brand-dark mb-2">{step.title}</h4>
@@ -208,10 +208,10 @@ export default function Services() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="bg-brand-deep p-8 rounded-3xl text-center border border-white/10 hover:border-brand-cyan/30 transition-colors"
+                className="bg-brand-deep p-8 rounded-3xl text-center border border-white/10 hover:border-brand-cyan/30 transition-colors group"
               >
-                <div className="w-16 h-16 mx-auto bg-brand-cyan/20 rounded-2xl flex items-center justify-center mb-6">
-                  <feature.icon className="w-8 h-8 text-brand-cyan" />
+                <div className="w-16 h-16 mx-auto bg-brand-cyan/20 group-hover:bg-brand-cyan rounded-2xl flex items-center justify-center mb-6 transition-all duration-300 shadow-md group-hover:shadow-brand-cyan/40">
+                  <feature.icon className="w-8 h-8 text-brand-cyan group-hover:text-white transition-all duration-300 group-hover:scale-110" />
                 </div>
                 <h4 className="text-xl font-bold text-white mb-3">
                   {feature.title.replace(/nexapure/gi, 'Samarth Enterprises')}

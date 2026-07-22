@@ -10,21 +10,21 @@ const services = [
     icon: ShieldCheck,
     title: 'Comprehensive RO AMC',
     description: 'Annual Maintenance Contracts for domestic and commercial RO systems ensuring zero downtime and 100% pure water.',
-    color: 'bg-emerald-50 text-emerald-600',
+    color: 'bg-emerald-50 text-emerald-600 group-hover:bg-emerald-500 group-hover:text-white',
     link: '/services'
   },
   {
     icon: Wrench,
     title: 'Expert RO Repair',
     description: 'Rapid-response troubleshooting and repair by certified technicians for all major water purifier brands.',
-    color: 'bg-brand-light text-brand-cyan',
+    color: 'bg-brand-light text-brand-cyan group-hover:bg-brand-cyan group-hover:text-white',
     link: '/services'
   },
   {
     icon: Droplet,
     title: 'Genuine Filter Replacement',
     description: 'Authentic sediment, carbon, and RO membrane replacements to maintain peak filtration efficiency.',
-    color: 'bg-purple-50 text-purple-600',
+    color: 'bg-purple-50 text-purple-600 group-hover:bg-purple-500 group-hover:text-white',
     link: '/services'
   }
 ]
@@ -65,8 +65,8 @@ export default function ExpertServices() {
               transition={{ duration: 0.5, delay: index * 0.15 }}
             >
               <SpotlightCard spotlightColor="rgba(14, 116, 144, 0.12)" className="bg-white rounded-3xl p-8 shadow-xl shadow-brand-deep/5 border border-gray-100 group hover:-translate-y-2 transition-transform duration-300 h-full">
-                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 ${service.color}`}>
-                  <service.icon className="w-7 h-7" />
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-all duration-300 ${service.color}`}>
+                  <service.icon className="w-7 h-7 transition-all duration-300 group-hover:scale-110" />
                 </div>
                 <h3 className="text-xl font-bold text-brand-dark mb-3">
                   <BlurText delay={0.1}>{service.title}</BlurText>

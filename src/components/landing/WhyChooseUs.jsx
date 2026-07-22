@@ -30,10 +30,10 @@ export default function WhyChooseUs() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-50px' }}
               transition={{ duration: 0.5, delay: idx * 0.15 }}
-              className="bg-white/5 border border-white/10 p-8 rounded-[2rem] text-center hover:bg-white/10 transition-colors duration-300"
+              className="bg-white/5 border border-white/10 p-8 rounded-[2rem] text-center hover:bg-white/10 transition-colors duration-300 group"
             >
-              <div className="w-16 h-16 mx-auto rounded-full bg-brand-cyan/20 flex items-center justify-center mb-6">
-                <metric.icon className="w-8 h-8 text-brand-cyan" />
+              <div className="w-16 h-16 mx-auto rounded-full bg-brand-cyan/20 group-hover:bg-brand-cyan flex items-center justify-center mb-6 transition-all duration-300 shadow-md group-hover:shadow-brand-cyan/40">
+                <metric.icon className="w-8 h-8 text-brand-cyan group-hover:text-white transition-all duration-300 group-hover:scale-110" />
               </div>
               <h3 className="text-xl font-bold mb-2">
                 <BlurText delay={0.1 + idx * 0.05}>{metric.title}</BlurText>
