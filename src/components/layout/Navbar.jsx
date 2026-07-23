@@ -180,7 +180,7 @@ export default function Navbar() {
                           <div className="aspect-video bg-brand-light rounded-lg overflow-hidden mb-4 flex items-center justify-center p-2">
                             {sampleProduct ? (
                               <img
-                                src={sampleProduct.imageFallbacks[0]}
+                                src={sampleProduct?.imageFallbacks?.[0] || '/images/company_logo.png'}
                                 alt={cat.shortLabel}
                                 className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"
                                 onError={(e) => {

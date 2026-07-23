@@ -6,7 +6,7 @@ import { collection, addDoc, serverTimestamp, doc, deleteDoc } from 'firebase/fi
 import { db } from '../../firebase/config'
 
 export default function AdminStaff() {
-  const { technicians, consultants, addTechnician, deleteTechnician, enquiries, productEnquiries } = useApp()
+  const { technicians, consultants, addTechnician, deleteTechnician, enquiries, productEnquiries, services } = useApp()
   
   const [activeTab, setActiveTab] = useState('technicians')
   
@@ -119,6 +119,12 @@ export default function AdminStaff() {
     enquiries.forEach(e => {
       if (e.assignedToId === techId || e.technicianId === techId) {
         if (['Resolved', 'Completed', 'Deal Done'].includes(e.status)) done++;
+        else assigned++;
+      }
+    });
+    (services || []).forEach(s => {
+      if (s.assignedTechnicianId === techId) {
+        if (['Resolved', 'Completed', 'Closed'].includes(s.status)) done++;
         else assigned++;
       }
     });

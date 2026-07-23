@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Pencil, EyeOff, Eye, Plus, AlertTriangle } from 'lucide-react'
+import { Pencil, EyeOff, Eye, Plus, AlertTriangle, Trash2 } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { categoryMeta } from '../../data/categories'
 import { normalizeProduct } from '../../data/parseProducts'
@@ -7,7 +7,7 @@ import ProductForm from './ProductForm'
 import Badge from '../ui/Badge'
 
 export default function ProductsTable() {
-  const { products, updateProduct, toggleProductVisibility } = useApp()
+  const { products, updateProduct, toggleProductVisibility, deleteProduct } = useApp()
   const [editing, setEditing] = useState(null)
   const [showForm, setShowForm] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -102,6 +102,9 @@ export default function ProductsTable() {
                         </button>
                         <button onClick={() => toggleProductVisibility(p)} className="p-2 text-gray-400 hover:text-orange-500 rounded-lg hover:bg-gray-50" title={p.hidden ? 'Show' : 'Hide'}>
                           {p.hidden ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                        </button>
+                        <button onClick={() => { if (window.confirm(`Delete ${p.name}?`)) deleteProduct(p.id) }} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-gray-50" title="Delete">
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                     </td>

@@ -184,6 +184,21 @@ export function AppProvider({ children }) {
     try {
       const { imagePath, imageFallbacks, ...payload } = product
       await setDoc(doc(db, 'products', product.id), payload)
+      setProducts(prev => {
+        const exists = prev.find(p => p.id === product.id)
+        if (exists) {
+          return prev.map(p => p.id === product.id ? normalizeProduct({ ...p, ...payload }) : p)
+        } else {
+          return [normalizeProduct({ id: product.id, ...payload }), ...prev]
+        }
+      })
+    } catch (e) { console.error(e) }
+  }, [])
+
+  const deleteProduct = useCallback(async (id) => {
+    try {
+      await deleteDoc(doc(db, 'products', id))
+      setProducts(prev => prev.filter(p => p.id !== id))
     } catch (e) { console.error(e) }
   }, [])
 
@@ -424,7 +439,7 @@ export function AppProvider({ children }) {
     enquiries, productEnquiries, services, technicians, consultants, currentUser, isAuthenticated,
     isTechnician, authReady,
     addEnquiry, updateEnquiryStatus,
-    updateProduct, updateProductStock, toggleProductVisibility,
+    updateProduct, updateProductStock, toggleProductVisibility, deleteProduct,
     addService, updateService, deleteService, toggleServiceVisibility,
     assignServiceTechnician, updateServiceStatus,
     addTechnician, deleteTechnician,
