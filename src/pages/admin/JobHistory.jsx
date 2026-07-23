@@ -67,23 +67,33 @@ export default function JobHistory() {
                       <p className="text-gray-700 font-medium whitespace-normal leading-relaxed">{job.productName || 'General Service'}</p>
                     </td>
                     <td className="px-4 py-4 align-top">
-                      {job.paymentCollectionStatus ? (
-                        <div className="inline-flex flex-col gap-1.5">
-                          <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded border ${
-                            job.status === 'Warranty Service' ? 'bg-cyan-50 text-cyan-700 border-cyan-200' :
-                            job.status === 'Pending Billing' ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                            job.status === 'Partially Paid' ? 'bg-purple-50 text-purple-700 border-purple-200' :
-                            'bg-emerald-50 text-emerald-700 border-emerald-100'
-                          }`}>
-                            {job.status}
+                      <div className="flex flex-col items-start gap-1">
+                        {/* Status Badge */}
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold uppercase border ${
+                          job.status === 'Warranty Service' ? 'bg-cyan-50 text-cyan-700 border-cyan-200' :
+                          job.status === 'Pending Billing' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                          job.status === 'Partially Paid' ? 'bg-purple-50 text-purple-700 border-purple-200' :
+                          'bg-emerald-50 text-emerald-700 border-emerald-100'
+                        }`}>
+                          {job.status}
+                        </span>
+
+                        {/* Amount Collected */}
+                        <span className="text-sm font-bold text-slate-900 mt-0.5">
+                          ₹{Number(job.amountCollected || job.amount || 0).toLocaleString('en-IN')}
+                        </span>
+
+                        {/* Payment Mode Badge */}
+                        {(job.paymentMode || job.paymentCollectionStatus || job.paymentMethod) ? (
+                          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-600 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-md mt-0.5 capitalize">
+                            💳 {job.paymentMode || job.paymentCollectionStatus || job.paymentMethod}
                           </span>
-                          {job.amountCollected && (
-                            <span className="text-emerald-600 font-extrabold">₹ {Number(job.amountCollected).toLocaleString('en-IN')}</span>
-                          )}
-                        </div>
-                      ) : (
-                        <span className="text-gray-400 italic text-xs">No Data</span>
-                      )}
+                        ) : (
+                          <span className="text-[11px] font-medium text-slate-400 italic mt-0.5">
+                            Payment Mode: N/A
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className="px-4 py-4 align-top">
                       {job.technicianNotes ? (

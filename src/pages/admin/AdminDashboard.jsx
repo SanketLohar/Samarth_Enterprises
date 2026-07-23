@@ -114,7 +114,7 @@ export default function AdminDashboard() {
                         [{getEnquiryTag(e).label}]
                       </span>
                     </p>
-                    <p className="text-xs text-brand-muted mt-0.5 line-clamp-2">{e.message || 'No message provided.'}</p>
+                    <p className="text-xs text-slate-600 mt-1 line-clamp-3 hover:line-clamp-none break-words leading-relaxed">{e.message || 'No message provided.'}</p>
                   </div>
                   <span className={`ml-auto shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full ${
                     e.status === 'New' ? 'bg-amber-100 text-amber-700' :

@@ -183,6 +183,7 @@ export default function HelperDashboard() {
       const updateData = {
         technicianNotes: closeoutNotesText,
         paymentCollectionStatus: currentSelectStatus,
+        paymentMode: currentSelectStatus,
         amountCollected: amounts[task.id] || 0,
         updatedAt: new Date().toISOString()
       }
