@@ -222,7 +222,11 @@ export function AppProvider({ children }) {
   }, [])
 
   const addService = useCallback(async (serviceData) => {
-    try { await addDoc(collection(db, 'services'), { ...serviceData, hidden: false, createdAt: serverTimestamp() }) }
+    try { 
+      const docRef = await addDoc(collection(db, 'services'), { ...serviceData, hidden: false, createdAt: serverTimestamp() })
+      const newService = { id: docRef.id, ...serviceData, hidden: false, createdAt: new Date() }
+      setServices(prev => [newService, ...prev])
+    }
     catch (e) { console.error(e) }
   }, [])
 
@@ -230,16 +234,23 @@ export function AppProvider({ children }) {
     try {
       const { id, ...data } = serviceData
       await updateDoc(doc(db, 'services', id), data)
+      setServices(prev => prev.map(s => s.id === id ? { ...s, ...data } : s))
     } catch (e) { console.error(e) }
   }, [])
 
   const deleteService = useCallback(async (id) => {
-    try { await deleteDoc(doc(db, 'services', id)) }
+    try { 
+      await deleteDoc(doc(db, 'services', id))
+      setServices(prev => prev.filter(s => s.id !== id))
+    }
     catch (e) { console.error(e) }
   }, [])
 
   const toggleServiceVisibility = useCallback(async (service) => {
-    try { await updateDoc(doc(db, 'services', service.id), { hidden: !service.hidden }) }
+    try { 
+      await updateDoc(doc(db, 'services', service.id), { hidden: !service.hidden })
+      setServices(prev => prev.map(s => s.id === service.id ? { ...s, hidden: !service.hidden } : s))
+    }
     catch (e) { console.error(e) }
   }, [])
 
@@ -251,11 +262,15 @@ export function AppProvider({ children }) {
         assignedAt: serverTimestamp(),
         status: 'Assigned',
       })
+      setServices(prev => prev.map(s => s.id === serviceId ? { ...s, assignedTechnicianId: technicianId, assignedTechnicianName: technicianName, status: 'Assigned' } : s))
     } catch (e) { console.error(e) }
   }, [])
 
   const updateServiceStatus = useCallback(async (serviceId, status) => {
-    try { await updateDoc(doc(db, 'services', serviceId), { status }) }
+    try { 
+      await updateDoc(doc(db, 'services', serviceId), { status })
+      setServices(prev => prev.map(s => s.id === serviceId ? { ...s, status } : s))
+    }
     catch (e) { console.error(e) }
   }, [])
 
