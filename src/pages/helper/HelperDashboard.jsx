@@ -19,6 +19,7 @@ export default function HelperDashboard() {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [notes, setNotes] = useState({}) 
+  const [systemLogs, setSystemLogs] = useState({}) 
   const [payments, setPayments] = useState({}) 
   const [amounts, setAmounts] = useState({}) 
   const [activeTab, setActiveTab] = useState('active') 
@@ -68,7 +69,13 @@ export default function HelperDashboard() {
 
     if (assignedTasks.length > 0) {
       assignedTasks.forEach(task => {
-         setNotes(prev => ({ ...prev, [task.id]: prev[task.id] ?? (task.technicianNotes || task.remarks || '') }))
+         // Separate [System]: audit lines from user-written notes
+         const rawNotes = task.technicianNotes || task.remarks || task.consultationNotes || ''
+         const lines = rawNotes.split('\n')
+         const sysLines = lines.filter(l => l.trim().startsWith('[System]'))
+         const userLines = lines.filter(l => !l.trim().startsWith('[System]'))
+         setNotes(prev => ({ ...prev, [task.id]: prev[task.id] ?? userLines.join('\n').trim() }))
+         setSystemLogs(prev => ({ ...prev, [task.id]: sysLines }))
          setPayments(prev => ({ ...prev, [task.id]: prev[task.id] ?? (task.status || '') }))
          setAmounts(prev => ({ ...prev, [task.id]: prev[task.id] ?? (task.amountCollected || '') }))
       })
@@ -468,13 +475,27 @@ export default function HelperDashboard() {
                             </div>
                             <div>
                               <label className="block text-[11px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Consultation Notes <span className="text-red-500 ml-1">*</span></label>
+                              {(() => {
+                                const validLogs = (systemLogs[task.id] || []).filter(
+                                  (log) => !log.toLowerCase().includes('from unassigned')
+                                );
+                                if (validLogs.length === 0) return null;
+                                return (
+                                  <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 mb-2 space-y-1">
+                                    <p className="font-bold text-slate-700 uppercase tracking-wider text-[10px] mb-1">Job Timeline</p>
+                                    {validLogs.map((log, idx) => (
+                                      <p key={idx} className="text-xs text-slate-500">• {log.replace('[System]:', '').trim()}</p>
+                                    ))}
+                                  </div>
+                                );
+                              })()}
                               <textarea
-                                rows="2"
+                                rows={4}
                                 placeholder="Enter details of conversation..."
                                 value={notes[task.id] || ''}
                                 onChange={(e) => setNotes({ ...notes, [task.id]: e.target.value })}
-                                className="w-full px-3 py-2 text-sm text-slate-700 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-cyan/30 resize-none bg-white"
-                              ></textarea>
+                                className="w-full px-3 py-2.5 text-sm text-slate-700 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400/30 focus:border-cyan-400 resize-y min-h-[100px] bg-white placeholder:text-slate-400"
+                              />
                             </div>
                           </>
                         ) : (
@@ -519,13 +540,27 @@ export default function HelperDashboard() {
                             </div>
                             <div>
                               <label className="block text-[11px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Technical Remarks <span className="text-red-500 ml-1">*</span></label>
+                              {(() => {
+                                const validLogs = (systemLogs[task.id] || []).filter(
+                                  (log) => !log.toLowerCase().includes('from unassigned')
+                                );
+                                if (validLogs.length === 0) return null;
+                                return (
+                                  <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 mb-2 space-y-1">
+                                    <p className="font-bold text-slate-700 uppercase tracking-wider text-[10px] mb-1">Job Timeline</p>
+                                    {validLogs.map((log, idx) => (
+                                      <p key={idx} className="text-xs text-slate-500">• {log.replace('[System]:', '').trim()}</p>
+                                    ))}
+                                  </div>
+                                );
+                              })()}
                               <textarea
-                                rows="2"
-                                placeholder="Enter work summary..."
+                                rows={4}
+                                placeholder="Enter service findings, work done, or technical observations..."
                                 value={notes[task.id] || ''}
                                 onChange={(e) => setNotes({ ...notes, [task.id]: e.target.value })}
-                                className="w-full px-3 py-2 text-sm text-slate-700 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-cyan/30 resize-none bg-white"
-                              ></textarea>
+                                className="w-full px-3 py-2.5 text-sm text-slate-700 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400/30 focus:border-cyan-400 resize-y min-h-[100px] bg-white placeholder:text-slate-400"
+                              />
                             </div>
                           </>
                         )}

@@ -14,22 +14,22 @@ export default function AnalyticsCards() {
   ).length
 
   const cards = [
-    { label: 'Total Products', value: products.length, icon: Package, color: 'text-brand-cyan', bg: 'bg-brand-cyan/10' },
-    { label: 'Jobs Done', value: totalJobsDone, icon: Briefcase, color: 'text-emerald-500', bg: 'bg-emerald-50' },
-    { label: 'Pending Enquiries', value: totalPendingCount, icon: Inbox, color: 'text-amber-500', bg: 'bg-amber-50' },
-    { label: 'Low Stock Warnings', value: lowStockCount, icon: AlertTriangle, color: 'text-red-500', bg: 'bg-red-50' },
+    { label: 'Total Products', value: products.length, icon: Package, iconBox: 'bg-cyan-50 text-cyan-600' },
+    { label: 'Jobs Done', value: totalJobsDone, icon: Briefcase, iconBox: 'bg-emerald-50 text-emerald-600' },
+    { label: 'Pending Enquiries', value: totalPendingCount, icon: Inbox, iconBox: 'bg-amber-50 text-amber-600' },
+    { label: 'Low Stock Warnings', value: lowStockCount, icon: AlertTriangle, iconBox: 'bg-rose-50 text-rose-600' },
   ]
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {cards.map(({ label, value, icon: Icon, color, bg }) => (
-        <div key={label} className="bg-white rounded-xl border border-gray-100 p-5 flex items-center gap-4">
-          <div className={`${bg} p-3 rounded-xl shrink-0`}>
-            <Icon className={`w-6 h-6 ${color}`} />
+      {cards.map(({ label, value, icon: Icon, iconBox }) => (
+        <div key={label} className="bg-white rounded-3xl p-6 shadow-sm border border-slate-200/60 hover:shadow-md transition-all">
+          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-xl mb-3 ${iconBox}`}>
+            <Icon className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{label}</p>
-            <p className="text-3xl font-extrabold text-brand-dark mt-0.5">{value}</p>
+            <p className="text-3xl font-extrabold text-slate-800">{value}</p>
+            <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mt-1">{label}</p>
           </div>
         </div>
       ))}

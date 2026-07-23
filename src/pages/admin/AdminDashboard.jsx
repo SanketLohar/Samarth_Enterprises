@@ -13,21 +13,21 @@ export default function AdminDashboard() {
   const getEnquiryTag = (item) => {
     // 1. Strict explicit check for contact form origin source
     if (item.enquirySource === 'contact') {
-      return { label: 'CONTACT', className: 'bg-indigo-50 text-indigo-600 border border-indigo-200' };
+      return { label: 'CONTACT', className: 'bg-indigo-50 text-indigo-600 border border-indigo-200/50 rounded-lg px-2.5 py-1 text-[10px] font-bold tracking-wider' };
     }
     
     // 2. Strict explicit check for service booking modal source
     if (item.enquirySource === 'service' || item.serviceType) {
-      return { label: 'SERVICE', className: 'bg-emerald-50 text-emerald-600 border border-emerald-200' };
+      return { label: 'SERVICE', className: 'bg-blue-50 text-blue-600 border border-blue-200/50 rounded-lg px-2.5 py-1 text-[10px] font-bold tracking-wider' };
     }
     
     // 3. Check for product inquiries collection source 
     if (item.productName || item._collection === 'product_inquiries') {
-      return { label: 'PRODUCT', className: 'bg-blue-50 text-blue-600 border border-blue-200' };
+      return { label: 'PRODUCT', className: 'bg-cyan-50 text-cyan-600 border border-cyan-200/50 rounded-lg px-2.5 py-1 text-[10px] font-bold tracking-wider' };
     }
     
     // Fallback safe option
-    return { label: 'CONTACT', className: 'bg-indigo-50 text-indigo-600 border border-indigo-200' };
+    return { label: 'CONTACT', className: 'bg-indigo-50 text-indigo-600 border border-indigo-200/50 rounded-lg px-2.5 py-1 text-[10px] font-bold tracking-wider' };
   };
 
   const combinedEnquiries = [
@@ -62,20 +62,20 @@ export default function AdminDashboard() {
 
       {/* Operational Alerts */}
       {alerts.length > 0 && (
-        <div className="mb-6 space-y-2">
+        <div className="mb-6 space-y-3">
           {alerts.map((alert, idx) => (
             <div
               key={idx}
-              className={`flex items-start gap-3 px-4 py-3 rounded-xl border text-sm font-medium ${
+              className={`rounded-2xl p-4 font-medium text-sm flex items-center gap-3 ${
                 alert.type === 'warning'
-                  ? 'bg-red-50 border-red-200 text-red-700'
-                  : 'bg-amber-50 border-amber-200 text-amber-700'
+                  ? 'bg-rose-500/10 border border-rose-500/20 text-rose-800'
+                  : 'bg-amber-500/10 border border-amber-500/20 text-amber-800'
               }`}
             >
               {alert.type === 'warning' ? (
-                <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+                <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
               ) : (
-                <Bell className="w-4 h-4 shrink-0 mt-0.5" />
+                <Bell className="w-5 h-5 shrink-0 mt-0.5" />
               )}
               {alert.msg}
             </div>
@@ -97,7 +97,7 @@ export default function AdminDashboard() {
           )}
         </div>
         {/* Dashboard shows only name + message snippet */}
-        <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-200/60 mt-6 overflow-hidden">
           {combinedEnquiries.length === 0 ? (
             <p className="text-center text-gray-400 py-10 text-sm">No enquiries yet.</p>
           ) : (
@@ -110,7 +110,7 @@ export default function AdminDashboard() {
                   <div className="min-w-0">
                     <p className="font-semibold text-brand-dark text-sm truncate flex items-center">
                       {e.name}
-                      <span className={`ml-2 text-[9px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded ${getEnquiryTag(e).className}`}>
+                      <span className={`ml-2 ${getEnquiryTag(e).className}`}>
                         [{getEnquiryTag(e).label}]
                       </span>
                     </p>

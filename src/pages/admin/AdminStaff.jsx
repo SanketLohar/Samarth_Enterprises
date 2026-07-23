@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, Trash2, Phone, Briefcase, X, UserCircle2, Mail, MapPin, CheckCircle, Activity, ClipboardList } from 'lucide-react'
+import { Plus, Trash2, Phone, Briefcase, X, UserCircle2, Mail, MapPin, CheckCircle, Activity, ClipboardList, Bell } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { collection, addDoc, serverTimestamp, doc, deleteDoc } from 'firebase/firestore'
 import { db } from '../../firebase/config'
 
 export default function AdminStaff() {
-  const { technicians, consultants, addTechnician, deleteTechnician, enquiries, productEnquiries, services } = useApp()
+  const { technicians, consultants, addTechnician, deleteTechnician, enquiries, productEnquiries, services, notifications } = useApp()
   
   const [activeTab, setActiveTab] = useState('technicians')
   
@@ -144,17 +144,19 @@ export default function AdminStaff() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-extrabold text-brand-dark">Manage Staff</h1>
-          <p className="text-sm text-brand-muted mt-1">Add and manage your workforce accounts.</p>
+          <h1 className="text-2xl font-bold text-slate-800">Manage Staff</h1>
+          <p className="text-xs text-slate-500 mt-1">Add and manage your workforce accounts.</p>
         </div>
-        <button
-          onClick={() => activeTab === 'technicians' ? setShowTechModal(true) : setShowConsultModal(true)}
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-deep text-white rounded-xl text-sm font-semibold hover:bg-brand-cyan transition"
-        >
-          <Plus className="w-4 h-4" /> Add {activeTab === 'technicians' ? 'Technician' : 'Consultant'}
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => activeTab === 'technicians' ? setShowTechModal(true) : setShowConsultModal(true)}
+            className="bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold px-4 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2 shrink-0"
+          >
+            <Plus className="w-4 h-4" /> Add {activeTab === 'technicians' ? 'Technician' : 'Consultant'}
+          </button>
+        </div>
       </div>
 
       {/* Two-Tab Dashboard Engine */}

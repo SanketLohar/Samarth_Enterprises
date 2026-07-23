@@ -41,15 +41,15 @@ function NotificationBell({ isMobile, notifications, hasUnread }) {
           e.stopPropagation();
           setShowNotifs(prev => !prev);
         }}
-        className={`p-2 rounded-lg transition-colors ${
+        className={`transition-colors ${
           isMobile 
-            ? 'text-white hover:bg-white/10' 
-            : 'text-gray-500 hover:text-brand-dark hover:bg-gray-100 bg-white border border-gray-200 shadow-sm'
+            ? 'p-2 rounded-lg text-white hover:bg-white/10' 
+            : 'relative p-2.5 bg-white rounded-2xl shadow-sm border border-slate-200 hover:bg-slate-50 text-slate-600'
         }`}
       >
         <Bell className="w-5 h-5" />
         {hasUnread && (
-          <span className="absolute top-0 right-0 h-2.5 w-2.5 bg-red-500 rounded-full ring-2 ring-white" />
+          <span className="absolute top-2 right-2 h-2.5 w-2.5 bg-rose-500 rounded-full ring-2 ring-white" />
         )}
       </button>
 
@@ -94,13 +94,13 @@ export default function AdminLayout() {
 
   const SidebarContent = () => (
     <>
-      <div className="p-6 border-b border-white/10 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <img src="/images/company_logo.png" alt="Samarth" className="h-9 w-auto" />
-          <div>
-            <p className="font-bold text-sm leading-tight">Samarth Admin</p>
-            <p className="text-[10px] text-white/40 tracking-wider uppercase mt-0.5">Dashboard</p>
-          </div>
+      <div className="flex items-center gap-3 pb-6 mb-6 border-b border-slate-800/80">
+        <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/20 p-1 flex items-center justify-center shrink-0 overflow-hidden">
+          <img src="/images/company_logo.png" alt="Samarth Logo" className="w-full h-full object-contain" />
+        </div>
+        <div>
+          <h2 className="font-bold text-white text-sm leading-tight">Samarth Admin</h2>
+          <p className="text-[10px] font-semibold tracking-wider text-cyan-400 uppercase mt-0.5">DASHBOARD</p>
         </div>
       </div>
 
@@ -112,8 +112,8 @@ export default function AdminLayout() {
               key={to}
               to={to}
               onClick={() => setSidebarOpen(false)}
-              className={`flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition ${
-                active ? 'bg-brand-cyan/20 text-brand-cyan' : 'text-white/60 hover:text-white hover:bg-white/5'
+              className={`flex items-center justify-between px-4 py-3 rounded-2xl text-sm transition-all ${
+                active ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/25 font-semibold' : 'text-slate-400 hover:text-white hover:bg-slate-800/80 font-medium'
               }`}
             >
               <span className="flex items-center gap-3">
@@ -121,12 +121,12 @@ export default function AdminLayout() {
                 {label}
               </span>
               {label === 'Service Enquiries' && newServiceEnquiries > 0 && (
-                <span className="bg-brand-cyan text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                <span className="bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-bold px-2.5 py-0.5 text-xs rounded-full">
                   {newServiceEnquiries}
                 </span>
               )}
               {label === 'Product Enquiries' && newProductEnquiries > 0 && (
-                <span className="bg-brand-cyan text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                <span className="bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-bold px-2.5 py-0.5 text-xs rounded-full">
                   {newProductEnquiries}
                 </span>
               )}
@@ -135,11 +135,11 @@ export default function AdminLayout() {
         })}
       </nav>
 
-      <div className="p-4 border-t border-white/10 space-y-1">
-        <Link to="/" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/60 hover:text-white hover:bg-white/5 w-full transition">
+      <div className="pt-4 border-t border-slate-800 space-y-1">
+        <Link to="/" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm text-slate-400 hover:text-white hover:bg-slate-800/80 w-full transition-all font-medium">
           <ExternalLink className="w-4 h-4" /> View Website
         </Link>
-        <button onClick={handleLogout} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/60 hover:text-red-400 hover:bg-white/5 w-full transition">
+        <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm text-slate-400 hover:text-red-400 hover:bg-red-500/10 w-full transition-all font-medium">
           <LogOut className="w-4 h-4" /> Sign Out
         </button>
       </div>
@@ -147,9 +147,9 @@ export default function AdminLayout() {
   )
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-[#EEF2F6] flex p-4 md:p-6 gap-4 md:gap-6">
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex w-64 h-screen sticky top-0 bg-brand-dark text-white flex-col shrink-0 shadow-xl">
+      <aside className="hidden lg:flex w-64 bg-slate-900 text-white rounded-3xl p-5 shadow-xl shadow-slate-900/10 flex-col shrink-0 justify-between h-[calc(100vh-2rem)] sticky top-4">
         <SidebarContent />
       </aside>
 
@@ -159,29 +159,29 @@ export default function AdminLayout() {
       )}
 
       {/* Mobile Drawer */}
-      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-brand-dark text-white flex flex-col shadow-xl transition-transform duration-300 lg:hidden ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-white p-5 flex flex-col shadow-xl transition-transform duration-300 lg:hidden ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <SidebarContent />
       </aside>
 
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Desktop Top Bar */}
-        <div className="hidden lg:flex items-center justify-end bg-white border-b border-gray-200 px-6 py-3 sticky top-0 z-30 shadow-sm">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        {/* Desktop Top Bar — sticky, takes real space so content never overlaps */}
+        <div className="hidden lg:flex items-center justify-end px-6 py-3 bg-[#EEF2F6] sticky top-0 z-20 shrink-0">
           <NotificationBell notifications={notifications} hasUnread={hasUnread} isMobile={false} />
         </div>
 
         {/* Mobile Header */}
-        <div className="lg:hidden flex items-center justify-between bg-brand-dark text-white px-4 py-3 sticky top-0 z-30 shadow-md relative">
+        <div className="lg:hidden flex items-center justify-between bg-white text-gray-900 px-4 py-3 sticky top-0 z-30 rounded-2xl shadow-sm border border-gray-100 relative mb-4">
           <div className="flex items-center gap-4">
-            <button onClick={() => setSidebarOpen(true)} className="text-white">
+            <button onClick={() => setSidebarOpen(true)} className="text-gray-900">
               <Menu className="w-6 h-6" />
             </button>
             <img src="/images/company_logo.png" alt="Samarth" className="h-7 w-auto" />
-            <span className="font-bold text-sm">Admin Panel</span>
+            <span className="font-bold text-sm text-gray-900">Admin Panel</span>
           </div>
-          <NotificationBell notifications={notifications} hasUnread={hasUnread} isMobile={true} />
+          <NotificationBell notifications={notifications} hasUnread={hasUnread} isMobile={false} />
         </div>
 
-        <main className="flex-1 overflow-auto bg-gray-50">
+        <main className="flex-1 overflow-auto">
           <Outlet />
         </main>
       </div>
